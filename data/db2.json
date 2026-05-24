@@ -1,0 +1,47 @@
+{
+  "lastChecked": "2026-05-24T14:10:52.562Z",
+  "lastBuild": "12.0.5.67602",
+  "tables": {
+    "SpellMisc": {
+      "lastChecked": "2026-05-24T14:10:50.527Z",
+      "latestBuild": "12.0.5.67602"
+    },
+    "SpellAuraOptions": {
+      "lastChecked": "2026-05-24T14:10:50.994Z",
+      "latestBuild": "12.0.5.67602"
+    },
+    "SpellEffect": {
+      "lastChecked": "2026-05-24T14:10:51.420Z",
+      "latestBuild": "12.0.5.67602"
+    },
+    "SpellName": {
+      "lastChecked": "2026-05-24T14:10:51.584Z",
+      "latestBuild": "12.0.5.67602"
+    },
+    "SpellCooldowns": {
+      "lastChecked": "2026-05-24T14:10:51.748Z",
+      "latestBuild": "12.0.5.67602"
+    },
+    "SpellInterrupts": {
+      "lastChecked": "2026-05-24T14:10:51.909Z",
+      "latestBuild": "12.0.5.67602"
+    },
+    "SpellCategories": {
+      "lastChecked": "2026-05-24T14:10:52.072Z",
+      "latestBuild": "12.0.5.67602"
+    },
+    "ChrSpecialization": {
+      "lastChecked": "2026-05-24T14:10:52.234Z",
+      "latestBuild": "12.0.5.67602"
+    },
+    "Difficulty": {
+      "lastChecked": "2026-05-24T14:10:52.397Z",
+      "latestBuild": "12.0.5.67602"
+    },
+    "Map": {
+      "lastChecked": "2026-05-24T14:10:52.561Z",
+      "latestBuild": "12.0.5.67602"
+    }
+  },
+  "changes": []
+}
