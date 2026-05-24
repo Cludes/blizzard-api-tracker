@@ -7,8 +7,8 @@ import path from "path";
 
 const OUT_FILE = path.resolve("data/builds.json");
 
-// wago.tools build list API
-const WAGO_BUILDS_URL = "https://wago.tools/api/builds?product=wow&limit=20";
+// wago.tools build list API - returns object keyed by product
+const WAGO_BUILDS_URL = "https://wago.tools/api/builds";
 
 // wago.tools changelog between two builds
 function wagoBuildDiffUrl(from, to) {
@@ -42,11 +42,16 @@ async function main() {
   }
 
   const data = await fetchBuilds();
-  const builds = Array.isArray(data) ? data : data?.builds || data?.data || [];
+  // API returns object keyed by product: { "wow": [...], "wowxptr": [...], ... }
+  // Extract retail WoW builds and PTR builds
+  const wowBuilds = Array.isArray(data) ? data : (data?.wow || []);
+  const ptrBuilds = data?.wowxptr || [];
+  const builds = [...wowBuilds, ...ptrBuilds].sort((a, b) =>
+    new Date(b.created_at || 0) - new Date(a.created_at || 0)
+  );
 
   if (!builds.length) {
-    console.log("Builds: no data returned from wago.tools.");
-    // Save what we know so far for debugging
+    console.log("Builds: no WoW build data returned from wago.tools.");
     fs.writeFileSync(OUT_FILE, JSON.stringify({ lastChecked: new Date().toISOString(), raw: data, builds: [], diffs: [] }, null, 2));
     return;
   }

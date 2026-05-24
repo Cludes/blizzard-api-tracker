@@ -58,19 +58,22 @@ function buildUiSection(data) {
 
 function buildHotfixSection(data) {
   if (!data) return "<p class='muted'>No hotfix data yet.</p>";
-  const posts = (data.posts || []).slice(0, 20);
+  const posts = (data.posts || []).slice(0, 25);
   if (!posts.length) return "<p class='muted'>No posts found.</p>";
 
   return posts.map((p) => {
     const isPinned = p.pinned ? badge("pinned", "purple") : "";
+    const sourceTag = p.source === "blizzard-news" ? badge("news", "blue") : badge("forums", "grey");
+    const desc = p.description ? `<div style="padding:0 14px 10px;font-size:0.85em;color:#8b949e">${p.description}</div>` : "";
     return `
     <div class="card">
       <div class="card-header">
-        ${isPinned}
+        ${sourceTag}${isPinned}
         <a href="${p.url}" target="_blank">${p.title}</a>
         <span class="muted">${formatDate(p.date)}</span>
         ${p.replyCount ? `<span class="muted">${p.replyCount} replies</span>` : ""}
       </div>
+      ${desc}
     </div>`;
   }).join("");
 }
@@ -144,19 +147,14 @@ function buildBuildsSection(data) {
 
   if (builds.length) {
     html += "<h3>Recent Builds</h3>";
-    html += "<table><thead><tr><th>Build</th><th>Version</th><th>Type</th><th>Date</th></tr></thead><tbody>";
+    html += "<table><thead><tr><th>Version</th><th>Product</th><th>Date</th></tr></thead><tbody>";
     for (const b of builds) {
       const version = b.version || b.buildText || b.build || "Unknown";
-      const type = b.type || b.product || "";
+      const product = b.product === "wow" ? badge("Retail", "blue") : b.product === "wowxptr" ? badge("PTR", "orange") : badge(b.product || "", "grey");
       const date = b.created_at || b.date || b.releasedAt || "";
-      html += `<tr><td><code>${version}</code></td><td>${b.versionString || ""}</td><td>${type}</td><td class="muted">${date ? formatDate(date) : ""}</td></tr>`;
+      html += `<tr><td><code>${version}</code></td><td>${product}</td><td class="muted">${date ? formatDate(date) : ""}</td></tr>`;
     }
     html += "</tbody></table>";
-  } else {
-    html += "<p class='muted'>No build data returned yet - API response may need inspection.</p>";
-    if (data.raw) {
-      html += `<pre style="font-size:0.75em;overflow:auto;max-height:200px;background:#0d1117;padding:8px;border-radius:4px">${JSON.stringify(data.raw, null, 2).slice(0, 1000)}</pre>`;
-    }
   }
 
   return html;
