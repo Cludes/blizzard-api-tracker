@@ -15,8 +15,17 @@ jobs:
   fetch-and-build:
     runs-on: ubuntu-latest
     steps:
+      - name: Generate app token
+        id: app-token
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.CLUDESAPP_ID }}
+          private_key: ${{ secrets.CLUDESAPP_PEM }}
+
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -29,7 +38,7 @@ jobs:
       - name: Fetch UI source changes
         run: npm run fetch:ui
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
       - name: Fetch hotfix notes
         run: npm run fetch:hotfixes
