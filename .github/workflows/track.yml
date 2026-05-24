@@ -46,6 +46,9 @@ jobs:
       - name: Fetch spell flag changes
         run: npm run fetch:spells
 
+      - name: Fetch game build changes
+        run: npm run fetch:builds
+
       - name: Build site
         run: npm run build:site
 

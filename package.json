@@ -7,7 +7,8 @@
     "fetch:ui": "node scripts/fetch-ui-source.js",
     "fetch:hotfixes": "node scripts/fetch-hotfixes.js",
     "fetch:spells": "node scripts/fetch-spell-flags.js",
-    "fetch:all": "npm run fetch:ui && npm run fetch:hotfixes && npm run fetch:spells",
+    "fetch:builds": "node scripts/fetch-builds.js",
+    "fetch:all": "npm run fetch:ui && npm run fetch:hotfixes && npm run fetch:spells && npm run fetch:builds",
     "build:site": "node scripts/build-site.js",
     "run:all": "npm run fetch:all && npm run build:site"
   },

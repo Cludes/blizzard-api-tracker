@@ -25,9 +25,9 @@ async function getLatestCommit() {
   return res.json();
 }
 
-async function getCommitsSince(sha) {
+async function getRecentCommits(perPage = 30) {
   const res = await fetch(
-    `https://api.github.com/repos/${REPO}/commits?sha=${BRANCH}&since=${new Date(0).toISOString()}&per_page=20`,
+    `https://api.github.com/repos/${REPO}/commits?sha=${BRANCH}&per_page=${perPage}`,
     {
       headers: {
         Accept: "application/vnd.github.v3+json",
@@ -38,8 +38,11 @@ async function getCommitsSince(sha) {
     }
   );
   if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
-  const commits = await res.json();
-  // Return commits newer than the known SHA
+  return res.json();
+}
+
+async function getCommitsSince(sha) {
+  const commits = await getRecentCommits(50);
   const idx = commits.findIndex((c) => c.sha === sha);
   return idx === -1 ? commits : commits.slice(0, idx);
 }
@@ -81,9 +84,10 @@ async function main() {
     return;
   }
 
+  // On first run, seed with last 30 commits instead of just the latest
   const newCommits = existing.sha
     ? await getCommitsSince(existing.sha)
-    : [latest];
+    : await getRecentCommits(30);
 
   const changes = [];
   for (const commit of newCommits) {

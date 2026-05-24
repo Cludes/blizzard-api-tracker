@@ -1,4 +1,4 @@
-// Fetches spell data for a watchlist of spells from the wago.tools API
+// Fetches spell attribute data from wago.tools DB2 API
 // Tracks flag changes (e.g. SPELL_ATTR8_AURA_IS_PRIVATE) between runs
 
 import fetch from "node-fetch";
@@ -8,79 +8,92 @@ import path from "path";
 const WATCHLIST_FILE = path.resolve("data/spell-watchlist.json");
 const OUT_FILE = path.resolve("data/spell-flags.json");
 
-// wago.tools spell lookup API
-const WAGO_SPELL_URL = (id) =>
-  `https://wago.tools/api/spell/${id}?locale=en_US`;
+const PRIVATE_AURA_ATTR = "SPELL_ATTR8_AURA_IS_PRIVATE";
 
-// Blizzard Game Data API - spell data (requires OAuth, optional)
-const BNET_SPELL_URL = (id) =>
-  `https://us.api.blizzard.com/data/wow/spell/${id}?namespace=static-us&locale=en_US`;
+// wago.tools DB2 API - SpellMisc contains attribute flags
+// Attributes0..Attributes9 are the flag fields
+function wagoSpellMiscUrl(spellId) {
+  return `https://wago.tools/api/casc/SpellMisc?SpellID=${spellId}`;
+}
 
-const PRIVATE_AURA_FLAG = "SPELL_ATTR8_AURA_IS_PRIVATE";
+// wago.tools spell search API for name/basic info
+function wagoSpellInfoUrl(spellId) {
+  return `https://wago.tools/api/spell?id=${spellId}&locale=enUS`;
+}
 
-async function fetchSpellFromWago(id) {
+// Attribute bit positions for SPELL_ATTR8_AURA_IS_PRIVATE = attr8, bit 26
+const ATTR_DEFS = {
+  SPELL_ATTR8_AURA_IS_PRIVATE: { field: "Attributes8", bit: 26 },
+  // Add more flag definitions here as needed
+};
+
+function checkFlag(row, flagName) {
+  const def = ATTR_DEFS[flagName];
+  if (!def) return false;
+  const val = parseInt(row[def.field] || "0", 10);
+  return (val & (1 << def.bit)) !== 0;
+}
+
+async function fetchSpellMisc(spellId) {
   try {
-    const res = await fetch(WAGO_SPELL_URL(id), {
+    const res = await fetch(wagoSpellMiscUrl(spellId), {
       headers: { "User-Agent": "blizzard-api-tracker/1.0" },
     });
     if (!res.ok) return null;
     const data = await res.json();
-    return {
-      id,
-      name: data.name || `Spell ${id}`,
-      flags: data.attributes || [],
-      schoolMask: data.schoolMask || null,
-      raw: data,
-    };
+    // Returns array of rows - take the latest (highest ID)
+    const rows = Array.isArray(data) ? data : data?.rows || [];
+    if (!rows.length) return null;
+    return rows[rows.length - 1];
   } catch {
     return null;
   }
 }
 
-async function fetchSpellFromBnet(id, token) {
+async function fetchSpellName(spellId) {
   try {
-    const res = await fetch(BNET_SPELL_URL(id), {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "User-Agent": "blizzard-api-tracker/1.0",
-      },
+    const res = await fetch(wagoSpellInfoUrl(spellId), {
+      headers: { "User-Agent": "blizzard-api-tracker/1.0" },
     });
     if (!res.ok) return null;
     const data = await res.json();
-    return {
-      id,
-      name: data.name?.en_US || `Spell ${id}`,
-      flags: [],
-      raw: data,
-    };
+    return data?.name || null;
   } catch {
     return null;
   }
 }
 
+function getActiveFlags(row) {
+  const active = [];
+  for (const [flagName] of Object.entries(ATTR_DEFS)) {
+    if (checkFlag(row, flagName)) active.push(flagName);
+  }
+  return active;
+}
+
 function diffSpell(prev, curr) {
-  if (!prev) return { type: "new", spell: curr };
-  const prevFlags = new Set(prev.flags);
-  const currFlags = new Set(curr.flags);
+  if (!prev) return curr.flags.length > 0 ? { type: "new", ...curr } : null;
 
-  const added = curr.flags.filter((f) => !prevFlags.has(f));
-  const removed = prev.flags.filter((f) => !currFlags.has(f));
+  const prevSet = new Set(prev.flags);
+  const currSet = new Set(curr.flags);
+  const added = curr.flags.filter((f) => !prevSet.has(f));
+  const removed = prev.flags.filter((f) => !currSet.has(f));
 
-  if (added.length === 0 && removed.length === 0) return null;
-
+  if (!added.length && !removed.length) return null;
   return {
     type: "changed",
-    spell: curr,
+    id: curr.id,
+    name: curr.name,
     added,
     removed,
     privateAuraChanged:
-      added.includes(PRIVATE_AURA_FLAG) || removed.includes(PRIVATE_AURA_FLAG),
+      added.includes(PRIVATE_AURA_ATTR) || removed.includes(PRIVATE_AURA_ATTR),
   };
 }
 
 async function main() {
   if (!fs.existsSync(WATCHLIST_FILE)) {
-    console.log("No spell watchlist found at data/spell-watchlist.json");
+    console.log("No spell watchlist found.");
     process.exit(0);
   }
 
@@ -94,24 +107,29 @@ async function main() {
   const newChanges = [];
 
   for (const spell of watchlist.spells) {
-    console.log(`Fetching spell ${spell.id} (${spell.name || "unknown"})...`);
-    const data = await fetchSpellFromWago(spell.id);
-    if (!data) {
-      console.warn(`  Could not fetch spell ${spell.id}`);
+    console.log(`Fetching spell ${spell.id} (${spell.name})...`);
+
+    const row = await fetchSpellMisc(spell.id);
+    if (!row) {
+      console.warn(`  No SpellMisc data for ${spell.id}`);
       continue;
     }
-    currentSpells[spell.id] = data;
 
-    const diff = diffSpell(existing.spells[spell.id] || null, data);
+    const flags = getActiveFlags(row);
+    const name = spell.name;
+
+    const curr = { id: spell.id, name, flags, raw: row };
+    currentSpells[spell.id] = curr;
+
+    const diff = diffSpell(existing.spells[spell.id] || null, curr);
     if (diff) {
-      newChanges.push({
-        ...diff,
-        date: new Date().toISOString(),
-      });
+      newChanges.push({ ...diff, date: new Date().toISOString() });
       const tag = diff.privateAuraChanged ? " [PRIVATE AURA CHANGED]" : "";
-      console.log(`  Change detected for ${data.name}${tag}`);
-      if (diff.added?.length) console.log(`    Added flags: ${diff.added.join(", ")}`);
-      if (diff.removed?.length) console.log(`    Removed flags: ${diff.removed.join(", ")}`);
+      console.log(`  Change detected: ${name}${tag}`);
+      if (diff.added?.length) console.log(`    + ${diff.added.join(", ")}`);
+      if (diff.removed?.length) console.log(`    - ${diff.removed.join(", ")}`);
+    } else {
+      console.log(`  No changes. Active flags: ${flags.join(", ") || "none"}`);
     }
   }
 
@@ -123,7 +141,7 @@ async function main() {
 
   fs.writeFileSync(OUT_FILE, JSON.stringify(output, null, 2));
   console.log(
-    `Spell flags: checked ${watchlist.spells.length} spell(s), ${newChanges.length} change(s) detected.`
+    `Spell flags: ${watchlist.spells.length} checked, ${newChanges.length} change(s).`
   );
 }
 
