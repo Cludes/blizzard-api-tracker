@@ -1,0 +1,84 @@
+name: Track Blizzard API Changes
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  fetch-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Fetch UI source changes
+        run: npm run fetch:ui
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fetch hotfix notes
+        run: npm run fetch:hotfixes
+
+      - name: Fetch spell flag changes
+        run: npm run fetch:spells
+
+      - name: Build site
+        run: npm run build:site
+
+      - name: Check for data changes
+        id: changes
+        run: |
+          git add data/ site/
+          if git diff --cached --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit data and site
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "blizzard-api-tracker[bot]"
+          git config user.email "blizzard-api-tracker@users.noreply.github.com"
+          git commit -m "chore: update tracked data $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
+
+  deploy-pages:
+    needs: fetch-and-build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

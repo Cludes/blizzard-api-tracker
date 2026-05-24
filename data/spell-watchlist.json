@@ -1,0 +1,15 @@
+{
+  "description": "Spells to monitor for flag changes (e.g. Private Aura). Add spell IDs here.",
+  "spells": [
+    { "id": 853,    "name": "Hammer of Justice",       "notes": "Paladin CC" },
+    { "id": 31935,  "name": "Avenger's Shield",         "notes": "Lightblinded Vanguard dispel - was Private Aura" },
+    { "id": 15487,  "name": "Silence",                  "notes": "Priest interrupt" },
+    { "id": 116705, "name": "Spear Hand Strike",        "notes": "Monk interrupt" },
+    { "id": 147362, "name": "Counter Shot",             "notes": "Hunter interrupt" },
+    { "id": 57994,  "name": "Wind Shear",               "notes": "Shaman interrupt" },
+    { "id": 183752, "name": "Consume Magic",            "notes": "DH interrupt" },
+    { "id": 351338, "name": "Quell",                    "notes": "Evoker interrupt" },
+    { "id": 96231,  "name": "Rebuke",                   "notes": "Paladin interrupt" },
+    { "id": 47528,  "name": "Mind Freeze",              "notes": "DK interrupt" }
+  ]
+}

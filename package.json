@@ -1,0 +1,17 @@
+{
+  "name": "blizzard-api-tracker",
+  "version": "1.0.0",
+  "description": "Tracks Blizzard WoW API changes: Lua API, spell flags, UI source, and hotfix notes",
+  "type": "module",
+  "scripts": {
+    "fetch:ui": "node scripts/fetch-ui-source.js",
+    "fetch:hotfixes": "node scripts/fetch-hotfixes.js",
+    "fetch:spells": "node scripts/fetch-spell-flags.js",
+    "fetch:all": "npm run fetch:ui && npm run fetch:hotfixes && npm run fetch:spells",
+    "build:site": "node scripts/build-site.js",
+    "run:all": "npm run fetch:all && npm run build:site"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
