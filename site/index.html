@@ -3,295 +3,1840 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="description" content="Live tracker for Blizzard WoW API changes: builds, DB2 tables, UI source, spell flags, and hotfix notes."/>
   <title>Blizzard API Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0d1117;color:#c9d1d9;line-height:1.6}
-    a{color:#58a6ff;text-decoration:none}a:hover{text-decoration:underline}
-    code,.mono{font-family:"SFMono-Regular",Consolas,monospace;font-size:0.84em;background:#161b22;padding:2px 5px;border-radius:3px}
-    .muted{color:#6e7681;font-size:0.87em}
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  /* Colors */
+  --bg-base:        #080c14;
+  --bg-surface:     #0d1220;
+  --bg-card:        #111827;
+  --bg-card-hover:  #161f30;
+  --bg-elevated:    #1a2436;
+  --border:         #1e2d47;
+  --border-subtle:  #162032;
+  --border-hover:   #2d4268;
 
-    header{background:#161b22;border-bottom:1px solid #30363d;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-    header h1{font-size:1.15rem;font-weight:600}
-    header .sub{color:#6e7681;font-size:0.83em}
+  --accent:         #3b82f6;
+  --accent-dim:     #1d4ed8;
+  --accent-glow:    rgba(59,130,246,0.15);
+  --accent-text:    #60a5fa;
 
-    nav{background:#161b22;border-bottom:1px solid #30363d;padding:0 20px;display:flex;overflow-x:auto}
-    nav a{display:block;padding:10px 14px;font-size:0.88em;color:#c9d1d9;border-bottom:2px solid transparent;white-space:nowrap}
-    nav a:hover{color:#58a6ff;text-decoration:none;border-bottom-color:#58a6ff}
+  --green:          #10b981;
+  --green-dim:      rgba(16,185,129,0.1);
+  --red:            #ef4444;
+  --red-dim:        rgba(239,68,68,0.1);
+  --orange:         #f59e0b;
+  --orange-dim:     rgba(245,158,11,0.1);
+  --purple:         #8b5cf6;
+  --purple-dim:     rgba(139,92,246,0.1);
+  --yellow:         #eab308;
+  --yellow-dim:     rgba(234,179,8,0.1);
 
-    main{max-width:1100px;margin:0 auto;padding:20px 24px}
-    section{margin-bottom:44px}
-    section>h2{font-size:1.05rem;font-weight:600;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #30363d;display:flex;align-items:center;gap:8px}
-    h3{font-size:0.9rem;font-weight:600;margin:18px 0 8px;color:#8b949e;text-transform:uppercase;letter-spacing:.04em}
+  --text-primary:   #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted:     #4b5e7a;
+  --text-accent:    #60a5fa;
 
-    .card{background:#161b22;border:1px solid #30363d;border-radius:6px;margin-bottom:6px;overflow:hidden}
-    .card-hl{border-color:#c0392b;box-shadow:0 0 0 1px #c0392b33}
-    .card-header{padding:9px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-    .card-title{font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .file-list{list-style:none;padding:2px 14px 10px;display:flex;flex-direction:column;gap:3px}
-    .file-list li{font-size:0.83em}
+  /* Typography */
+  --font-sans:  "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono:  "JetBrains Mono", "Fira Code", "SF Mono", Consolas, monospace;
 
-    .badge{display:inline-block;padding:1px 7px;border-radius:10px;font-size:0.74em;font-weight:600;color:#fff;white-space:nowrap;flex-shrink:0}
-    .flag-private{background:#3d1515!important;color:#e74c3c!important;padding:2px 6px;border-radius:3px}
+  --text-xs:    0.72rem;
+  --text-sm:    0.82rem;
+  --text-base:  0.92rem;
+  --text-md:    1rem;
+  --text-lg:    1.125rem;
+  --text-xl:    1.25rem;
+  --text-2xl:   1.5rem;
 
-    table{width:100%;border-collapse:collapse;font-size:0.87em;background:#161b22;border-radius:6px;overflow:hidden;border:1px solid #30363d}
-    th{text-align:left;padding:8px 12px;background:#1c2128;border-bottom:1px solid #30363d;color:#8b949e;font-weight:500;font-size:0.83em;text-transform:uppercase;letter-spacing:.04em}
-    td{padding:7px 12px;border-bottom:1px solid #21262d;vertical-align:top}
-    tr:last-child td{border-bottom:none}
-    tr:hover td{background:#1c2128}
+  /* Spacing */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
 
-    .dash-grid{display:flex;flex-direction:column;gap:6px}
-    .dash-item{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#161b22;border:1px solid #30363d;border-radius:6px;font-size:0.9em;flex-wrap:wrap}
+  /* Radii */
+  --radius-sm:  4px;
+  --radius:     8px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
+  --radius-xl:  20px;
+  --radius-full: 9999px;
 
-    footer{text-align:center;padding:24px;color:#6e7681;font-size:0.81em;border-top:1px solid #21262d;margin-top:16px}
+  /* Shadows */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
+  --shadow:     0 4px 16px rgba(0,0,0,0.5);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.6);
+  --shadow-accent: 0 0 0 1px var(--accent), 0 4px 16px var(--accent-glow);
+
+  /* Transitions */
+  --ease:       cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:    cubic-bezier(0.4, 0, 1, 1);
+  --t-fast:     120ms;
+  --t-base:     200ms;
+  --t-slow:     350ms;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Skip nav for accessibility */
+.skip-nav {
+  position: absolute;
+  top: -100%;
+  left: var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  z-index: 9999;
+  transition: top var(--t-fast);
+}
+.skip-nav:focus { top: var(--space-4); }
+
+a { color: var(--text-accent); text-decoration: none; transition: color var(--t-fast); }
+a:hover { color: #fff; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--radius-sm); }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(8,12,20,0.85);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0 var(--space-6);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.header-logo {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, var(--accent), var(--purple));
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.header-title {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.header-subtitle {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  display: none;
+}
+
+@media (min-width: 640px) { .header-subtitle { display: block; } }
+
+.header-meta {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+@media (min-width: 900px) { .header-meta { display: flex; } }
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2s ease infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* Mobile nav toggle */
+.nav-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--t-fast), border-color var(--t-fast);
+  flex-shrink: 0;
+}
+.nav-toggle:hover { background: var(--bg-elevated); border-color: var(--border-hover); }
+@media (min-width: 900px) { .nav-toggle { display: none; } }
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+.site-nav {
+  background: rgba(8,12,20,0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+  overflow: hidden;
+  /* Desktop: visible */
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-inner::-webkit-scrollbar { display: none; }
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color var(--t-fast), border-color var(--t-fast);
+  text-decoration: none;
+}
+.nav-link:hover { color: var(--text-primary); border-bottom-color: var(--border-hover); }
+.nav-link .nav-icon { font-size: 13px; }
+
+/* Mobile nav */
+@media (max-width: 899px) {
+  .site-nav {
+    display: none;
+    position: absolute;
+    top: 56px;
+    left: 0;
+    right: 0;
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+  }
+  .site-nav.open { display: block; }
+  .nav-inner { flex-direction: column; align-items: stretch; padding: var(--space-2) 0; }
+  .nav-link {
+    padding: var(--space-3) var(--space-6);
+    border-bottom: none;
+    border-left: 2px solid transparent;
+  }
+  .nav-link:hover { border-left-color: var(--border-hover); border-bottom: none; }
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.page-wrapper {
+  position: relative;
+}
+
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+@media (max-width: 640px) {
+  .main-content { padding: var(--space-6) var(--space-4); gap: var(--space-10); }
+}
+
+/* Section */
+.section { display: flex; flex-direction: column; gap: var(--space-5); }
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.section-title-group { display: flex; flex-direction: column; gap: var(--space-1); }
+
+.section-title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.section-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.section-desc {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  max-width: 540px;
+  line-height: 1.5;
+}
+
+.section-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
+}
+
+/* ============================================================
+   DASHBOARD STATS
+   ============================================================ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+@media (min-width: 640px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  transition: border-color var(--t-base), background var(--t-base), transform var(--t-base);
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 100% 0%, var(--accent-glow), transparent 60%);
+  opacity: 0;
+  transition: opacity var(--t-base);
+}
+.stat-card:hover { border-color: var(--border-hover); background: var(--bg-card-hover); transform: translateY(-1px); }
+.stat-card:hover::before { opacity: 1; }
+
+.stat-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.stat-value {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.stat-sub {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+.stat-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+/* Activity feed */
+.activity-feed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+  transition: border-color var(--t-fast), background var(--t-fast);
+  animation: slideIn var(--t-slow) var(--ease) both;
+}
+.activity-item:hover { border-color: var(--border); background: var(--bg-card-hover); }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.activity-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.activity-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.activity-text strong { font-weight: 600; color: var(--text-primary); }
+.activity-time { font-size: var(--text-xs); color: var(--text-muted); margin-left: auto; white-space: nowrap; }
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color var(--t-base), background var(--t-base), box-shadow var(--t-base);
+  animation: fadeIn var(--t-slow) var(--ease) both;
+}
+.card:hover { border-color: var(--border-hover); background: var(--bg-card-hover); box-shadow: var(--shadow); }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.card-highlight {
+  border-color: rgba(239,68,68,0.4);
+  background: rgba(239,68,68,0.04);
+}
+.card-highlight:hover { border-color: rgba(239,68,68,0.7); }
+
+.card-header {
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.card:last-child .card-header:only-child,
+.card-header:last-child { border-bottom: none; }
+
+.card-title {
+  font-weight: 600;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+}
+
+.card-body {
+  padding: var(--space-4) var(--space-5);
+}
+
+.card-desc {
+  padding: var(--space-2) var(--space-5) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  line-height: 1.55;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* ============================================================
+   FILE LIST
+   ============================================================ */
+.file-list {
+  list-style: none;
+  padding: var(--space-2) var(--space-5) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.file-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  padding: 2px 0;
+}
+.file-list li:hover { color: var(--text-primary); }
+.file-more {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  padding: var(--space-1) var(--space-5);
+  font-style: italic;
+}
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1.6;
+}
+.badge-blue   { background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid rgba(59,130,246,0.25); }
+.badge-green  { background: rgba(16,185,129,0.15); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.25); }
+.badge-red    { background: rgba(239,68,68,0.15);  color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+.badge-orange { background: rgba(245,158,11,0.15); color: #fcd34d; border: 1px solid rgba(245,158,11,0.25); }
+.badge-purple { background: rgba(139,92,246,0.15); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.25); }
+.badge-grey   { background: rgba(100,116,139,0.15); color: #94a3b8; border: 1px solid rgba(100,116,139,0.2); }
+.badge-yellow { background: rgba(234,179,8,0.15);  color: #fde68a; border: 1px solid rgba(234,179,8,0.25); }
+
+/* Private aura special badge */
+.badge-private-aura {
+  background: rgba(239,68,68,0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239,68,68,0.5);
+  animation: badgePulse 2s ease infinite;
+}
+@keyframes badgePulse {
+  0%,100% { border-color: rgba(239,68,68,0.5); }
+  50%      { border-color: rgba(239,68,68,0.9); }
+}
+
+.flag-private { color: #fca5a5; background: rgba(239,68,68,0.12); padding: 1px 6px; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: var(--text-xs); }
+
+/* ============================================================
+   DIFF STATS
+   ============================================================ */
+.diff-stats {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+.diff-add  { color: var(--green); }
+.diff-rem  { color: var(--red); }
+.diff-mod  { color: var(--accent-text); }
+
+/* ============================================================
+   TABLES
+   ============================================================ */
+.table-wrapper {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  min-width: 480px;
+}
+thead { background: var(--bg-elevated); }
+th {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+  color: var(--text-secondary);
+}
+tr:last-child td { border-bottom: none; }
+tbody tr { transition: background var(--t-fast); }
+tbody tr:hover td { background: var(--bg-elevated); color: var(--text-primary); }
+
+/* ============================================================
+   MONOSPACE / CODE
+   ============================================================ */
+code, .mono {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--bg-elevated);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  color: var(--text-accent);
+  border: 1px solid var(--border-subtle);
+}
+
+.version-tag {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ============================================================
+   REPO GROUP
+   ============================================================ */
+.repo-group { display: flex; flex-direction: column; gap: var(--space-3); }
+.repo-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.repo-label a { font-size: var(--text-xs); color: var(--text-muted); }
+.repo-label a:hover { color: var(--text-secondary); }
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+.empty-state {
+  padding: var(--space-12) var(--space-6);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  background: var(--bg-card);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+.empty-icon { font-size: 32px; opacity: 0.4; }
+.empty-title { font-weight: 600; color: var(--text-secondary); }
+
+/* ============================================================
+   ALERT BANNER
+   ============================================================ */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+}
+.alert-red { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
+.alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+/* ============================================================
+   SECTION TABS (repo switcher)
+   ============================================================ */
+.tab-group {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.tab-btn {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--t-fast);
+}
+.tab-btn:hover { border-color: var(--border-hover); color: var(--text-primary); }
+.tab-btn.active { background: var(--accent-glow); border-color: rgba(59,130,246,0.4); color: var(--accent-text); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: center;
+}
+footer a { color: var(--text-muted); }
+footer a:hover { color: var(--text-secondary); }
+.footer-links { display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap; justify-content: center; }
+.footer-sep { color: var(--border); }
+
+/* ============================================================
+   RESPONSIVE UTILITIES
+   ============================================================ */
+.hide-mobile { display: none; }
+@media (min-width: 640px) { .hide-mobile { display: initial; } }
+.hide-desktop { display: initial; }
+@media (min-width: 640px) { .hide-desktop { display: none; } }
+
+.muted { color: var(--text-muted); font-size: var(--text-xs); }
+.text-sm { font-size: var(--text-sm); }
+.text-mono { font-family: var(--font-mono); font-size: 0.88em; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+/* Stagger animation delay for lists */
+.card:nth-child(1)  { animation-delay: 0ms; }
+.card:nth-child(2)  { animation-delay: 30ms; }
+.card:nth-child(3)  { animation-delay: 60ms; }
+.card:nth-child(4)  { animation-delay: 90ms; }
+.card:nth-child(5)  { animation-delay: 120ms; }
+.card:nth-child(n+6){ animation-delay: 150ms; }
+
+.activity-item:nth-child(1)  { animation-delay: 0ms; }
+.activity-item:nth-child(2)  { animation-delay: 50ms; }
+.activity-item:nth-child(3)  { animation-delay: 100ms; }
+.activity-item:nth-child(4)  { animation-delay: 150ms; }
+.activity-item:nth-child(n+5){ animation-delay: 200ms; }
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+@media print {
+  .site-header, .site-nav, .nav-toggle { display: none; }
+  body { background: #fff; color: #000; }
+}
   </style>
 </head>
 <body>
-<header>
-  <div>
-    <h1>Blizzard API Tracker</h1>
-    <div class="sub">WoW Midnight - Builds, DB2, UI Source, M33kAuras, Spell Flags, Hotfixes</div>
-  </div>
-  <div class="muted">Updated: Sun, 24 May 2026 14:15:11 GMT</div>
-</header>
-<nav>
-  <a href="#dashboard">Dashboard</a>
-  <a href="#builds">Builds</a>
-  <a href="#db2">DB2 Changes</a>
-  <a href="#ui-source">UI Source</a>
-  <a href="#hotfixes">Hotfixes</a>
-  <a href="#spell-flags">Spell Flags</a>
-</nav>
-<main>
-
-  <section id="dashboard">
-    <h2>Recent Activity</h2>
-    <div class="dash-grid"><div class="dash-item"><span class="badge" style="background:#2471a3">BUILD</span> <strong>12.0.7.67669</strong> <span class="muted">4d ago</span></div><div class="dash-item"><span class="badge" style="background:#2471a3">UI Source</span> <a href="https://github.com/Gethe/wow-ui-source/commit/7e60b8bff91945886412d36ea4610bb6cfe435e4" target="_blank">12.0.5 (67602)</a> <span class="muted">8d ago</span></div><div class="dash-item"><span class="badge" style="background:#2471a3">UI Source</span> <a href="https://github.com/Gethe/wow-ui-source/commit/7844cbe2af45ebda7f27a71c1db5b542ef795a30" target="_blank">12.0.5 (67451)</a> <span class="muted">15d ago</span></div><div class="dash-item"><span class="badge" style="background:#2471a3">UI Source</span> <a href="https://github.com/Gethe/wow-ui-source/commit/30df2b92d6c140c962a2c672ae676e02d206bf46" target="_blank">12.0.5 (67403)</a> <span class="muted">16d ago</span></div></div>
-  </section>
-
-  <section id="builds">
-    <h2>Game Builds</h2>
-    <p class="muted" style="margin-bottom:12px">WoW build versions from <a href="https://wago.tools/builds" target="_blank">wago.tools</a>. New builds = patches or hotfixes pushed by Blizzard.</p>
-    <table><thead><tr><th>Version</th><th>Product</th><th>Date</th></tr></thead><tbody><tr><td><code>12.0.7.67669</code></td><td><span class="badge" style="background:#d35400">PTR</span></td><td class="muted" title="Tue, 19 May 2026 23:34:14 GMT">4d ago</td></tr><tr><td><code>12.0.5.67602</code></td><td><span class="badge" style="background:#2471a3">Retail</span></td><td class="muted" title="Fri, 15 May 2026 22:28:01 GMT">8d ago</td></tr><tr><td><code>12.0.7.67525</code></td><td><span class="badge" style="background:#d35400">PTR</span></td><td class="muted" title="Wed, 13 May 2026 23:13:14 GMT">10d ago</td></tr><tr><td><code>12.0.5.67451</code></td><td><span class="badge" style="background:#2471a3">Retail</span></td><td class="muted" title="Fri, 08 May 2026 18:49:01 GMT">15d ago</td></tr><tr><td><code>12.0.5.67403</code></td><td><span class="badge" style="background:#2471a3">Retail</span></td><td class="muted" title="Thu, 07 May 2026 20:02:02 GMT">16d ago</td></tr><tr><td><code>12.0.7.67360</code></td><td><span class="badge" style="background:#d35400">PTR</span></td><td class="muted" title="Tue, 05 May 2026 21:09:15 GMT">18d ago</td></tr><tr><td><code>12.0.7.67346</code></td><td><span class="badge" style="background:#d35400">PTR</span></td><td class="muted" title="Mon, 04 May 2026 17:30:14 GMT">19d ago</td></tr><tr><td><code>12.0.7.67344</code></td><td><span class="badge" style="background:#d35400">PTR</span></td><td class="muted" title="Sat, 02 May 2026 00:37:14 GMT">22d ago</td></tr><tr><td><code>12.0.5.67314</code></td><td><span class="badge" style="background:#2471a3">Retail</span></td><td class="muted" title="Thu, 30 Apr 2026 23:48:02 GMT">23d ago</td></tr><tr><td><code>12.0.7.67227</code></td><td><span class="badge" style="background:#d35400">PTR</span></td><td class="muted" title="Thu, 30 Apr 2026 17:31:19 GMT">23d ago</td></tr><tr><td><code>12.0.5.67235</code></td><td><span class="badge" style="background:#2471a3">Retail</span></td><td class="muted" title="Tue, 28 Apr 2026 20:27:02 GMT">25d ago</td></tr><tr><td><code>12.0.5.67186</code></td><td><span class="badge" style="background:#2471a3">Retail</span></td><td class="muted" title="Fri, 24 Apr 2026 01:38:01 GMT">24 Apr 2026</td></tr><tr><td><code>12.0.5.67165</code></td><td><span class="badge" style="background:#2471a3">Retail</span></td><td class="muted" title="Thu, 23 Apr 2026 03:18:02 GMT">23 Apr 2026</td></tr><tr><td><code>12.0.5.67114</code></td><td><span class="badge" style="background:#2471a3">Retail</span></td><td class="muted" title="Wed, 22 Apr 2026 21:18:01 GMT">22 Apr 2026</td></tr><tr><td><code>12.0.5.67088</code></td><td><span class="badge" style="background:#2471a3">Retail</span></td><td class="muted" title="Tue, 21 Apr 2026 14:16:02 GMT">21 Apr 2026</td></tr><tr><td><code>12.0.5.66741</code></td><td><span class="badge" style="background:#2471a3">Retail</span></td><td class="muted" title="Thu, 16 Apr 2026 13:20:03 GMT">16 Apr 2026</td></tr><tr><td><code>12.0.1.66838</code></td><td><span class="badge" style="background:#2471a3">Retail</span></td><td class="muted" title="Tue, 07 Apr 2026 00:05:02 GMT">7 Apr 2026</td></tr><tr><td><code>12.0.1.66709</code></td><td><span class="badge" style="background:#2471a3">Retail</span></td><td class="muted" title="Fri, 27 Mar 2026 22:59:02 GMT">27 Mar 2026</td></tr><tr><td><code>12.0.1.66666</code></td><td><span class="badge" style="background:#2471a3">Retail</span></td><td class="muted" title="Thu, 26 Mar 2026 20:28:02 GMT">26 Mar 2026</td></tr><tr><td><code>12.0.1.66562</code></td><td><span class="badge" style="background:#2471a3">Retail</span></td><td class="muted" title="Tue, 24 Mar 2026 14:24:02 GMT">24 Mar 2026</td></tr></tbody></table>
-  </section>
-
-  <section id="db2">
-    <h2>DB2 Table Changes</h2>
-    <p class="muted" style="margin-bottom:12px">Database table diffs between builds via <a href="https://wago.tools" target="_blank">wago.tools</a>. SpellMisc changes indicate spell attribute/flag updates (e.g. Private Aura additions).</p>
-    <p class='muted'>No DB2 changes detected yet. Will populate after two consecutive builds are tracked.</p><p class="muted" style="margin-top:12px">Last compared build: <code>12.0.5.67602</code></p>
-  </section>
-
-  <section id="ui-source">
-    <h2>UI Source & M33kAuras Changes</h2>
-    <p class="muted" style="margin-bottom:12px">Tracks <a href="https://github.com/Gethe/wow-ui-source/tree/live" target="_blank">Gethe/wow-ui-source</a> (Lua API, FrameXML) and <a href="https://github.com/m33shoq/M33kAuras/tree/midnight" target="_blank">m33shoq/M33kAuras midnight</a> (upstream for ThisWeeksAuras).</p>
-    <div style="margin-bottom:24px">
-      <div style="margin-bottom:8px"><span class="badge" style="background:#2471a3">WoW UI Source live</span> <a href="https://github.com/Gethe/wow-ui-source" target="_blank" class="muted" style="font-size:0.85em">wow-ui-source</a></div>
-      <div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/7e60b8bff91945886412d36ea4610bb6cfe435e4" target="_blank" class="mono">7e60b8b</a>
-          <span class="card-title">12.0.5 (67602)</span>
-          <span class="muted" title="Fri, 15 May 2026 22:31:26 GMT">8d ago</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>version.txt</code> <span class="muted">+1/-1</span></li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/7844cbe2af45ebda7f27a71c1db5b542ef795a30" target="_blank" class="mono">7844cbe</a>
-          <span class="card-title">12.0.5 (67451)</span>
-          <span class="muted" title="Fri, 08 May 2026 19:01:19 GMT">15d ago</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingLayoutUIDocumentation.lua</code> <span class="muted">+9/-0</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_CooldownBroadcaster/Blizzard_CooldownBroadcaster.lua</code> <span class="muted">+36/-11</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_CooldownBroadcaster/TrackedCooldowns.lua</code> <span class="muted">+8/-2</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_HouseEditor/Blizzard_HouseEditorLayoutMode.lua</code> <span class="muted">+5/-3</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>version.txt</code> <span class="muted">+1/-1</span></li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/30df2b92d6c140c962a2c672ae676e02d206bf46" target="_blank" class="mono">30df2b9</a>
-          <span class="card-title">12.0.5 (67403)</span>
-          <span class="muted" title="Thu, 07 May 2026 20:16:12 GMT">16d ago</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/DamageMeterConstantsDocumentation.lua</code> <span class="muted">+3/-2</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_CatalogShop/Blizzard_CatalogShop_Elements.lua</code> <span class="muted">+4/-1</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_CatalogShop/Blizzard_CatalogShop_Products.lua</code> <span class="muted">+5/-3</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>version.txt</code> <span class="muted">+1/-1</span></li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/ff2d0be9ca06c50c14d0bb811f182fa15b4eec3c" target="_blank" class="mono">ff2d0be</a>
-          <span class="card-title">12.0.5 (67314)</span>
-          <span class="muted" title="Thu, 30 Apr 2026 23:49:48 GMT">23d ago</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/CommentatorFrameDocumentation.lua</code> <span class="muted">+47/-0</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/PvpInfoDocumentation.lua</code> <span class="muted">+1/-1</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua</code> <span class="muted">+1/-0</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_ActionBar/Shared/MainActionBar.lua</code> <span class="muted">+2/-2</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_CUFProfiles/Blizzard_CompactUnitFrameProfiles.lua</code> <span class="muted">+1/-0</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>version.txt</code> <span class="muted">+1/-1</span></li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/b062d332c0abafec23645d08dbeb7d24fe83b7f0" target="_blank" class="mono">b062d33</a>
-          <span class="card-title">12.0.5 (67235)</span>
-          <span class="muted" title="Tue, 28 Apr 2026 20:29:20 GMT">25d ago</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/ChatInfoDocumentation.lua</code> <span class="muted">+6/-6</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua</code> <span class="muted">+1/-1</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>version.txt</code> <span class="muted">+1/-1</span></li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/058ff8d286499f4a79ece18d129f7580f5e2cfcd" target="_blank" class="mono">058ff8d</a>
-          <span class="card-title">12.0.5 (67186)</span>
-          <span class="muted" title="Fri, 24 Apr 2026 01:46:26 GMT">24 Apr 2026</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_Commentator/Blizzard_CommentatorSpell.lua</code> <span class="muted">+3/-2</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_CooldownBroadcaster/Blizzard_CooldownBroadcaster.lua</code> <span class="muted">+340/-192</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_CooldownBroadcaster/Blizzard_CooldownBroadcaster.toc</code> <span class="muted">+2/-2</span></li><li><span class="badge" style="background:#27ae60">added</span> <code>Interface/AddOns/Blizzard_CooldownBroadcaster/MessageQueue.lua</code> <span class="muted">+113/-0</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_CooldownBroadcaster/TrackedCooldowns.lua</code> <span class="muted">+385/-12</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_PrivateAurasUI/Blizzard_PrivateAurasUI.lua</code> <span class="muted">+3/-1</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/ui-code-list.txt</code> <span class="muted">+1/-0</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>version.txt</code> <span class="muted">+1/-1</span></li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/0e3d8913351756040583cd729bad4668d5a3bfef" target="_blank" class="mono">0e3d891</a>
-          <span class="card-title">12.0.5 (67114)</span>
-          <span class="muted" title="Thu, 23 Apr 2026 16:31:29 GMT">23 Apr 2026</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>version.txt</code> <span class="muted">+1/-1</span></li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/dc62c613606d0be2467791243eae5eea79201de0" target="_blank" class="mono">dc62c61</a>
-          <span class="card-title">12.0.5 (67088)</span>
-          <span class="muted" title="Tue, 21 Apr 2026 14:16:44 GMT">21 Apr 2026</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/AbbreviateConfigAPIDocumentation.lua</code> <span class="muted">+4/-0</span></li><li><span class="badge" style="background:#27ae60">added</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/AbbreviatedNumberFormatterAPIDocumentation.lua</code> <span class="muted">+94/-0</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/AccessibilityOptionsDocumentation.lua</code> <span class="muted">+3/-0</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/AccountConstantsDocumentation.lua</code> <span class="muted">+3/-0</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/AccountInfoDocumentation.lua</code> <span class="muted">+3/-0</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/AccountStoreDocumentation.lua</code> <span class="muted">+3/-0</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/AchievementInfoDocumentation.lua</code> <span class="muted">+3/-0</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/AchievementTelemetryDocumentation.lua</code> <span class="muted">+3/-0</span></li><li class="muted">...292 more</li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/60a03548fcbb6c50db31822be2e2c6594e079169" target="_blank" class="mono">60a0354</a>
-          <span class="card-title">12.0.1 (66838)</span>
-          <span class="muted" title="Tue, 07 Apr 2026 00:16:24 GMT">7 Apr 2026</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/CombatAudioAlertDocumentation.lua</code> <span class="muted">+32/-0</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/CombatTextDocumentation.lua</code> <span class="muted">+1/-1</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPITooltipDocumentation.lua</code> <span class="muted">+3/-3</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPIUnitPositionFrameDocumentation.lua</code> <span class="muted">+2/-2</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/InGameNavigationDocumentation.lua</code> <span class="muted">+1/-0</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/NamePlateManagerDocumentation.lua</code> <span class="muted">+4/-4</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/SecretAspectConstantsDocumentation.lua</code> <span class="muted">+3/-2</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>Interface/AddOns/Blizzard_APIDocumentationGenerated/SecretPredicateAPIDocumentation.lua</code> <span class="muted">+17/-0</span></li><li class="muted">...5 more</li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/154042b441c6be5cdc1daef072bd9513f0415271" target="_blank" class="mono">154042b</a>
-          <span class="card-title">12.0.1 (66709)</span>
-          <span class="muted" title="Fri, 27 Mar 2026 23:01:29 GMT">27 Mar 2026</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>version.txt</code> <span class="muted">+1/-1</span></li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/39ade1e8a7af9d19ea3d27999eb79d27d389d748" target="_blank" class="mono">39ade1e</a>
-          <span class="card-title">12.0.1 (66666)</span>
-          <span class="muted" title="Thu, 26 Mar 2026 20:31:30 GMT">26 Mar 2026</span>
-        </div>
-        </div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/fb91ab97a4bbb7d1753e4d5448a4a3b849db55ef" target="_blank" class="mono">fb91ab9</a>
-          <span class="card-title">12.0.1 (66562)</span>
-          <span class="muted" title="Tue, 24 Mar 2026 14:25:14 GMT">24 Mar 2026</span>
-        </div>
-        </div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/64f2480a7bcba7bf7da7df28980343b08d8b8ad5" target="_blank" class="mono">64f2480</a>
-          <span class="card-title">12.0.1 (66527)</span>
-          <span class="muted" title="Thu, 19 Mar 2026 23:46:39 GMT">19 Mar 2026</span>
-        </div>
-        </div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/353968420bb944e3dd883a1a0dc4c0326be1dc00" target="_blank" class="mono">3539684</a>
-          <span class="card-title">12.0.1 (66431)</span>
-          <span class="muted" title="Tue, 17 Mar 2026 14:31:26 GMT">17 Mar 2026</span>
-        </div>
-        </div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/edcb2f2059f13873f91e6e9adb567de94bdbd69c" target="_blank" class="mono">edcb2f2</a>
-          <span class="card-title">12.0.1 (66384)</span>
-          <span class="muted" title="Sat, 14 Mar 2026 01:46:29 GMT">14 Mar 2026</span>
-        </div>
-        </div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/57cdaf00ebd0daae562ecc10ce5f2fba3d4ca608" target="_blank" class="mono">57cdaf0</a>
-          <span class="card-title">12.0.1 (66337)</span>
-          <span class="muted" title="Tue, 10 Mar 2026 17:31:43 GMT">10 Mar 2026</span>
-        </div>
-        </div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/3fefc3a27250137e2554384b413b9060a4fefcfd" target="_blank" class="mono">3fefc3a</a>
-          <span class="card-title">12.0.1 (66263)</span>
-          <span class="muted" title="Thu, 05 Mar 2026 17:31:47 GMT">5 Mar 2026</span>
-        </div>
-        </div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/870a348b67ad912293c2de5228f7b04e1e9c67d0" target="_blank" class="mono">870a348</a>
-          <span class="card-title">12.0.1 (66220)</span>
-          <span class="muted" title="Tue, 03 Mar 2026 16:16:36 GMT">3 Mar 2026</span>
-        </div>
-        </div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/360e31f85fe8091c98dac7d1b73a584dfe49cfca" target="_blank" class="mono">360e31f</a>
-          <span class="card-title">12.0.1 (66198)</span>
-          <span class="muted" title="Sun, 01 Mar 2026 21:16:58 GMT">1 Mar 2026</span>
-        </div>
-        </div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/Gethe/wow-ui-source/commit/5e5a1811b2215107dc59172f00394a4aad07f9bf" target="_blank" class="mono">5e5a181</a>
-          <span class="card-title">12.0.1 (66192)</span>
-          <span class="muted" title="Fri, 27 Feb 2026 20:16:46 GMT">27 Feb 2026</span>
-        </div>
-        </div>
-    </div><div style="margin-bottom:24px">
-      <div style="margin-bottom:8px"><span class="badge" style="background:#d35400">M33kAuras midnight</span> <a href="https://github.com/m33shoq/M33kAuras" target="_blank" class="muted" style="font-size:0.85em">m33kauras-midnight</a></div>
-      <div class="card">
-        <div class="card-header">
-          <a href="https://github.com/m33shoq/M33kAuras/commit/2fe83c96bec6c89f2f9c5e5e927880d302df9229" target="_blank" class="mono">2fe83c9</a>
-          <span class="card-title">dont build spell cache in 12.0.7</span>
-          <span class="muted" title="Thu, 14 May 2026 12:49:21 GMT">10d ago</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>M33kAurasOptions/Cache.lua</code> <span class="muted">+4/-0</span></li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/m33shoq/M33kAuras/commit/238d026145c146651ff1f1d12aea0d92db692955" target="_blank" class="mono">238d026</a>
-          <span class="card-title">fix lib check</span>
-          <span class="muted" title="Thu, 14 May 2026 09:17:14 GMT">10d ago</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>M33kAuras/Init.lua</code> <span class="muted">+1/-1</span></li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/m33shoq/M33kAuras/commit/a7a4c07de15e70f98273087016590ca1c9cae251" target="_blank" class="mono">a7a4c07</a>
-          <span class="card-title">maybe fix an error from animations?</span>
-          <span class="muted" title="Wed, 13 May 2026 21:33:06 GMT">10d ago</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>M33kAuras/Animations.lua</code> <span class="muted">+3/-0</span></li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/m33shoq/M33kAuras/commit/aa27feb3544ac2b58bfe1ede83012e45c3e20ac3" target="_blank" class="mono">aa27feb</a>
-          <span class="card-title">hard embed custom LCG</span>
-          <span class="muted" title="Wed, 13 May 2026 17:14:10 GMT">10d ago</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>.gitignore</code> <span class="muted">+1/-0</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>.pkgmeta</code> <span class="muted">+0/-1</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>M33kAuras/AuraEnvironment.lua</code> <span class="muted">+1/-1</span></li><li><span class="badge" style="background:#27ae60">added</span> <code>M33kAuras/Libs/LibCustomGlow-1.0/LICENSE</code> <span class="muted">+21/-0</span></li><li><span class="badge" style="background:#27ae60">added</span> <code>M33kAuras/Libs/LibCustomGlow-1.0/LibCustomGlow-1.0.lua</code> <span class="muted">+962/-0</span></li><li><span class="badge" style="background:#27ae60">added</span> <code>M33kAuras/Libs/LibCustomGlow-1.0/LibCustomGlow-1.0.toc</code> <span class="muted">+12/-0</span></li><li><span class="badge" style="background:#27ae60">added</span> <code>M33kAuras/Libs/LibCustomGlow-1.0/LibCustomGlow-1.0.xml</code> <span class="muted">+4/-0</span></li><li><span class="badge" style="background:#27ae60">added</span> <code>M33kAuras/Libs/LibCustomGlow-1.0/README.md</code> <span class="muted">+65/-0</span></li><li class="muted">...3 more</li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/m33shoq/M33kAuras/commit/56da0ef61feece38b070acfdb181b7427faf025a" target="_blank" class="mono">56da0ef</a>
-          <span class="card-title">tweak boss mod load option</span>
-          <span class="muted" title="Sun, 10 May 2026 19:28:20 GMT">13d ago</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>M33kAuras/BossMods.lua</code> <span class="muted">+15/-6</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>M33kAuras/M33kAuras.lua</code> <span class="muted">+1/-6</span></li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/m33shoq/M33kAuras/commit/86acc83681b10b3610e8a63c9ecf4ba118cc34c6" target="_blank" class="mono">86acc83</a>
-          <span class="card-title">load option by bw bossmod enabled</span>
-          <span class="muted" title="Sun, 10 May 2026 19:11:35 GMT">13d ago</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>M33kAuras/BossMods.lua</code> <span class="muted">+20/-1</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>M33kAuras/M33kAuras.lua</code> <span class="muted">+51/-16</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>M33kAuras/Prototypes.lua</code> <span class="muted">+11/-0</span></li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/m33shoq/M33kAuras/commit/4087a51cb4c1e8d8e277ecb05b91178096d93e87" target="_blank" class="mono">4087a51</a>
-          <span class="card-title">allow secret units in UnitName</span>
-          <span class="muted" title="Sun, 10 May 2026 17:58:24 GMT">13d ago</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>M33kAuras/Compatibility.lua</code> <span class="muted">+1/-1</span></li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/m33shoq/M33kAuras/commit/9b66fc9bbe032f6d45692d45872a4eed5e5755f1" target="_blank" class="mono">9b66fc9</a>
-          <span class="card-title">make sure to show proper charge duration when spell is on gcd</span>
-          <span class="muted" title="Sun, 10 May 2026 16:39:18 GMT">13d ago</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>M33kAuras/GenericTrigger.lua</code> <span class="muted">+3/-3</span></li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/m33shoq/M33kAuras/commit/74410094d8ba94085cbf59ac66897eb4beeb5a5d" target="_blank" class="mono">7441009</a>
-          <span class="card-title">utilize new noGCD param in cooldowns api</span>
-          <span class="muted" title="Sun, 10 May 2026 15:35:50 GMT">13d ago</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>M33kAuras/GenericTrigger.lua</code> <span class="muted">+16/-1</span></li><li><span class="badge" style="background:#2471a3">modified</span> <code>M33kAuras/Prototypes.lua</code> <span class="muted">+2/-1</span></li></ul></div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/m33shoq/M33kAuras/commit/228c2bbf6c11919491eaa6a47049c9829453a81a" target="_blank" class="mono">228c2bb</a>
-          <span class="card-title">add UNIT_SPEC_CHANGED event</span>
-          <span class="muted" title="Tue, 05 May 2026 19:19:38 GMT">18d ago</span>
-        </div>
-        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>M33kAuras/GenericTrigger.lua</code> <span class="muted">+1/-0</span></li></ul></div>
+<div class="page-wrapper">
+  <a href="#main-content" class="skip-nav">Skip to content</a>
+<header class="site-header">
+  <div class="header-brand">
+    <div class="header-logo" aria-hidden="true">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 1L13 4.5V10L7 13L1 10V4.5L7 1Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+        <circle cx="7" cy="7" r="2" fill="white"/>
+      </svg>
     </div>
-  </section>
-
-  <section id="hotfixes">
-    <h2>Hotfix Notes</h2>
-    <p class="muted" style="margin-bottom:12px">Blizzard news feed and <a href="https://us.forums.blizzard.com/en/wow/c/release-notes/35" target="_blank">release notes forum</a> filtered for hotfix/patch/tuning posts.</p>
-    <p class='muted'>No posts found.</p>
-  </section>
-
-  <section id="spell-flags">
-    <h2>Spell Flag Changes</h2>
-    <p class="muted" style="margin-bottom:12px">Watches 0 spells for attribute flag changes. Private Aura flag changes directly affect addon visibility of debuffs.</p>
-    <p class="muted" style="margin-bottom:16px">No changes detected yet. Baseline will be set on first run, changes shown on subsequent runs.</p>
-  </section>
-
-</main>
+    <div>
+      <div class="header-title">Blizzard API Tracker</div>
+      <div class="header-subtitle">WoW Midnight</div>
+    </div>
+  </div>
+  <div class="header-meta">
+    <div class="live-dot" title="Auto-updates every 6 hours"></div>
+    <span>Updated Sun, 24 May 2026 14:34:06 GMT</span>
+  </div>
+  <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="site-nav">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+  </button>
+</header>
+  
+<nav class="site-nav" id="site-nav" role="navigation" aria-label="Site sections">
+  <div class="nav-inner"><a href="#dashboard" class="nav-link">Dashboard</a><a href="#builds" class="nav-link">Builds</a><a href="#db2" class="nav-link">DB2 Changes</a><a href="#ui-source" class="nav-link">UI Source</a><a href="#hotfixes" class="nav-link">Hotfixes</a><a href="#spell-flags" class="nav-link">Spell Flags</a></div>
+</nav>
+  <main class="main-content" id="main-content">
+    
+<div class="section" id="dashboard">
+  <div class="section-header">
+    <div class="section-title-group">
+      <h2 class="section-title">Dashboard</h2>
+      <p class="section-desc">Live summary of all tracked API changes across builds, spells, DB2 tables, and UI source.</p>
+    </div>
+  </div>
+  <div class="section-divider"></div>
+  
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">Latest Build</div>
+    <div class="stat-value">67669</div>
+    <div class="stat-sub">12.0.7.67669</div>
+    <div class="stat-indicator" style="background:var(--accent)"></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Spell Changes</div>
+    <div class="stat-value">0</div>
+    <div class="stat-sub">No changes</div>
+    <div class="stat-indicator" style="background:var(--green)"></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">DB2 Changes</div>
+    <div class="stat-value">0</div>
+    <div class="stat-sub">No changes</div>
+    <div class="stat-indicator" style="background:var(--green)"></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">UI Commits</div>
+    <div class="stat-value">60</div>
+    <div class="stat-sub">Across tracked repos</div>
+    <div class="stat-indicator" style="background:var(--purple)"></div>
+  </div>
+</div>
+  <h3 style="font-size:var(--text-xs);font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:var(--space-2)">Recent Activity</h3>
+  <div class="activity-feed">
+    <div class="activity-item">
+      <div class="activity-dot" style="background:var(--accent)"></div>
+      <div class="activity-text"><span class="badge badge-orange">PTR</span> <strong>Build 12.0.7.67669</strong></div>
+      <div class="activity-time" title="Tue, 19 May 2026 13:34:14 GMT">5d ago</div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-dot" style="background:var(--accent)"></div>
+      <div class="activity-text"><span class="badge badge-blue">Retail</span> <strong>Build 12.0.5.67602</strong></div>
+      <div class="activity-time" title="Fri, 15 May 2026 12:28:01 GMT">9d ago</div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-dot" style="background:var(--accent)"></div>
+      <div class="activity-text"><span class="badge badge-blue">UI Source</span> <a href="https://github.com/Gethe/wow-ui-source/commit/7e60b8bff91945886412d36ea4610bb6cfe435e4" target="_blank" rel="noopener">12.0.5 (67602)</a></div>
+      <div class="activity-time" title="Fri, 15 May 2026 22:31:26 GMT">8d ago</div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-dot" style="background:var(--accent)"></div>
+      <div class="activity-text"><span class="badge badge-blue">UI Source</span> <a href="https://github.com/Gethe/wow-ui-source/commit/7844cbe2af45ebda7f27a71c1db5b542ef795a30" target="_blank" rel="noopener">12.0.5 (67451)</a></div>
+      <div class="activity-time" title="Fri, 08 May 2026 19:01:19 GMT">15d ago</div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-dot" style="background:var(--accent)"></div>
+      <div class="activity-text"><span class="badge badge-blue">UI Source</span> <a href="https://github.com/Gethe/wow-ui-source/commit/30df2b92d6c140c962a2c672ae676e02d206bf46" target="_blank" rel="noopener">12.0.5 (67403)</a></div>
+      <div class="activity-time" title="Thu, 07 May 2026 20:16:12 GMT">16d ago</div>
+    </div></div>
+</div>
+    
+<div class="section" id="builds">
+  <div class="section-header">
+    <div class="section-title-group">
+      <h2 class="section-title">
+        <span class="section-icon" style="background:var(--accent-glow)" aria-hidden="true">B</span>
+        Game Builds
+      </h2>
+      <p class="section-desc">WoW build versions from <a href="https://wago.tools/builds" target="_blank" rel="noopener">wago.tools</a>. New builds indicate patches or hotfixes pushed by Blizzard.</p>
+    </div>
+  </div>
+  <div class="section-divider"></div>
+  <div class="table-wrapper"><table>
+      <thead><tr><th>Version</th><th>Product</th><th>Date</th></tr></thead>
+      <tbody><tr>
+      <td><span class="version-tag">12.0.7.67669</span></td>
+      <td><span class="badge badge-orange">PTR</span></td>
+      <td class="muted" title="Tue, 19 May 2026 13:34:14 GMT">5d ago</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.5.67602</span></td>
+      <td><span class="badge badge-blue">Retail</span></td>
+      <td class="muted" title="Fri, 15 May 2026 12:28:01 GMT">9d ago</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.7.67525</span></td>
+      <td><span class="badge badge-orange">PTR</span></td>
+      <td class="muted" title="Wed, 13 May 2026 13:13:14 GMT">11d ago</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.5.67451</span></td>
+      <td><span class="badge badge-blue">Retail</span></td>
+      <td class="muted" title="Fri, 08 May 2026 08:49:01 GMT">16d ago</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.5.67403</span></td>
+      <td><span class="badge badge-blue">Retail</span></td>
+      <td class="muted" title="Thu, 07 May 2026 10:02:02 GMT">17d ago</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.7.67360</span></td>
+      <td><span class="badge badge-orange">PTR</span></td>
+      <td class="muted" title="Tue, 05 May 2026 11:09:15 GMT">19d ago</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.7.67346</span></td>
+      <td><span class="badge badge-orange">PTR</span></td>
+      <td class="muted" title="Mon, 04 May 2026 07:30:14 GMT">20d ago</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.7.67344</span></td>
+      <td><span class="badge badge-orange">PTR</span></td>
+      <td class="muted" title="Fri, 01 May 2026 14:37:14 GMT">22d ago</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.5.67314</span></td>
+      <td><span class="badge badge-blue">Retail</span></td>
+      <td class="muted" title="Thu, 30 Apr 2026 13:48:02 GMT">24d ago</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.7.67227</span></td>
+      <td><span class="badge badge-orange">PTR</span></td>
+      <td class="muted" title="Thu, 30 Apr 2026 07:31:19 GMT">24d ago</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.5.67235</span></td>
+      <td><span class="badge badge-blue">Retail</span></td>
+      <td class="muted" title="Tue, 28 Apr 2026 10:27:02 GMT">26d ago</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.5.67186</span></td>
+      <td><span class="badge badge-blue">Retail</span></td>
+      <td class="muted" title="Thu, 23 Apr 2026 15:38:01 GMT">24 Apr 2026</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.5.67165</span></td>
+      <td><span class="badge badge-blue">Retail</span></td>
+      <td class="muted" title="Wed, 22 Apr 2026 17:18:02 GMT">23 Apr 2026</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.5.67114</span></td>
+      <td><span class="badge badge-blue">Retail</span></td>
+      <td class="muted" title="Wed, 22 Apr 2026 11:18:01 GMT">22 Apr 2026</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.5.67088</span></td>
+      <td><span class="badge badge-blue">Retail</span></td>
+      <td class="muted" title="Tue, 21 Apr 2026 04:16:02 GMT">21 Apr 2026</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.5.66741</span></td>
+      <td><span class="badge badge-blue">Retail</span></td>
+      <td class="muted" title="Thu, 16 Apr 2026 03:20:03 GMT">16 Apr 2026</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.1.66838</span></td>
+      <td><span class="badge badge-blue">Retail</span></td>
+      <td class="muted" title="Mon, 06 Apr 2026 14:05:02 GMT">7 Apr 2026</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.1.66709</span></td>
+      <td><span class="badge badge-blue">Retail</span></td>
+      <td class="muted" title="Fri, 27 Mar 2026 11:59:02 GMT">27 Mar 2026</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.1.66666</span></td>
+      <td><span class="badge badge-blue">Retail</span></td>
+      <td class="muted" title="Thu, 26 Mar 2026 09:28:02 GMT">26 Mar 2026</td>
+    </tr><tr>
+      <td><span class="version-tag">12.0.1.66562</span></td>
+      <td><span class="badge badge-blue">Retail</span></td>
+      <td class="muted" title="Tue, 24 Mar 2026 03:24:02 GMT">24 Mar 2026</td>
+    </tr></tbody>
+    </table></div>
+</div>
+    
+<div class="section" id="db2">
+  <div class="section-header">
+    <div class="section-title-group">
+      <h2 class="section-title">
+        <span class="section-icon" style="background:rgba(139,92,246,0.12)" aria-hidden="true">D</span>
+        DB2 Table Changes
+      </h2>
+      <p class="section-desc">Database table diffs between builds via <a href="https://wago.tools" target="_blank" rel="noopener">wago.tools</a>. SpellMisc changes indicate spell attribute/flag updates including Private Aura additions.</p>
+    </div>
+  </div>
+  <div class="section-divider"></div>
+  <div class="empty-state">
+    <div class="empty-icon" aria-hidden="true">D</div>
+    <div class="empty-title">No DB2 changes yet</div>
+    <div>Will populate after two consecutive builds are tracked</div>
+  </div><p class="muted" style="font-size:var(--text-xs);margin-top:var(--space-3);text-align:center">Last tracked build: <code>12.0.5.67602</code></p>
+</div>
+    
+<div class="section" id="ui-source">
+  <div class="section-header">
+    <div class="section-title-group">
+      <h2 class="section-title">
+        <span class="section-icon" style="background:rgba(59,130,246,0.12)" aria-hidden="true">U</span>
+        UI Source &amp; M33kAuras
+      </h2>
+      <p class="section-desc">Tracks <a href="https://github.com/Gethe/wow-ui-source/tree/live" target="_blank" rel="noopener">Gethe/wow-ui-source</a> (Lua API, FrameXML) and <a href="https://github.com/m33shoq/M33kAuras/tree/midnight" target="_blank" rel="noopener">m33shoq/M33kAuras midnight</a> (upstream for ThisWeeksAuras).</p>
+    </div>
+  </div>
+  <div class="section-divider"></div>
+  <div class="repo-group">
+      <div class="repo-label">
+        <span class="badge badge-orange">M33kAuras midnight</span>
+        <a href="https://github.com/m33shoq/M33kAuras/tree/midnight" target="_blank" rel="noopener">m33shoq/M33kAuras/tree/midnight</a>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/2fe83c96bec6c89f2f9c5e5e927880d302df9229" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">2fe83c9</a>
+          <span class="card-title">dont build spell cache in 12.0.7</span>
+          <span class="muted hide-mobile" title="Thu, 14 May 2026 12:49:21 GMT">10d ago</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">M33kAurasOptions/Cache.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+4</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/238d026145c146651ff1f1d12aea0d92db692955" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">238d026</a>
+          <span class="card-title">fix lib check</span>
+          <span class="muted hide-mobile" title="Thu, 14 May 2026 09:17:14 GMT">10d ago</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">M33kAuras/Init.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/a7a4c07de15e70f98273087016590ca1c9cae251" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">a7a4c07</a>
+          <span class="card-title">maybe fix an error from animations?</span>
+          <span class="muted hide-mobile" title="Wed, 13 May 2026 21:33:06 GMT">10d ago</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">M33kAuras/Animations.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+3</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/aa27feb3544ac2b58bfe1ede83012e45c3e20ac3" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">aa27feb</a>
+          <span class="card-title">hard embed custom LCG</span>
+          <span class="muted hide-mobile" title="Wed, 13 May 2026 17:14:10 GMT">10d ago</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">.gitignore</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">.pkgmeta</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+0</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">M33kAuras/AuraEnvironment.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li><li>
+          <span class="badge badge-green">added</span>
+          <span class="mono truncate">M33kAuras/Libs/LibCustomGlow-1.0/LICENSE</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+21</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-green">added</span>
+          <span class="mono truncate">M33kAuras/Libs/LibCustomGlow-1.0/LibCustomGlow-1.0.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+962</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-green">added</span>
+          <span class="mono truncate">M33kAuras/Libs/LibCustomGlow-1.0/LibCustomGlow-1.0.toc</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+12</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-green">added</span>
+          <span class="mono truncate">M33kAuras/Libs/LibCustomGlow-1.0/LibCustomGlow-1.0.xml</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+4</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-green">added</span>
+          <span class="mono truncate">M33kAuras/Libs/LibCustomGlow-1.0/README.md</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+65</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li class="file-more">+3 more files</li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/56da0ef61feece38b070acfdb181b7427faf025a" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">56da0ef</a>
+          <span class="card-title">tweak boss mod load option</span>
+          <span class="muted hide-mobile" title="Sun, 10 May 2026 19:28:20 GMT">13d ago</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">M33kAuras/BossMods.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+15</span>
+            <span class="diff-rem">-6</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">M33kAuras/M33kAuras.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-6</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/86acc83681b10b3610e8a63c9ecf4ba118cc34c6" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">86acc83</a>
+          <span class="card-title">load option by bw bossmod enabled</span>
+          <span class="muted hide-mobile" title="Sun, 10 May 2026 19:11:35 GMT">13d ago</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">M33kAuras/BossMods.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+20</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">M33kAuras/M33kAuras.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+51</span>
+            <span class="diff-rem">-16</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">M33kAuras/Prototypes.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+11</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/4087a51cb4c1e8d8e277ecb05b91178096d93e87" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">4087a51</a>
+          <span class="card-title">allow secret units in UnitName</span>
+          <span class="muted hide-mobile" title="Sun, 10 May 2026 17:58:24 GMT">13d ago</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">M33kAuras/Compatibility.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/9b66fc9bbe032f6d45692d45872a4eed5e5755f1" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">9b66fc9</a>
+          <span class="card-title">make sure to show proper charge duration when spell is on gcd</span>
+          <span class="muted hide-mobile" title="Sun, 10 May 2026 16:39:18 GMT">13d ago</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">M33kAuras/GenericTrigger.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+3</span>
+            <span class="diff-rem">-3</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/74410094d8ba94085cbf59ac66897eb4beeb5a5d" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">7441009</a>
+          <span class="card-title">utilize new noGCD param in cooldowns api</span>
+          <span class="muted hide-mobile" title="Sun, 10 May 2026 15:35:50 GMT">13d ago</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">M33kAuras/GenericTrigger.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+16</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">M33kAuras/Prototypes.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+2</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/228c2bbf6c11919491eaa6a47049c9829453a81a" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">228c2bb</a>
+          <span class="card-title">add UNIT_SPEC_CHANGED event</span>
+          <span class="muted hide-mobile" title="Tue, 05 May 2026 19:19:38 GMT">18d ago</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">M33kAuras/GenericTrigger.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/5250c14d7afaedea139987a13c5759131d5e5cd0" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">5250c14</a>
+          <span class="card-title">just ignore bw callbacks with secrets</span>
+          <span class="muted hide-mobile" title="Fri, 24 Apr 2026 18:43:54 GMT">29d ago</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/818faca6d0daf08629d2f63dd8c94798d1d74987" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">818faca</a>
+          <span class="card-title">fix secret error in bw callback</span>
+          <span class="muted hide-mobile" title="Fri, 24 Apr 2026 18:40:00 GMT">29d ago</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/38e6dff5da7defda4548a627c837d384fe770684" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">38e6dff</a>
+          <span class="card-title">check for secret value before error happens</span>
+          <span class="muted hide-mobile" title="Thu, 23 Apr 2026 07:21:55 GMT">23 Apr 2026</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/9e2101d62086a888c44b849dd0a28f773e0c0fb3" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">9e2101d</a>
+          <span class="card-title">Dont error if something tries to index AsyncEnvironment ouside of async execution</span>
+          <span class="muted hide-mobile" title="Thu, 23 Apr 2026 07:05:55 GMT">23 Apr 2026</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/7d2778c375204fda50700b502c45e237bf87ee9a" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">7d2778c</a>
+          <span class="card-title">oopsie</span>
+          <span class="muted hide-mobile" title="Wed, 22 Apr 2026 20:32:54 GMT">23 Apr 2026</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/52a48d2d650d0e0f285d564a30a6b736452ea2ad" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">52a48d2</a>
+          <span class="card-title">stats trigger is partially borked when auras are secret</span>
+          <span class="muted hide-mobile" title="Wed, 22 Apr 2026 06:38:13 GMT">22 Apr 2026</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/6565bbddc70633d04674a0680171fc2a9622a315" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">6565bbd</a>
+          <span class="card-title">blizzard borked tracking essence regen haHA</span>
+          <span class="muted hide-mobile" title="Wed, 22 Apr 2026 00:10:47 GMT">22 Apr 2026</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/8fbe6feee23a9f98dffccd97ceab43ffd2f45678" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">8fbe6fe</a>
+          <span class="card-title">12.0.5 UnitName fixes</span>
+          <span class="muted hide-mobile" title="Wed, 22 Apr 2026 00:02:54 GMT">22 Apr 2026</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/2a1a037dce540e59b67e0d47adee625b6480ed63" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">2a1a037</a>
+          <span class="card-title">Update readme</span>
+          <span class="muted hide-mobile" title="Sun, 19 Apr 2026 16:35:09 GMT">20 Apr 2026</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/94869aa13835b6e80502d34a15e189d7c1996d9a" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">94869aa</a>
+          <span class="card-title">update LibGetFrame to 74</span>
+          <span class="muted hide-mobile" title="Tue, 07 Apr 2026 19:06:26 GMT">8 Apr 2026</span>
+        </div>
+        
+      </div>
+    </div><div class="repo-group">
+      <div class="repo-label">
+        <span class="badge badge-grey">wow-ui-source</span>
+        <a href="#" target="_blank" rel="noopener">#</a>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/7e60b8bff91945886412d36ea4610bb6cfe435e4" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">7e60b8b</a>
+          <span class="card-title">12.0.5 (67602)</span>
+          <span class="muted hide-mobile" title="Fri, 15 May 2026 22:31:26 GMT">8d ago</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">version.txt</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/7844cbe2af45ebda7f27a71c1db5b542ef795a30" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">7844cbe</a>
+          <span class="card-title">12.0.5 (67451)</span>
+          <span class="muted hide-mobile" title="Fri, 08 May 2026 19:01:19 GMT">15d ago</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingLayoutUIDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+9</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_CooldownBroadcaster/Blizzard_CooldownBroadcaster.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+36</span>
+            <span class="diff-rem">-11</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_CooldownBroadcaster/TrackedCooldowns.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+8</span>
+            <span class="diff-rem">-2</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_HouseEditor/Blizzard_HouseEditorLayoutMode.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+5</span>
+            <span class="diff-rem">-3</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">version.txt</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/30df2b92d6c140c962a2c672ae676e02d206bf46" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">30df2b9</a>
+          <span class="card-title">12.0.5 (67403)</span>
+          <span class="muted hide-mobile" title="Thu, 07 May 2026 20:16:12 GMT">16d ago</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/DamageMeterConstantsDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+3</span>
+            <span class="diff-rem">-2</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_CatalogShop/Blizzard_CatalogShop_Elements.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+4</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_CatalogShop/Blizzard_CatalogShop_Products.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+5</span>
+            <span class="diff-rem">-3</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">version.txt</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/ff2d0be9ca06c50c14d0bb811f182fa15b4eec3c" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">ff2d0be</a>
+          <span class="card-title">12.0.5 (67314)</span>
+          <span class="muted hide-mobile" title="Thu, 30 Apr 2026 23:49:48 GMT">23d ago</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/CommentatorFrameDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+47</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/PvpInfoDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_ActionBar/Shared/MainActionBar.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+2</span>
+            <span class="diff-rem">-2</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_CUFProfiles/Blizzard_CompactUnitFrameProfiles.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">version.txt</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/b062d332c0abafec23645d08dbeb7d24fe83b7f0" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">b062d33</a>
+          <span class="card-title">12.0.5 (67235)</span>
+          <span class="muted hide-mobile" title="Tue, 28 Apr 2026 20:29:20 GMT">25d ago</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/ChatInfoDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+6</span>
+            <span class="diff-rem">-6</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">version.txt</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/058ff8d286499f4a79ece18d129f7580f5e2cfcd" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">058ff8d</a>
+          <span class="card-title">12.0.5 (67186)</span>
+          <span class="muted hide-mobile" title="Fri, 24 Apr 2026 01:46:26 GMT">24 Apr 2026</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_Commentator/Blizzard_CommentatorSpell.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+3</span>
+            <span class="diff-rem">-2</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_CooldownBroadcaster/Blizzard_CooldownBroadcaster.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+340</span>
+            <span class="diff-rem">-192</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_CooldownBroadcaster/Blizzard_CooldownBroadcaster.toc</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+2</span>
+            <span class="diff-rem">-2</span>
+          </span>
+        </li><li>
+          <span class="badge badge-green">added</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_CooldownBroadcaster/MessageQueue.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+113</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_CooldownBroadcaster/TrackedCooldowns.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+385</span>
+            <span class="diff-rem">-12</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_PrivateAurasUI/Blizzard_PrivateAurasUI.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+3</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/ui-code-list.txt</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">version.txt</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/0e3d8913351756040583cd729bad4668d5a3bfef" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">0e3d891</a>
+          <span class="card-title">12.0.5 (67114)</span>
+          <span class="muted hide-mobile" title="Thu, 23 Apr 2026 16:31:29 GMT">24 Apr 2026</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">version.txt</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/dc62c613606d0be2467791243eae5eea79201de0" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">dc62c61</a>
+          <span class="card-title">12.0.5 (67088)</span>
+          <span class="muted hide-mobile" title="Tue, 21 Apr 2026 14:16:44 GMT">22 Apr 2026</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/AbbreviateConfigAPIDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+4</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-green">added</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/AbbreviatedNumberFormatterAPIDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+94</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/AccessibilityOptionsDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+3</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/AccountConstantsDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+3</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/AccountInfoDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+3</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/AccountStoreDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+3</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/AchievementInfoDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+3</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/AchievementTelemetryDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+3</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li class="file-more">+292 more files</li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/60a03548fcbb6c50db31822be2e2c6594e079169" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">60a0354</a>
+          <span class="card-title">12.0.1 (66838)</span>
+          <span class="muted hide-mobile" title="Tue, 07 Apr 2026 00:16:24 GMT">7 Apr 2026</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/CombatAudioAlertDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+32</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/CombatTextDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPITooltipDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+3</span>
+            <span class="diff-rem">-3</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPIUnitPositionFrameDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+2</span>
+            <span class="diff-rem">-2</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/InGameNavigationDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/NamePlateManagerDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+4</span>
+            <span class="diff-rem">-4</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/SecretAspectConstantsDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+3</span>
+            <span class="diff-rem">-2</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">Interface/AddOns/Blizzard_APIDocumentationGenerated/SecretPredicateAPIDocumentation.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+17</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li><li class="file-more">+5 more files</li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/154042b441c6be5cdc1daef072bd9513f0415271" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">154042b</a>
+          <span class="card-title">12.0.1 (66709)</span>
+          <span class="muted hide-mobile" title="Fri, 27 Mar 2026 23:01:29 GMT">28 Mar 2026</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">version.txt</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+1</span>
+            <span class="diff-rem">-1</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/39ade1e8a7af9d19ea3d27999eb79d27d389d748" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">39ade1e</a>
+          <span class="card-title">12.0.1 (66666)</span>
+          <span class="muted hide-mobile" title="Thu, 26 Mar 2026 20:31:30 GMT">27 Mar 2026</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/fb91ab97a4bbb7d1753e4d5448a4a3b849db55ef" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">fb91ab9</a>
+          <span class="card-title">12.0.1 (66562)</span>
+          <span class="muted hide-mobile" title="Tue, 24 Mar 2026 14:25:14 GMT">25 Mar 2026</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/64f2480a7bcba7bf7da7df28980343b08d8b8ad5" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">64f2480</a>
+          <span class="card-title">12.0.1 (66527)</span>
+          <span class="muted hide-mobile" title="Thu, 19 Mar 2026 23:46:39 GMT">20 Mar 2026</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/353968420bb944e3dd883a1a0dc4c0326be1dc00" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">3539684</a>
+          <span class="card-title">12.0.1 (66431)</span>
+          <span class="muted hide-mobile" title="Tue, 17 Mar 2026 14:31:26 GMT">18 Mar 2026</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/edcb2f2059f13873f91e6e9adb567de94bdbd69c" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">edcb2f2</a>
+          <span class="card-title">12.0.1 (66384)</span>
+          <span class="muted hide-mobile" title="Sat, 14 Mar 2026 01:46:29 GMT">14 Mar 2026</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/57cdaf00ebd0daae562ecc10ce5f2fba3d4ca608" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">57cdaf0</a>
+          <span class="card-title">12.0.1 (66337)</span>
+          <span class="muted hide-mobile" title="Tue, 10 Mar 2026 17:31:43 GMT">11 Mar 2026</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/3fefc3a27250137e2554384b413b9060a4fefcfd" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">3fefc3a</a>
+          <span class="card-title">12.0.1 (66263)</span>
+          <span class="muted hide-mobile" title="Thu, 05 Mar 2026 17:31:47 GMT">6 Mar 2026</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/870a348b67ad912293c2de5228f7b04e1e9c67d0" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">870a348</a>
+          <span class="card-title">12.0.1 (66220)</span>
+          <span class="muted hide-mobile" title="Tue, 03 Mar 2026 16:16:36 GMT">4 Mar 2026</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/360e31f85fe8091c98dac7d1b73a584dfe49cfca" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">360e31f</a>
+          <span class="card-title">12.0.1 (66198)</span>
+          <span class="muted hide-mobile" title="Sun, 01 Mar 2026 21:16:58 GMT">2 Mar 2026</span>
+        </div>
+        
+      </div><div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/5e5a1811b2215107dc59172f00394a4aad07f9bf" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">5e5a181</a>
+          <span class="card-title">12.0.1 (66192)</span>
+          <span class="muted hide-mobile" title="Fri, 27 Feb 2026 20:16:46 GMT">28 Feb 2026</span>
+        </div>
+        
+      </div>
+    </div>
+</div>
+    
+<div class="section" id="hotfixes">
+  <div class="section-header">
+    <div class="section-title-group">
+      <h2 class="section-title">
+        <span class="section-icon" style="background:rgba(16,185,129,0.12)" aria-hidden="true">H</span>
+        Hotfix Notes
+      </h2>
+      <p class="section-desc">Blizzard news feed and <a href="https://us.forums.blizzard.com/en/wow/c/release-notes/35" target="_blank" rel="noopener">release notes forum</a> filtered for hotfix and patch notes.</p>
+    </div>
+  </div>
+  <div class="section-divider"></div>
+  <div class="empty-state">
+    <div class="empty-icon" aria-hidden="true">H</div>
+    <div class="empty-title">No hotfixes found</div>
+    <div>Checking Blizzard news and WoW forums</div>
+  </div>
+</div>
+    
+<div class="section" id="spell-flags">
+  <div class="section-header">
+    <div class="section-title-group">
+      <h2 class="section-title">
+        <span class="section-icon" style="background:rgba(239,68,68,0.12)" aria-hidden="true">S</span>
+        Spell Flag Changes
+      </h2>
+      <p class="section-desc">Monitoring 0 spells for attribute flag changes. Private Aura flags prevent addons from tracking debuffs - changes here directly affect WeakAuras and interrupt trackers.</p>
+    </div>
+  </div>
+  <div class="section-divider"></div>
+  <div class="card" style="margin-bottom:var(--space-5)">
+      <div class="card-body">
+        <p style="color:var(--text-muted);font-size:var(--text-sm)">No flag changes detected yet. Baseline captured on first run - changes appear on subsequent runs.</p>
+      </div>
+    </div>
+</div>
+  </main>
+  
 <footer>
-  Sourced from <a href="https://wago.tools" target="_blank">wago.tools</a>,
-  <a href="https://github.com/Gethe/wow-ui-source" target="_blank">Gethe/wow-ui-source</a>,
-  <a href="https://github.com/m33shoq/M33kAuras" target="_blank">m33shoq/M33kAuras</a>,
-  and <a href="https://worldofwarcraft.blizzard.com/en-us/news" target="_blank">Blizzard News</a>.
-  Runs every 6 hours via GitHub Actions.
+  <div class="footer-links">
+    <a href="https://wago.tools" target="_blank" rel="noopener">wago.tools</a>
+    <span class="footer-sep">·</span>
+    <a href="https://github.com/Gethe/wow-ui-source" target="_blank" rel="noopener">Gethe/wow-ui-source</a>
+    <span class="footer-sep">·</span>
+    <a href="https://github.com/m33shoq/M33kAuras" target="_blank" rel="noopener">m33shoq/M33kAuras</a>
+    <span class="footer-sep">·</span>
+    <a href="https://worldofwarcraft.blizzard.com/en-us/news" target="_blank" rel="noopener">Blizzard News</a>
+  </div>
+  <div>Runs every 6 hours via GitHub Actions</div>
 </footer>
+</div>
+
+<script>(function(){
+  var toggle = document.getElementById('nav-toggle');
+  var nav = document.getElementById('site-nav');
+  if (!toggle || !nav) return;
+  toggle.addEventListener('click', function() {
+    var open = nav.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  nav.querySelectorAll('.nav-link').forEach(function(link) {
+    link.addEventListener('click', function() {
+      nav.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+  var sections = document.querySelectorAll('.section[id]');
+  var navLinks = nav.querySelectorAll('.nav-link');
+  if (!sections.length || !navLinks.length || !window.IntersectionObserver) return;
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (!entry.isIntersecting) return;
+      navLinks.forEach(function(l) { l.classList.remove('active'); });
+      var active = nav.querySelector('.nav-link[href="#' + entry.target.id + '"]');
+      if (active) active.classList.add('active');
+    });
+  }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+  sections.forEach(function(s) { observer.observe(s); });
+})();</script>
 </body>
 </html>
