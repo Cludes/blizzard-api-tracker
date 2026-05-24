@@ -1,295 +1,270 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Blizzard API Tracker</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0d1117; color: #c9d1d9; line-height: 1.6; }
-    a { color: #58a6ff; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    code, .mono { font-family: "SFMono-Regular", Consolas, monospace; font-size: 0.85em; background: #161b22; padding: 2px 5px; border-radius: 3px; }
-    pre { font-family: "SFMono-Regular", Consolas, monospace; }
-    .muted { color: #6e7681; font-size: 0.88em; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0d1117;color:#c9d1d9;line-height:1.6}
+    a{color:#58a6ff;text-decoration:none}a:hover{text-decoration:underline}
+    code,.mono{font-family:"SFMono-Regular",Consolas,monospace;font-size:0.84em;background:#161b22;padding:2px 5px;border-radius:3px}
+    .muted{color:#6e7681;font-size:0.87em}
 
-    header { background: #161b22; border-bottom: 1px solid #30363d; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
-    header h1 { font-size: 1.2rem; font-weight: 600; }
-    header .subtitle { color: #6e7681; font-size: 0.85em; }
+    header{background:#161b22;border-bottom:1px solid #30363d;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+    header h1{font-size:1.15rem;font-weight:600}
+    header .sub{color:#6e7681;font-size:0.83em}
 
-    nav { background: #161b22; border-bottom: 1px solid #30363d; padding: 0 24px; display: flex; gap: 0; }
-    nav a { display: block; padding: 12px 16px; font-size: 0.9em; color: #c9d1d9; border-bottom: 2px solid transparent; }
-    nav a:hover { color: #58a6ff; text-decoration: none; border-bottom-color: #58a6ff; }
+    nav{background:#161b22;border-bottom:1px solid #30363d;padding:0 20px;display:flex;overflow-x:auto}
+    nav a{display:block;padding:10px 14px;font-size:0.88em;color:#c9d1d9;border-bottom:2px solid transparent;white-space:nowrap}
+    nav a:hover{color:#58a6ff;text-decoration:none;border-bottom-color:#58a6ff}
 
-    main { max-width: 1100px; margin: 0 auto; padding: 24px; }
-    section { margin-bottom: 48px; }
-    section h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #30363d; display: flex; align-items: center; gap: 8px; }
-    section h3 { font-size: 0.95rem; font-weight: 600; margin: 20px 0 8px; color: #8b949e; }
+    main{max-width:1100px;margin:0 auto;padding:20px 24px}
+    section{margin-bottom:44px}
+    section>h2{font-size:1.05rem;font-weight:600;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #30363d;display:flex;align-items:center;gap:8px}
+    h3{font-size:0.9rem;font-weight:600;margin:18px 0 8px;color:#8b949e;text-transform:uppercase;letter-spacing:.04em}
 
-    .card { background: #161b22; border: 1px solid #30363d; border-radius: 6px; margin-bottom: 8px; overflow: hidden; }
-    .card-highlight { border-color: #e74c3c; box-shadow: 0 0 0 1px #e74c3c22; }
-    .card-header { padding: 10px 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .card-title { font-weight: 500; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .file-list { list-style: none; padding: 0 14px 10px; display: flex; flex-direction: column; gap: 4px; }
-    .file-list li { font-size: 0.85em; }
+    .card{background:#161b22;border:1px solid #30363d;border-radius:6px;margin-bottom:6px;overflow:hidden}
+    .card-hl{border-color:#c0392b;box-shadow:0 0 0 1px #c0392b33}
+    .card-header{padding:9px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .card-title{font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .file-list{list-style:none;padding:2px 14px 10px;display:flex;flex-direction:column;gap:3px}
+    .file-list li{font-size:0.83em}
 
-    .badge { display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 0.75em; font-weight: 600; color: #fff; white-space: nowrap; }
-    .flag-private { background: #3d1515 !important; color: #e74c3c !important; padding: 2px 6px; border-radius: 3px; }
+    .badge{display:inline-block;padding:1px 7px;border-radius:10px;font-size:0.74em;font-weight:600;color:#fff;white-space:nowrap;flex-shrink:0}
+    .flag-private{background:#3d1515!important;color:#e74c3c!important;padding:2px 6px;border-radius:3px}
 
-    table { width: 100%; border-collapse: collapse; font-size: 0.88em; background: #161b22; border-radius: 6px; overflow: hidden; border: 1px solid #30363d; }
-    th { text-align: left; padding: 8px 12px; background: #1c2128; border-bottom: 1px solid #30363d; color: #8b949e; font-weight: 500; }
-    td { padding: 8px 12px; border-bottom: 1px solid #21262d; vertical-align: top; }
-    tr:last-child td { border-bottom: none; }
+    table{width:100%;border-collapse:collapse;font-size:0.87em;background:#161b22;border-radius:6px;overflow:hidden;border:1px solid #30363d}
+    th{text-align:left;padding:8px 12px;background:#1c2128;border-bottom:1px solid #30363d;color:#8b949e;font-weight:500;font-size:0.83em;text-transform:uppercase;letter-spacing:.04em}
+    td{padding:7px 12px;border-bottom:1px solid #21262d;vertical-align:top}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#1c2128}
 
-    footer { text-align: center; padding: 24px; color: #6e7681; font-size: 0.82em; border-top: 1px solid #21262d; margin-top: 24px; }
+    .dash-grid{display:flex;flex-direction:column;gap:6px}
+    .dash-item{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#161b22;border:1px solid #30363d;border-radius:6px;font-size:0.9em;flex-wrap:wrap}
+
+    footer{text-align:center;padding:24px;color:#6e7681;font-size:0.81em;border-top:1px solid #21262d;margin-top:16px}
   </style>
 </head>
 <body>
-  <header>
-    <div>
-      <h1>Blizzard API Tracker</h1>
-      <div class="subtitle">WoW Midnight - Lua API, Spell Flags, UI Source, Hotfixes, Build Changes</div>
+<header>
+  <div>
+    <h1>Blizzard API Tracker</h1>
+    <div class="sub">WoW Midnight - Builds, DB2, UI Source, M33kAuras, Spell Flags, Hotfixes</div>
+  </div>
+  <div class="muted">Updated: Sun, 24 May 2026 14:13:43 GMT</div>
+</header>
+<nav>
+  <a href="#dashboard">Dashboard</a>
+  <a href="#builds">Builds</a>
+  <a href="#db2">DB2 Changes</a>
+  <a href="#ui-source">UI Source</a>
+  <a href="#hotfixes">Hotfixes</a>
+  <a href="#spell-flags">Spell Flags</a>
+</nav>
+<main>
+
+  <section id="dashboard">
+    <h2>Recent Activity</h2>
+    <div class="dash-grid"><div class="dash-item"><span class="badge" style="background:#2471a3">UI Source</span> <a href="https://github.com/Gethe/wow-ui-source/commit/7e60b8bff91945886412d36ea4610bb6cfe435e4" target="_blank">12.0.5 (67602)</a> <span class="muted">8d ago</span></div></div>
+  </section>
+
+  <section id="builds">
+    <h2>Game Builds</h2>
+    <p class="muted" style="margin-bottom:12px">WoW build versions from <a href="https://wago.tools/builds" target="_blank">wago.tools</a>. New builds = patches or hotfixes pushed by Blizzard.</p>
+    <p class='muted'>No build data returned.</p>
+  </section>
+
+  <section id="db2">
+    <h2>DB2 Table Changes</h2>
+    <p class="muted" style="margin-bottom:12px">Database table diffs between builds via <a href="https://wago.tools" target="_blank">wago.tools</a>. SpellMisc changes indicate spell attribute/flag updates (e.g. Private Aura additions).</p>
+    <p class='muted'>No data yet - requires at least 2 tracked builds.</p>
+  </section>
+
+  <section id="ui-source">
+    <h2>UI Source & M33kAuras Changes</h2>
+    <p class="muted" style="margin-bottom:12px">Tracks <a href="https://github.com/Gethe/wow-ui-source/tree/live" target="_blank">Gethe/wow-ui-source</a> (Lua API, FrameXML) and <a href="https://github.com/m33shoq/M33kAuras/tree/midnight" target="_blank">m33shoq/M33kAuras midnight</a> (upstream for ThisWeeksAuras).</p>
+    <div style="margin-bottom:24px">
+      <div style="margin-bottom:8px"><span class="badge" style="background:#2471a3">WoW UI Source live</span> <a href="https://github.com/Gethe/wow-ui-source" target="_blank" class="muted" style="font-size:0.85em">unknown</a></div>
+      <div class="card">
+        <div class="card-header">
+          <a href="https://github.com/Gethe/wow-ui-source/commit/7e60b8bff91945886412d36ea4610bb6cfe435e4" target="_blank" class="mono">7e60b8b</a>
+          <span class="card-title">12.0.5 (67602)</span>
+          <span class="muted" title="Fri, 15 May 2026 22:31:26 GMT">8d ago</span>
+        </div>
+        <ul class="file-list"><li><span class="badge" style="background:#2471a3">modified</span> <code>version.txt</code> <span class="muted">+1/-1</span></li></ul></div>
     </div>
-    <div class="muted">Last updated: Sun, 24 May 2026 14:02:25 GMT</div>
-  </header>
+  </section>
 
-  <nav>
-    <a href="#builds">Game Builds</a>
-    <a href="#ui-source">UI Source</a>
-    <a href="#hotfixes">Hotfixes</a>
-    <a href="#spell-flags">Spell Flags</a>
-  </nav>
-
-  <main>
-    <section id="builds">
-      <h2>Game Build Changes</h2>
-      <p class="muted" style="margin-bottom:12px">WoW build versions tracked via <a href="https://wago.tools/builds" target="_blank">wago.tools</a>. New builds indicate patches or hotfixes that may contain data changes.</p>
-      <p class='muted'>No build data returned yet - API response may need inspection.</p><pre style="font-size:0.75em;overflow:auto;max-height:200px;background:#0d1117;padding:8px;border-radius:4px">{
-  "wowxptr": [
-    {
-      "product": "wowxptr",
-      "version": "12.0.7.67669",
-      "created_at": "2026-05-19 23:34:14",
-      "build_config": "909f88060639e50fcf112756c7ff0b84",
-      "product_config": "c5983bded94d708c1958dde1fa6dbf22",
-      "cdn_config": "a663714542b9be7d01f4dceee2fc3a63",
-      "is_bgdl": false
-    },
-    {
-      "product": "wowxptr",
-      "version": "12.0.7.67525",
-      "created_at": "2026-05-13 23:13:14",
-      "build_config": "f8fe8c7321f5602207a031e81b81af97",
-      "product_config": "c5983bded94d708c1958dde1fa6dbf22",
-      "cdn_config": "a9e463fcce9ea3dd37e254839d926cc6",
-      "is_bgdl": false
-    },
-    {
-      "product": "wowxptr",
-      "version": "12.0.7.67360",
-      "created_at": "2026-05-05 21:09:15",
-      "build_config": "6c55e7043702a21bcbd241cce46d965f",
-      "product_config": "c5983bded94d708c1958dde1fa6dbf22",
-      "cdn_config": "f7e4a24aee410176deb74c4aab6b4d1f",
-      "is_bgdl": false
-    },
-    {
-      "product": "wowxptr",
-      "</pre>
-    </section>
-
-    <section id="ui-source">
-      <h2>WoW UI Source Changes</h2>
-      <p class="muted" style="margin-bottom:12px">Tracking <a href="https://github.com/Gethe/wow-ui-source/tree/live" target="_blank">Gethe/wow-ui-source (live branch)</a> - FrameXML, Lua API, built-in UI files. Changes here affect what addon authors can call.</p>
-      
+  <section id="hotfixes">
+    <h2>Hotfix Notes</h2>
+    <p class="muted" style="margin-bottom:12px">Blizzard news feed and <a href="https://us.forums.blizzard.com/en/wow/c/release-notes/35" target="_blank">release notes forum</a> filtered for hotfix/patch/tuning posts.</p>
     <div class="card">
       <div class="card-header">
-        <a href="https://github.com/Gethe/wow-ui-source/commit/7e60b8bff91945886412d36ea4610bb6cfe435e4" target="_blank" class="mono">7e60b8b</a>
-        <span class="card-title">12.0.5 (67602)</span>
-        <span class="muted">Fri, 15 May 2026 22:31:26 GMT</span>
-      </div>
-      <ul class="file-list"><li><span class="badge" style="background:#2980b9">modified</span> <code>version.txt</code> <span class='muted'>(+1 -1)</span></li></ul>
-    </div>
-    </section>
-
-    <section id="hotfixes">
-      <h2>Hotfix Notes</h2>
-      <p class="muted" style="margin-bottom:12px">Official posts from the <a href="https://us.forums.blizzard.com/en/wow/c/release-notes/35" target="_blank">Blizzard WoW Release Notes</a> forum category.</p>
-      
-    <div class="card">
-      <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/stop-macro-yell-spaming/2309285" target="_blank">Stop macro yell spaming</a>
-        <span class="muted">Sun, 24 May 2026 01:11:48 GMT</span>
+        <span class="muted" title="Sun, 24 May 2026 01:11:48 GMT">13h ago</span>
         
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/betterblizzplates-icons/2308979" target="_blank">BetterBlizzPlates Icons</a>
-        <span class="muted">Sat, 23 May 2026 05:54:48 GMT</span>
+        <span class="muted" title="Sat, 23 May 2026 05:54:48 GMT">1d ago</span>
         
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/addon-artisanfinder-an-interface-to-actually-find-available-artisans/2308724" target="_blank">[AddOn] ArtisanFinder - An interface to actually find available artisans</a>
-        <span class="muted">Fri, 22 May 2026 11:33:53 GMT</span>
+        <span class="muted" title="Fri, 22 May 2026 11:33:53 GMT">2d ago</span>
         
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/show-off-your-ui-retail/2308519" target="_blank">Show off your UI (retail)</a>
-        <span class="muted">Thu, 21 May 2026 20:38:48 GMT</span>
+        <span class="muted" title="Thu, 21 May 2026 20:38:48 GMT">2d ago</span>
         
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/weird-castsequence-question/2308271" target="_blank">Weird //castsequence question</a>
-        <span class="muted">Wed, 20 May 2026 23:43:34 GMT</span>
+        <span class="muted" title="Wed, 20 May 2026 23:43:34 GMT">3d ago</span>
         
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/bartend4-causing-slight-lag-spike/2308138" target="_blank">Bartend4 causing slight lag spike</a>
-        <span class="muted">Wed, 20 May 2026 16:25:50 GMT</span>
+        <span class="muted" title="Wed, 20 May 2026 16:25:50 GMT">3d ago</span>
         
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/addon-empiremanager-rules-based-item-routing-across-all-your-alts/2307362" target="_blank">[Addon] EmpireManager - rules-based item routing across all your alts</a>
-        <span class="muted">Mon, 18 May 2026 06:08:15 GMT</span>
+        <span class="muted" title="Mon, 18 May 2026 06:08:15 GMT">6d ago</span>
         
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/strange-circles-on-my-cdm/2307186" target="_blank">Strange circles on my CDM</a>
-        <span class="muted">Sun, 17 May 2026 17:33:07 GMT</span>
+        <span class="muted" title="Sun, 17 May 2026 17:33:07 GMT">6d ago</span>
         <span class="muted">1 replies</span>
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/suggestion-kick-tracker-baseline/2306960" target="_blank">Suggestion: kick tracker baseline</a>
-        <span class="muted">Sat, 16 May 2026 23:58:49 GMT</span>
+        <span class="muted" title="Sat, 16 May 2026 23:58:49 GMT">7d ago</span>
         
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/cant-make-macros/2306913" target="_blank">Cant make macros</a>
-        <span class="muted">Sat, 16 May 2026 22:20:03 GMT</span>
+        <span class="muted" title="Sat, 16 May 2026 22:20:03 GMT">7d ago</span>
         <span class="muted">1 replies</span>
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/platynator-and-energy-bar/2306439" target="_blank">Platynator and energy bar</a>
-        <span class="muted">Fri, 15 May 2026 07:02:50 GMT</span>
+        <span class="muted" title="Fri, 15 May 2026 07:02:50 GMT">9d ago</span>
         
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/minimap-direction-arrow/2306176" target="_blank">Minimap direction arrow</a>
-        <span class="muted">Thu, 14 May 2026 15:42:48 GMT</span>
+        <span class="muted" title="Thu, 14 May 2026 15:42:48 GMT">9d ago</span>
         
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/cannot-see-damage-numbers-on-screen/2306038" target="_blank">Cannot see damage numbers on screen</a>
-        <span class="muted">Thu, 14 May 2026 03:16:39 GMT</span>
+        <span class="muted" title="Thu, 14 May 2026 03:16:39 GMT">10d ago</span>
         
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/void-form-void-volley-text-macro-help/2305048" target="_blank">Void Form / Void Volley Text Macro, Help</a>
-        <span class="muted">Mon, 11 May 2026 17:17:49 GMT</span>
+        <span class="muted" title="Mon, 11 May 2026 17:17:49 GMT">12d ago</span>
         
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/hold-to-cast/2304714" target="_blank">Hold to Cast</a>
-        <span class="muted">Sun, 10 May 2026 18:28:03 GMT</span>
+        <span class="muted" title="Sun, 10 May 2026 18:28:03 GMT">13d ago</span>
         
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/class-resources-on-enemy-nameplate/2304612" target="_blank">Class Resources on Enemy Nameplate</a>
-        <span class="muted">Sun, 10 May 2026 13:49:00 GMT</span>
+        <span class="muted" title="Sun, 10 May 2026 13:49:00 GMT">14d ago</span>
         
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/switch-outfit-macro-help/2303736" target="_blank">Switch Outfit Macro Help</a>
-        <span class="muted">Fri, 08 May 2026 04:45:37 GMT</span>
+        <span class="muted" title="Fri, 08 May 2026 04:45:37 GMT">16d ago</span>
         <span class="muted">3 replies</span>
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/increasing-raid-warning-font-size/2303024" target="_blank">Increasing Raid Warning Font Size</a>
-        <span class="muted">Wed, 06 May 2026 07:46:13 GMT</span>
+        <span class="muted" title="Wed, 06 May 2026 07:46:13 GMT">18d ago</span>
         
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/hide-make-non-interactive-frames-during-combat/2302620" target="_blank">Hide + Make non-interactive Frames during combat</a>
-        <span class="muted">Tue, 05 May 2026 13:47:23 GMT</span>
+        <span class="muted" title="Tue, 05 May 2026 13:47:23 GMT">19d ago</span>
         
-      </div>
-    </div>
-    <div class="card">
+      </div></div><div class="card">
       <div class="card-header">
-        
+        <span class="badge" style="background:#566573">Forums</span>
         <a href="https://us.forums.blizzard.com/en/wow/t/new-addons-forbuffdebuff-customization-and-alt-reputation-tracking/2302020" target="_blank">New addons forBuff/Debuff customization and Alt Reputation Tracking</a>
-        <span class="muted">Sun, 03 May 2026 21:13:16 GMT</span>
+        <span class="muted" title="Sun, 03 May 2026 21:13:16 GMT">20d ago</span>
         
-      </div>
-    </div>
-    </section>
+      </div></div><div class="card">
+      <div class="card-header">
+        <span class="badge" style="background:#566573">Forums</span>
+        <a href="https://us.forums.blizzard.com/en/wow/t/combat-text/2302014" target="_blank">Combat text</a>
+        <span class="muted" title="Sun, 03 May 2026 21:00:15 GMT">20d ago</span>
+        <span class="muted">1 replies</span>
+      </div></div><div class="card">
+      <div class="card-header">
+        <span class="badge" style="background:#566573">Forums</span>
+        <a href="https://us.forums.blizzard.com/en/wow/t/for-clarification-on-the-rulesgse/2301872" target="_blank">For clarification on the rules....gse?</a>
+        <span class="muted" title="Sun, 03 May 2026 14:20:04 GMT">20d ago</span>
+        <span class="muted">6 replies</span>
+      </div></div><div class="card">
+      <div class="card-header">
+        <span class="badge" style="background:#566573">Forums</span>
+        <a href="https://us.forums.blizzard.com/en/wow/t/ropsong-macro/2301600" target="_blank">ROP/Song macro</a>
+        <span class="muted" title="Sat, 02 May 2026 20:48:06 GMT">21d ago</span>
+        
+      </div></div><div class="card">
+      <div class="card-header">
+        <span class="badge" style="background:#566573">Forums</span>
+        <a href="https://us.forums.blizzard.com/en/wow/t/shape-shift-macro/2301469" target="_blank">Shape shift Macro</a>
+        <span class="muted" title="Sat, 02 May 2026 17:00:04 GMT">21d ago</span>
+        <span class="muted">2 replies</span>
+      </div></div><div class="card">
+      <div class="card-header">
+        <span class="badge" style="background:#566573">Forums</span>
+        <a href="https://us.forums.blizzard.com/en/wow/t/player-unitframe-gone/2301354" target="_blank">Player UnitFrame Gone</a>
+        <span class="muted" title="Sat, 02 May 2026 08:42:40 GMT">22d ago</span>
+        
+      </div></div>
+  </section>
 
-    <section id="spell-flags">
-      <h2>Spell Flag Changes</h2>
-      <p class="muted" style="margin-bottom:12px">Monitors spells from the <a href="data/spell-watchlist.json" target="_blank">watchlist</a> for flag changes. Highlights Private Aura flag changes which affect addon visibility.</p>
-      <p class='muted' style='margin-bottom:16px'>No flag changes detected yet - baseline established on first run.</p>
-    </section>
-  </main>
+  <section id="spell-flags">
+    <h2>Spell Flag Changes</h2>
+    <p class="muted" style="margin-bottom:12px">Watches 0 spells for attribute flag changes. Private Aura flag changes directly affect addon visibility of debuffs.</p>
+    <p class="muted" style="margin-bottom:16px">No changes detected yet. Baseline will be set on first run, changes shown on subsequent runs.</p>
+  </section>
 
-  <footer>
-    Data sourced from <a href="https://github.com/Gethe/wow-ui-source" target="_blank">Gethe/wow-ui-source</a>,
-    <a href="https://wago.tools" target="_blank">wago.tools</a>, and
-    <a href="https://us.forums.blizzard.com/en/wow" target="_blank">Blizzard Forums</a>.
-    Updated every 6 hours via GitHub Actions.
-  </footer>
+</main>
+<footer>
+  Sourced from <a href="https://wago.tools" target="_blank">wago.tools</a>,
+  <a href="https://github.com/Gethe/wow-ui-source" target="_blank">Gethe/wow-ui-source</a>,
+  <a href="https://github.com/m33shoq/M33kAuras" target="_blank">m33shoq/M33kAuras</a>,
+  and <a href="https://worldofwarcraft.blizzard.com/en-us/news" target="_blank">Blizzard News</a>.
+  Runs every 6 hours via GitHub Actions.
+</footer>
 </body>
 </html>
