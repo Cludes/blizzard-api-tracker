@@ -1,0 +1,21 @@
+{
+  "sha": "7e60b8bff91945886412d36ea4610bb6cfe435e4",
+  "lastChecked": "2026-05-24T13:50:36.469Z",
+  "changes": [
+    {
+      "sha": "7e60b8bff91945886412d36ea4610bb6cfe435e4",
+      "date": "2026-05-15T22:31:26Z",
+      "message": "12.0.5 (67602)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/7e60b8bff91945886412d36ea4610bb6cfe435e4",
+      "files": [
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.0.5.67451\n+12.0.5.67602"
+        }
+      ]
+    }
+  ]
+}
