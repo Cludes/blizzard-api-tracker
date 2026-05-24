@@ -49,6 +49,9 @@ jobs:
       - name: Fetch game build changes
         run: npm run fetch:builds
 
+      - name: Fetch DB2 table changes
+        run: npm run fetch:db2
+
       - name: Build site
         run: npm run build:site
 

@@ -1,114 +1,132 @@
-// Tracks changes to WoW's Lua API and FrameXML UI source via Gethe/wow-ui-source
-// Compares the latest commit SHA against what we last recorded and writes a diff summary
+// Tracks changes to WoW Lua API and FrameXML via multiple repos:
+// - Gethe/wow-ui-source (live branch) - official WoW UI source mirror
+// - m33shoq/M33kAuras (midnight branch) - upstream for ThisWeeksAuras
 
 import fetch from "node-fetch";
 import fs from "fs";
 import path from "path";
 
-const REPO = "Gethe/wow-ui-source";
-const BRANCH = "live";
 const OUT_FILE = path.resolve("data/ui-source.json");
 
-async function getLatestCommit() {
-  const res = await fetch(
-    `https://api.github.com/repos/${REPO}/commits/${BRANCH}`,
-    {
-      headers: {
-        Accept: "application/vnd.github.v3+json",
-        ...(process.env.GITHUB_TOKEN
-          ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` }
-          : {}),
-      },
-    }
-  );
-  if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
+const REPOS = [
+  {
+    key: "wow-ui-source",
+    repo: "Gethe/wow-ui-source",
+    branch: "live",
+    label: "WoW UI Source (live)",
+    url: "https://github.com/Gethe/wow-ui-source/tree/live",
+  },
+  {
+    key: "m33kauras-midnight",
+    repo: "m33shoq/M33kAuras",
+    branch: "midnight",
+    label: "M33kAuras (midnight)",
+    url: "https://github.com/m33shoq/M33kAuras/tree/midnight",
+  },
+];
+
+function ghHeaders() {
+  return {
+    Accept: "application/vnd.github.v3+json",
+    ...(process.env.GITHUB_TOKEN
+      ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` }
+      : {}),
+  };
+}
+
+async function ghFetch(url) {
+  const res = await fetch(url, { headers: ghHeaders() });
+  if (!res.ok) throw new Error(`GitHub API ${res.status}: ${url}`);
   return res.json();
 }
 
-async function getRecentCommits(perPage = 30) {
-  const res = await fetch(
-    `https://api.github.com/repos/${REPO}/commits?sha=${BRANCH}&per_page=${perPage}`,
-    {
-      headers: {
-        Accept: "application/vnd.github.v3+json",
-        ...(process.env.GITHUB_TOKEN
-          ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` }
-          : {}),
-      },
-    }
+async function getRecentCommits(repo, branch, perPage = 30) {
+  return ghFetch(
+    `https://api.github.com/repos/${repo}/commits?sha=${branch}&per_page=${perPage}`
   );
-  if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
-  return res.json();
 }
 
-async function getCommitsSince(sha) {
-  const commits = await getRecentCommits(50);
-  const idx = commits.findIndex((c) => c.sha === sha);
-  return idx === -1 ? commits : commits.slice(0, idx);
-}
-
-async function getCommitFiles(sha) {
-  const res = await fetch(
-    `https://api.github.com/repos/${REPO}/commits/${sha}`,
-    {
-      headers: {
-        Accept: "application/vnd.github.v3+json",
-        ...(process.env.GITHUB_TOKEN
-          ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` }
-          : {}),
-      },
-    }
+async function getCommitFiles(repo, sha) {
+  const data = await ghFetch(
+    `https://api.github.com/repos/${repo}/commits/${sha}`
   );
-  if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
-  const data = await res.json();
   return (data.files || []).map((f) => ({
     filename: f.filename,
     status: f.status,
     additions: f.additions,
     deletions: f.deletions,
-    patch: f.patch || null,
+    patch: f.patch ? f.patch.slice(0, 2000) : null,
   }));
 }
 
-async function main() {
-  let existing = { sha: null, changes: [] };
-  if (fs.existsSync(OUT_FILE)) {
-    existing = JSON.parse(fs.readFileSync(OUT_FILE, "utf8"));
-  }
+async function processRepo(repoConfig, existingSha) {
+  const commits = await getRecentCommits(repoConfig.repo, repoConfig.branch, 50);
+  if (!commits.length) return { sha: existingSha, changes: [] };
 
-  const latest = await getLatestCommit();
-  const latestSha = latest.sha;
+  const latestSha = commits[0].sha;
+  if (latestSha === existingSha) return { sha: existingSha, changes: [] };
 
-  if (latestSha === existing.sha) {
-    console.log("UI source: no changes since last run.");
-    return;
-  }
-
-  // On first run, seed with last 30 commits instead of just the latest
-  const newCommits = existing.sha
-    ? await getCommitsSince(existing.sha)
-    : await getRecentCommits(30);
+  const newCommits = existingSha
+    ? commits.slice(0, commits.findIndex((c) => c.sha === existingSha)).filter((_, i) => i < 30)
+    : commits.slice(0, 30);
 
   const changes = [];
   for (const commit of newCommits) {
-    const files = await getCommitFiles(commit.sha);
+    // Rate limit: fetch files for max 10 commits
+    const files = changes.length < 10 ? await getCommitFiles(repoConfig.repo, commit.sha) : [];
     changes.push({
       sha: commit.sha,
       date: commit.commit.author.date,
       message: commit.commit.message.split("\n")[0],
       url: commit.html_url,
+      repo: repoConfig.key,
+      repoLabel: repoConfig.label,
       files,
     });
   }
 
+  return { sha: latestSha, changes };
+}
+
+async function main() {
+  let existing = {};
+  if (fs.existsSync(OUT_FILE)) {
+    existing = JSON.parse(fs.readFileSync(OUT_FILE, "utf8"));
+  }
+
+  const allNewChanges = [];
+  const newShas = {};
+
+  for (const repoConfig of REPOS) {
+    console.log(`Checking ${repoConfig.label}...`);
+    try {
+      const existingSha = existing[repoConfig.key]?.sha || null;
+      const { sha, changes } = await processRepo(repoConfig, existingSha);
+      newShas[repoConfig.key] = { sha, label: repoConfig.label, url: repoConfig.url };
+      allNewChanges.push(...changes);
+      console.log(`  ${repoConfig.key}: ${changes.length} new commit(s)`);
+    } catch (e) {
+      console.warn(`  Failed: ${e.message}`);
+      if (existing[repoConfig.key]) newShas[repoConfig.key] = existing[repoConfig.key];
+    }
+  }
+
+  // Merge with existing, keep last 100 changes
+  const existingChanges = existing.changes || [];
+  const newShaSet = new Set(allNewChanges.map((c) => c.sha));
+  const merged = [
+    ...allNewChanges,
+    ...existingChanges.filter((c) => !newShaSet.has(c.sha)),
+  ].slice(0, 100);
+
   const output = {
-    sha: latestSha,
+    ...newShas,
     lastChecked: new Date().toISOString(),
-    changes: [...changes, ...(existing.changes || [])].slice(0, 50),
+    changes: merged,
   };
 
   fs.writeFileSync(OUT_FILE, JSON.stringify(output, null, 2));
-  console.log(`UI source: recorded ${changes.length} new commit(s).`);
+  console.log(`UI source: ${allNewChanges.length} total new commit(s) across all repos.`);
 }
 
 main().catch((e) => {

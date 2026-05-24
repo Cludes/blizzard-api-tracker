@@ -1,15 +1,26 @@
 {
-  "description": "Spells to monitor for flag changes (e.g. Private Aura). Add spell IDs here.",
+  "description": "Spells to monitor for flag changes. Add spell IDs here to track Private Aura and other flag changes.",
   "spells": [
-    { "id": 853,    "name": "Hammer of Justice",       "notes": "Paladin CC" },
-    { "id": 31935,  "name": "Avenger's Shield",         "notes": "Lightblinded Vanguard dispel - was Private Aura" },
-    { "id": 15487,  "name": "Silence",                  "notes": "Priest interrupt" },
+    { "id": 31935,  "name": "Avenger's Shield",         "notes": "Lightblinded Vanguard - was removed from Private Aura then re-added" },
+    { "id": 204140, "name": "Blinding Light",            "notes": "Paladin - re-added to Private Aura in May 2026 hotfix" },
+    { "id": 390178, "name": "Rending Tear",              "notes": "Re-added to Private Aura in May 2026 hotfix" },
+    { "id": 118000, "name": "Fearsome Cry",              "notes": "Re-added to Private Aura in May 2026 hotfix" },
+    { "id": 212183, "name": "Blisterburst",              "notes": "Re-added to Private Aura in May 2026 hotfix" },
+    { "id": 334625, "name": "Tail Lash",                 "notes": "Re-added to Private Aura in May 2026 hotfix" },
+    { "id": 374048, "name": "Black Miasma",              "notes": "Re-added to Private Aura in May 2026 hotfix" },
+    { "id": 6673,   "name": "Battle Shout",              "notes": "Warrior buff - tracking for completeness" },
     { "id": 116705, "name": "Spear Hand Strike",        "notes": "Monk interrupt" },
     { "id": 147362, "name": "Counter Shot",             "notes": "Hunter interrupt" },
     { "id": 57994,  "name": "Wind Shear",               "notes": "Shaman interrupt" },
     { "id": 183752, "name": "Consume Magic",            "notes": "DH interrupt" },
     { "id": 351338, "name": "Quell",                    "notes": "Evoker interrupt" },
     { "id": 96231,  "name": "Rebuke",                   "notes": "Paladin interrupt" },
-    { "id": 47528,  "name": "Mind Freeze",              "notes": "DK interrupt" }
+    { "id": 47528,  "name": "Mind Freeze",              "notes": "DK interrupt" },
+    { "id": 15487,  "name": "Silence",                  "notes": "Priest interrupt" },
+    { "id": 2139,   "name": "Counterspell",             "notes": "Mage interrupt" },
+    { "id": 1766,   "name": "Kick",                     "notes": "Rogue interrupt" },
+    { "id": 78675,  "name": "Solar Beam",               "notes": "Druid interrupt" },
+    { "id": 19647,  "name": "Spell Lock",               "notes": "Warlock pet interrupt" },
+    { "id": 6552,   "name": "Pummel",                   "notes": "Warrior interrupt" }
   ]
 }

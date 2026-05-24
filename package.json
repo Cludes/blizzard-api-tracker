@@ -8,7 +8,8 @@
     "fetch:hotfixes": "node scripts/fetch-hotfixes.js",
     "fetch:spells": "node scripts/fetch-spell-flags.js",
     "fetch:builds": "node scripts/fetch-builds.js",
-    "fetch:all": "npm run fetch:ui && npm run fetch:hotfixes && npm run fetch:spells && npm run fetch:builds",
+    "fetch:db2": "node scripts/fetch-db2.js",
+    "fetch:all": "npm run fetch:ui && npm run fetch:hotfixes && npm run fetch:spells && npm run fetch:builds && npm run fetch:db2",
     "build:site": "node scripts/build-site.js",
     "run:all": "npm run fetch:all && npm run build:site"
   },
