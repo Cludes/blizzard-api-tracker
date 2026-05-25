@@ -1,4 +1,4 @@
-// HTML component builders for the blizzard-api-tracker site
+﻿// HTML component builders for the blizzard-api-tracker site
 
 export function esc(str) {
   return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -34,13 +34,22 @@ function emptyState(icon, title, sub = "") {
   </div>`;
 }
 
-function sectionWrapper(id, icon, iconBg, title, desc, content) {
+const SECTION_SVGS = {
+  builds: `<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1L12 4v5L6.5 12 1 9V4L6.5 1Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><circle cx="6.5" cy="6.5" r="1.5" fill="currentColor"/></svg>`,
+  db2: `<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><ellipse cx="6.5" cy="3.5" rx="4.5" ry="1.8" stroke="currentColor" stroke-width="1.2"/><path d="M2 3.5v3c0 1 2 1.8 4.5 1.8S11 7.5 11 6.5v-3" stroke="currentColor" stroke-width="1.2"/><path d="M2 6.5v3c0 1 2 1.8 4.5 1.8S11 10.5 11 9.5v-3" stroke="currentColor" stroke-width="1.2"/></svg>`,
+  "ui-source": `<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M4 4L1.5 6.5 4 9M9 4l2.5 2.5L9 9M7 2.5l-1 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  hotfixes: `<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5v4.5M9.5 2.5l-3 3.5-3-3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 7.5c0 2.2 1.8 4 4 4s4-1.8 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`,
+  "spell-flags": `<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5L2 3v4.5c0 2.5 2 4.5 4.5 5 2.5-.5 4.5-2.5 4.5-5V3L6.5 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M4.5 6.5l1.5 1.5 2.5-2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+};
+
+function sectionWrapper(id, iconBg, title, desc, content) {
+  const svg = SECTION_SVGS[id] || "";
   return `
 <div class="section" id="${id}">
   <div class="section-header">
     <div class="section-title-group">
       <h2 class="section-title">
-        <span class="section-icon" style="background:${iconBg}" aria-hidden="true">${icon}</span>
+        ${svg ? `<span class="section-icon" style="background:${iconBg};color:var(--text-secondary)" aria-hidden="true">${svg}</span>` : ""}
         ${esc(title)}
       </h2>
       <p class="section-desc">${desc}</p>
@@ -106,8 +115,8 @@ export function buildDashboard(uiData, hotfixData, spellData, buildData, db2Data
 <div class="stats-grid">
   <div class="stat-card">
     <div class="stat-label">Latest Build</div>
-    <div class="stat-value">${latestBuild ? esc((latestBuild.version || latestBuild.build || "?").split(".").slice(-1)[0]) : "-"}</div>
-    <div class="stat-sub">${latestBuild ? esc(latestBuild.version || latestBuild.build || "") : "No data yet"}</div>
+    <div class="stat-value" style="font-size:var(--text-md)">${latestBuild ? esc(latestBuild.version || latestBuild.build || "?") : "-"}</div>
+    <div class="stat-sub">${latestBuild ? timeAgo(latestBuild.created_at) : "No data yet"}</div>
     <div class="stat-indicator" style="background:var(--accent)"></div>
   </div>
   <div class="stat-card">
@@ -132,30 +141,32 @@ export function buildDashboard(uiData, hotfixData, spellData, buildData, db2Data
 
   const activities = [];
 
-  for (const b of (buildData?.builds || []).slice(0, 2)) {
+  for (const b of (buildData?.builds || []).slice(0, 3)) {
     const v = b.version || b.build || "?";
     const prodBadge = b.product === "wow" ? badge("Retail", "blue") : b.product === "wowxptr" ? badge("PTR", "orange") : badge(b.product || "?", "grey");
-    activities.push({ dot: "var(--accent)", html: `${prodBadge} <strong>Build ${esc(v)}</strong>`, time: timeAgo(b.created_at), title: formatDate(b.created_at) });
+    activities.push({ ts: new Date(b.created_at).getTime() || 0, dot: "var(--accent)", html: `${prodBadge} <strong>Build ${esc(v)}</strong>`, time: timeAgo(b.created_at), title: formatDate(b.created_at) });
   }
 
   for (const c of (spellData?.changes || []).slice(0, 3)) {
     const tag = c.privateAuraChanged ? `<span class="badge badge-private-aura">Private Aura</span>` : badge("Flag Change", "orange");
-    activities.push({ dot: c.privateAuraChanged ? "var(--red)" : "var(--orange)", html: `${tag} <strong>${esc(c.name)}</strong> <span class="muted">(${c.id})</span>`, time: timeAgo(c.date), title: formatDate(c.date) });
+    activities.push({ ts: new Date(c.date).getTime() || 0, dot: c.privateAuraChanged ? "var(--red)" : "var(--orange)", html: `${tag} <strong>${esc(c.name)}</strong> <span style="color:var(--text-muted);font-size:var(--text-xs)">(${c.id})</span>`, time: timeAgo(c.date), title: formatDate(c.date) });
   }
 
-  for (const c of (db2Data?.changes || []).slice(0, 2)) {
-    activities.push({ dot: "var(--purple)", html: `${badge("DB2", "purple")} <strong>${esc(c.table)}</strong> <span class="diff-stats"><span class="diff-add">+${c.added || 0}</span> <span class="diff-rem">-${c.removed || 0}</span> <span class="diff-mod">~${c.modified || 0}</span></span>`, time: timeAgo(c.date), title: formatDate(c.date) });
+  for (const c of (db2Data?.changes || []).slice(0, 3)) {
+    activities.push({ ts: new Date(c.date).getTime() || 0, dot: "var(--purple)", html: `${badge("DB2", "purple")} <strong>${esc(c.table)}</strong> <span class="diff-stats"><span class="diff-add">+${c.added || 0}</span> <span class="diff-rem">-${c.removed || 0}</span> <span class="diff-mod">~${c.modified || 0}</span></span>`, time: timeAgo(c.date), title: formatDate(c.date) });
   }
 
-  for (const c of (uiData?.changes || []).slice(0, 3)) {
+  for (const c of (uiData?.changes || []).slice(0, 4)) {
     const repoTag = c.repo === "m33kauras-midnight" ? badge("M33kAuras", "orange") : badge("UI Source", "blue");
-    activities.push({ dot: c.repo === "m33kauras-midnight" ? "var(--orange)" : "var(--accent)", html: `${repoTag} <a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.message)}</a>`, time: timeAgo(c.date), title: formatDate(c.date) });
+    activities.push({ ts: new Date(c.date).getTime() || 0, dot: c.repo === "m33kauras-midnight" ? "var(--orange)" : "var(--accent)", html: `${repoTag} <a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.message)}</a>`, time: timeAgo(c.date), title: formatDate(c.date) });
   }
 
-  for (const p of (hotfixData?.posts || []).slice(0, 2)) {
+  for (const p of (hotfixData?.posts || []).slice(0, 3)) {
     const sourceTag = p.source === "blizzard-news" ? badge("News", "blue") : badge("Forums", "grey");
-    activities.push({ dot: "var(--green)", html: `${sourceTag} <a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a>`, time: timeAgo(p.date), title: formatDate(p.date) });
+    activities.push({ ts: new Date(p.date).getTime() || 0, dot: "var(--green)", html: `${sourceTag} <a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.title)}</a>`, time: timeAgo(p.date), title: formatDate(p.date) });
   }
+
+  activities.sort((a, b) => b.ts - a.ts);
 
   const feed = activities.length
     ? `<div class="activity-feed">${activities.map(a => `
@@ -185,9 +196,9 @@ export function buildBuildsSection(data) {
   const builds = data?.builds || [];
 
   if (!builds.length) {
-    return sectionWrapper("builds", "B", "var(--accent-glow)", "Game Builds",
+    return sectionWrapper("builds", "var(--accent-glow)", "Game Builds",
       `WoW build versions from <a href="https://wago.tools/builds" target="_blank" rel="noopener">wago.tools</a>. New builds indicate patches or hotfixes pushed by Blizzard.`,
-      emptyState("B", "No build data yet", "Waiting for first workflow run"));
+      emptyState("...", "No build data yet", "Waiting for first workflow run"));
   }
 
   const rows = builds.slice(0, 30).map(b => {
@@ -200,7 +211,7 @@ export function buildBuildsSection(data) {
     </tr>`;
   }).join("");
 
-  return sectionWrapper("builds", "B", "var(--accent-glow)", "Game Builds",
+  return sectionWrapper("builds", "var(--accent-glow)", "Game Builds",
     `WoW build versions from <a href="https://wago.tools/builds" target="_blank" rel="noopener">wago.tools</a>. New builds indicate patches or hotfixes pushed by Blizzard.`,
     `<div class="table-wrapper"><table>
       <thead><tr><th>Version</th><th>Product</th><th>Date</th></tr></thead>
@@ -212,9 +223,9 @@ export function buildDb2Section(data) {
   const changes = data?.changes || [];
 
   if (!changes.length) {
-    const empty = emptyState("D", "No DB2 changes yet", "Will populate after two consecutive builds are tracked")
+    const empty = emptyState("...", "No DB2 changes yet", "Will populate after two consecutive builds are tracked")
       + (data?.lastBuild ? `<p class="muted" style="font-size:var(--text-xs);margin-top:var(--space-3);text-align:center">Last tracked build: <code>${esc(data.lastBuild)}</code></p>` : "");
-    return sectionWrapper("db2", "D", "rgba(139,92,246,0.12)", "DB2 Table Changes",
+    return sectionWrapper("db2", "rgba(139,92,246,0.12)", "DB2 Table Changes",
       `Database table diffs between builds via <a href="https://wago.tools" target="_blank" rel="noopener">wago.tools</a>. SpellMisc changes indicate spell attribute/flag updates including Private Aura additions.`,
       empty);
   }
@@ -254,7 +265,7 @@ export function buildDb2Section(data) {
     content += `<p class="muted" style="font-size:var(--text-xs);margin-top:var(--space-3)">Last compared build: <code>${esc(data.lastBuild)}</code></p>`;
   }
 
-  return sectionWrapper("db2", "D", "rgba(139,92,246,0.12)", "DB2 Table Changes",
+  return sectionWrapper("db2", "rgba(139,92,246,0.12)", "DB2 Table Changes",
     `Database table diffs between builds via <a href="https://wago.tools" target="_blank" rel="noopener">wago.tools</a>. SpellMisc changes indicate spell attribute/flag updates including Private Aura additions.`,
     content);
 }
@@ -263,9 +274,9 @@ export function buildUiSection(data) {
   const changes = data?.changes || [];
 
   if (!changes.length) {
-    return sectionWrapper("ui-source", "U", "rgba(59,130,246,0.12)", "UI Source & M33kAuras",
+    return sectionWrapper("ui-source", "rgba(59,130,246,0.12)", "UI Source & M33kAuras",
       `Tracks <a href="https://github.com/Gethe/wow-ui-source/tree/live" target="_blank" rel="noopener">Gethe/wow-ui-source</a> and <a href="https://github.com/m33shoq/M33kAuras/tree/midnight" target="_blank" rel="noopener">m33shoq/M33kAuras midnight</a>.`,
-      emptyState("U", "No commits yet", "Waiting for first workflow run"));
+      emptyState("...", "No commits yet", "Waiting for first workflow run"));
   }
 
   const byRepo = {};
@@ -320,7 +331,7 @@ export function buildUiSection(data) {
     </div>`;
   }).join("");
 
-  return sectionWrapper("ui-source", "U", "rgba(59,130,246,0.12)", "UI Source & M33kAuras",
+  return sectionWrapper("ui-source", "rgba(59,130,246,0.12)", "UI Source & M33kAuras",
     `Tracks <a href="https://github.com/Gethe/wow-ui-source/tree/live" target="_blank" rel="noopener">Gethe/wow-ui-source</a> (Lua API, FrameXML) and <a href="https://github.com/m33shoq/M33kAuras/tree/midnight" target="_blank" rel="noopener">m33shoq/M33kAuras midnight</a> (upstream for ThisWeeksAuras).`,
     content);
 }
@@ -329,9 +340,9 @@ export function buildHotfixSection(data) {
   const posts = data?.posts || [];
 
   if (!posts.length) {
-    return sectionWrapper("hotfixes", "H", "rgba(16,185,129,0.12)", "Hotfix Notes",
+    return sectionWrapper("hotfixes", "rgba(16,185,129,0.12)", "Hotfix Notes",
       `Blizzard news feed and <a href="https://us.forums.blizzard.com/en/wow/c/release-notes/35" target="_blank" rel="noopener">release notes forum</a> filtered for hotfix and patch notes.`,
-      emptyState("H", "No hotfixes found", "Checking Blizzard news and WoW forums"));
+      emptyState("...", "No hotfixes found", "Checking Blizzard news and WoW forums"));
   }
 
   const cards = posts.slice(0, 25).map(p => {
@@ -350,7 +361,7 @@ export function buildHotfixSection(data) {
     </div>`;
   }).join("");
 
-  return sectionWrapper("hotfixes", "H", "rgba(16,185,129,0.12)", "Hotfix Notes",
+  return sectionWrapper("hotfixes", "rgba(16,185,129,0.12)", "Hotfix Notes",
     `Blizzard news feed and <a href="https://us.forums.blizzard.com/en/wow/c/release-notes/35" target="_blank" rel="noopener">release notes forum</a> filtered for hotfix and patch notes.`,
     cards);
 }
@@ -417,7 +428,7 @@ export function buildSpellSection(data) {
     </div>`;
   }
 
-  return sectionWrapper("spell-flags", "S", "rgba(239,68,68,0.12)", "Spell Flag Changes",
+  return sectionWrapper("spell-flags", "rgba(239,68,68,0.12)", "Spell Flag Changes",
     `Monitoring ${spellCount} spells for attribute flag changes. Private Aura flags prevent addons from tracking debuffs - changes here directly affect WeakAuras and interrupt trackers.`,
     content);
 }

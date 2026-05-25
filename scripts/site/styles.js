@@ -253,6 +253,7 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-
   text-decoration: none;
 }
 .nav-link:hover { color: var(--text-primary); border-bottom-color: var(--border-hover); }
+.nav-link.active { color: var(--text-primary); border-bottom-color: var(--accent); }
 .nav-link .nav-icon { font-size: 13px; }
 
 /* Mobile nav */
@@ -274,6 +275,7 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-
     border-left: 2px solid transparent;
   }
   .nav-link:hover { border-left-color: var(--border-hover); border-bottom: none; }
+  .nav-link.active { border-left-color: var(--accent); border-bottom: none; }
 }
 
 /* ============================================================
