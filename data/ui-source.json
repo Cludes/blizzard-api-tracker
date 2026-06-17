@@ -5,12 +5,115 @@
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
   "m33kauras-midnight": {
-    "sha": "2fe83c96bec6c89f2f9c5e5e927880d302df9229",
+    "sha": "23bcbda888505da4e7f0b377531f682ba182489a",
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-06-17T13:28:07.497Z",
+  "lastChecked": "2026-06-17T19:00:16.632Z",
   "changes": [
+    {
+      "sha": "23bcbda888505da4e7f0b377531f682ba182489a",
+      "date": "2026-06-17T18:20:34Z",
+      "message": "attempt to fix item cooldown trigger not working sometimes",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/23bcbda888505da4e7f0b377531f682ba182489a",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/Prototypes.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -4915,6 +4915,7 @@ Private.event_prototypes = {\n         \"ITEM_COOLDOWN_CHANGED:\" .. itemName,\n         \"ITEM_COOLDOWN_STARTED:\" .. itemName,\n         \"COOLDOWN_REMAINING_CHECK:\" .. itemName,\n+        \"WA_DELAYED_PLAYER_ENTERING_WORLD\"\n       }\n       if (trigger.use_showgcd) then\n         tinsert(events, \"GCD_START\");"
+        }
+      ]
+    },
+    {
+      "sha": "a7ed09d4032173de28d614f0538311ae633adf31",
+      "date": "2026-06-17T18:20:04Z",
+      "message": "Treat flex mythic as flex raid for Instance Size Type load option",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/a7ed09d4032173de28d614f0538311ae633adf31",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/Types.lua",
+          "status": "modified",
+          "additions": 4,
+          "deletions": 0,
+          "patch": "@@ -4341,6 +4341,10 @@ Private.difficulty_info = {\n     size = \"twenty\",\n     difficulty = \"normal\",\n   },\n+  [233] = {\n+    size = \"flexible\",\n+    difficulty = \"mythic\",\n+  }\n }\n \n Private.glow_types = {"
+        }
+      ]
+    },
+    {
+      "sha": "e122fb7d7eddf554a6ed00ae496a8772c0141683",
+      "date": "2026-06-17T13:29:48Z",
+      "message": "toc update",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/e122fb7d7eddf554a6ed00ae496a8772c0141683",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33Auras/M33Auras.toc",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1,4 +1,4 @@\n-## Interface: 120000, 120001\n+## Interface: 120007\n ## Title: M33kAuras Settings Migration 2\n ## Author: m33shoq\n ## Version: @project-version@"
+        },
+        {
+          "filename": "M33kAuras/M33kAuras.toc",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1,4 +1,4 @@\n-## Interface: 120000, 120001\n+## Interface: 120007\n ## Title: M33kAuras\n ## Author: m33shoq\n ## Version: @project-version@"
+        },
+        {
+          "filename": "M33kAurasArchive/M33kAurasArchive.toc",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1,4 +1,4 @@\n-## Interface: 110205, 120000\n+## Interface: 120007\n ## Title: M33kAuras Archive\n ## Author: m33shoq\n ## Version: @project-version@"
+        },
+        {
+          "filename": "M33kAurasOptions/M33kAurasOptions.toc",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1,4 +1,4 @@\n-## Interface: 120000, 120001\n+## Interface: 120007\n ## Title: M33kAuras Options\n ## Author: m33shoq\n ## Version: @project-version@"
+        },
+        {
+          "filename": "M33kAurasTemplates/M33AurasTemplates.toc",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1,4 +1,4 @@\n-## Interface: 120000, 120001\n+## Interface: 120007\n ## Title: M33kAuras Templates\n ## Author: m33shoq\n ## Version: @project-version@"
+        },
+        {
+          "filename": "WeakAuras/WeakAuras.toc",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1,4 +1,4 @@\n-## Interface: 120000, 120001\n+## Interface: 120007\n ## Title: M33kAuras Settings Migration\n ## Author: m33shoq\n ## Version: @project-version@"
+        }
+      ]
+    },
+    {
+      "sha": "615ea30c6b18fbf19de6e1168b1581461b8a3498",
+      "date": "2026-06-17T08:00:58Z",
+      "message": "add new diff",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/615ea30c6b18fbf19de6e1168b1581461b8a3498",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/Types.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -3219,6 +3219,7 @@ if not M33kAuras.IsClassicEra() then\n     [230] = unused, -- heroic party\n     [231] = unused, -- normal raid dungeon\n     [232] = unused, -- event party\n+    [233] = L[\"Raid (Mythic Flex)\"],\n     [236] = L[\"Lorewalking\"],\n     [237] = M33kAuras.IsMists() and L[\"Dungeon (Celestial)\"] or unused,\n   }"
+        }
+      ]
+    },
     {
       "sha": "dea5bd5d5f7adbbedcfa835738a7902da89cfe8c",
       "date": "2026-06-17T04:46:12Z",
