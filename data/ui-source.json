@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "f2d9228eb5426a16a4f15a88bf373fc49c5c65c1",
+    "sha": "3a82e42a4a938985222746225f1cddd99108966c",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,32 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-06-16T19:20:48.261Z",
+  "lastChecked": "2026-06-17T01:20:01.427Z",
   "changes": [
+    {
+      "sha": "3a82e42a4a938985222746225f1cddd99108966c",
+      "date": "2026-06-17T00:01:21Z",
+      "message": "12.0.7 (68232)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/3a82e42a4a938985222746225f1cddd99108966c",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "Interface/AddOns/Blizzard_CooldownViewer/CooldownViewerItemData.lua",
+          "status": "modified",
+          "additions": 3,
+          "deletions": 3,
+          "patch": "@@ -13,7 +13,7 @@ function CooldownViewerItemDataMixin:FindLinkedSpellForCurrentAuras(unit)\n \tif self.cooldownInfo and self.cooldownInfo.linkedSpellIDs then\n \t\tfor _, spellID in ipairs(self.cooldownInfo.linkedSpellIDs) do\n \t\t\tlocal auraData = C_UnitAuras.GetUnitAuraBySpellID(unit, spellID);\n-\t\t\tif auraData then\n+\t\t\tif auraData and auraData.sourceUnit == \"player\" then\n \t\t\t\treturn spellID, auraData;\n \t\t\tend\n \t\tend\n@@ -352,7 +352,7 @@ end\n local function GetTargetAurasFilterString(unit)\n \tif UnitExists(unit) then\n \t\tif UnitIsFriend(\"player\", unit) then\n-\t\t\treturn \"HELPFUL|PLAYER\";\n+\t\t\treturn \"HELPFUL|PLAYER|INCLUDE_NAME_PLATE_ONLY\";\n \t\tend\n \tend\n \n@@ -517,7 +517,7 @@ function CooldownViewerItemDataMixin:RefreshTooltip()\n \tlocal auraInstanceID = self:GetAuraSpellInstanceID();\n \tlocal auraUnit = self:GetAuraDataUnit();\n \tif auraInstanceID and auraUnit then\n-\t\ttooltip:SetUnitAuraByAuraInstanceID(auraUnit, auraInstanceID);\n+\t\ttooltip:SetUnitAuraByAuraInstanceID(auraUnit, auraInstanceID, \"INCLUDE_NAME_PLATE_ONLY\");\n \telse\n \t\tlocal spellID = self:GetSpellID();\n \t\tif spellID then"
+        },
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.0.7.68182\n+12.0.7.68232"
+        }
+      ]
+    },
     {
       "sha": "f2d9228eb5426a16a4f15a88bf373fc49c5c65c1",
       "date": "2026-06-16T14:31:44Z",
