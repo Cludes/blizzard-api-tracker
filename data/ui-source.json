@@ -5,12 +5,29 @@
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
   "m33kauras-midnight": {
-    "sha": "23bcbda888505da4e7f0b377531f682ba182489a",
+    "sha": "4c7cd29d701d9900e60bb60dccc9fabf2ffa72cf",
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-06-17T19:00:16.632Z",
+  "lastChecked": "2026-06-18T01:18:29.755Z",
   "changes": [
+    {
+      "sha": "4c7cd29d701d9900e60bb60dccc9fabf2ffa72cf",
+      "date": "2026-06-17T20:58:27Z",
+      "message": "fix item slot cd trigger",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/4c7cd29d701d9900e60bb60dccc9fabf2ffa72cf",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/GenericTrigger.lua",
+          "status": "modified",
+          "additions": 5,
+          "deletions": 1,
+          "patch": "@@ -3223,6 +3223,10 @@ do\n   ---@type fun()\n   function Private.CheckItemSlotCooldowns()\n     for id, itemId in pairs(itemSlots) do\n+      if itemId == true then\n+        itemId = GetInventoryItemID(\"player\", id);\n+        itemSlots[id] = itemId or true;\n+      end\n       local startTime, duration, enable = GetInventoryItemCooldown(\"player\", id);\n       itemSlotsEnable[id] = enable;\n       startTime = startTime or 0;\n@@ -3405,7 +3409,7 @@ do\n     if not id or id == 0 then return end\n \n     if not(itemSlots[id]) then\n-      itemSlots[id] = GetInventoryItemID(\"player\", id);\n+      itemSlots[id] = GetInventoryItemID(\"player\", id) or true;\n       local startTime, duration, enable = GetInventoryItemCooldown(\"player\", id);\n       itemSlotsEnable[id] = enable;\n       if(duration > 0 and duration > 1.5 and duration ~= M33kAuras.gcdDuration()) then"
+        }
+      ]
+    },
     {
       "sha": "23bcbda888505da4e7f0b377531f682ba182489a",
       "date": "2026-06-17T18:20:34Z",
