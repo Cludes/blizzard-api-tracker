@@ -5,12 +5,50 @@
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
   "m33kauras-midnight": {
-    "sha": "4c7cd29d701d9900e60bb60dccc9fabf2ffa72cf",
+    "sha": "d701fff89fa84591c53c3fa89f718668d373bf62",
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-06-25T07:25:42.167Z",
+  "lastChecked": "2026-06-25T12:58:27.524Z",
   "changes": [
+    {
+      "sha": "d701fff89fa84591c53c3fa89f718668d373bf62",
+      "date": "2026-06-25T10:55:24Z",
+      "message": "use :IsMouseOver instead of removed MouseIsOver",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/d701fff89fa84591c53c3fa89f718668d373bf62",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAurasOptions/AceGUI-Widgets/AceGUIWidget-M33kAurasPendingInstallButton.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -222,7 +222,7 @@ local function Constructor()\n   animRotate:SetDuration(1)\n   animRotate:SetSmoothing(\"OUT\")\n   animGroup:SetScript(\"OnFinished\", function()\n-    if (MouseIsOver(update)) then\n+    if update:IsMouseOver() then\n       animGroup:Play()\n     end\n   end)"
+        },
+        {
+          "filename": "M33kAurasOptions/AceGUI-Widgets/AceGUIWidget-M33kAurasPendingUpdateButton.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -345,7 +345,7 @@ local function Constructor()\n   animRotate:SetDuration(1)\n   animRotate:SetSmoothing(\"OUT\")\n   animGroup:SetScript(\"OnFinished\", function()\n-    if (MouseIsOver(update)) then\n+    if update:IsMouseOver() then\n       animGroup:Play()\n     end\n   end)"
+        },
+        {
+          "filename": "M33kAurasOptions/AceGUI-Widgets/AceGUIWidget-M33kAurasSpinBox.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 2,
+          "patch": "@@ -55,15 +55,15 @@ end\n local function UpdateHandleColor(self)\n   if self.progressBarHandle.mouseDown then\n     self.progressBarHandleTexture:SetColorTexture(0.6, 0.6, 0, 1)\n-  elseif MouseIsOver(self.progressBarHandle) then\n+  elseif self.progressBarHandle:IsMouseOver() then\n     self.progressBarHandleTexture:SetColorTexture(0.8, 0.8, 0, 1)\n   else\n     self.progressBarHandleTexture:SetColorTexture(0.4, 0.4, 0, 1)\n   end\n end\n \n local function UpdateHandleVisibility(self)\n-  if MouseIsOver(self.frame) then\n+  if self.frame:IsMouseOver() then\n     self.progressBarHandle:Show()\n     UpdateHandleColor(self)\n   else"
+        },
+        {
+          "filename": "M33kAurasOptions/OptionsFrames/FrameChooser.lua",
+          "status": "modified",
+          "additions": 4,
+          "deletions": 6,
+          "patch": "@@ -8,8 +8,8 @@ local OptionsPrivate = select(2, ...)\n local pairs = pairs\n \n -- WoW APIs\n-local CreateFrame, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor\n-  = CreateFrame, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor\n+local CreateFrame, IsMouseButtonDown, SetCursor, ResetCursor\n+  = CreateFrame, IsMouseButtonDown, SetCursor, ResetCursor\n \n ---@class M33kAuras\n local M33kAuras = M33kAuras\n@@ -64,9 +64,7 @@ function OptionsPrivate.StartFrameChooser(data, path)\n       SetCursor(\"CAST_CURSOR\");\n \n       local focus\n-      if GetMouseFocus then\n-        focus = GetMouseFocus()\n-      elseif GetMouseFoci then\n+      if GetMouseFoci then\n         local foci = GetMouseFoci()\n         focus = foci[1] or nil\n       end\n@@ -78,7 +76,7 @@ function OptionsPrivate.StartFrameChooser(data, path)\n           focusName = nil;\n           local focusIsGroup = false;\n           for id, regionData in pairs(OptionsPrivate.Private.regions) do\n-            if(regionData.region and regionData.region:IsVisible() and MouseIsOver(regionData.region)) then\n+            if(regionData.region and regionData.region:IsVisible() and regionData.region:IsMouseOver()) then\n               local isGroup = regionData.regionType == \"group\" or regionData.regionType == \"dynamicgroup\";\n               if (not focusName or (not isGroup and focusIsGroup)) then\n                 focus = regionData.region;"
+        }
+      ]
+    },
     {
       "sha": "b62f0b48c9358512f78e77695f1cf6c04f57397b",
       "date": "2026-06-23T14:31:16Z",
