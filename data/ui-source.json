@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "c1e6bad95c73a0bd9c5f01267b520de5028a7c2b",
+    "sha": "dc16328fd4b0e7ce7ead4d6d2194b61e068d176c",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,32 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-06-30T07:32:33.464Z",
+  "lastChecked": "2026-06-30T12:53:33.932Z",
   "changes": [
+    {
+      "sha": "dc16328fd4b0e7ce7ead4d6d2194b61e068d176c",
+      "date": "2026-06-30T09:16:12Z",
+      "message": "12.0.7 (68275)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/dc16328fd4b0e7ce7ead4d6d2194b61e068d176c",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "Interface/AddOns/Blizzard_HousingTemplates/Blizzard_HousingMarketProductDisplay.lua",
+          "status": "modified",
+          "additions": 5,
+          "deletions": 42,
+          "patch": "@@ -62,12 +62,6 @@ function HousingMarketProductDisplayMixin:AddTooltipPrice(tooltip)\n \tGameTooltip_AddHighlightLine(tooltip, HOUSING_DECOR_PRICE_FORMAT:format(self.Contents:GetCurrentPrice()));\n end\n \n-function HousingMarketProductDisplayMixin:GetCartItemData()\n-\t-- Override in your derived Mixin to supply cart item data.\n-\t-- Returns a cart item table, or nil if the item cannot be added to the cart.\n-\treturn nil;\n-end\n-\n function HousingMarketProductDisplayMixin:ShowContextMenu()\n \tif not self.elementData then\n \t\treturn;\n@@ -79,10 +73,11 @@ function HousingMarketProductDisplayMixin:ShowContextMenu()\n \t\t-- Items that cannot be previewed must be purchased directly from the shop and can't be added to the cart.\n \t\tif self.elementData.canPreview then\n \t\t\tlocal addToCartButton = rootDescription:CreateButton(HOUSING_MARKET_ADD_TO_CART, function()\n-\t\t\t\tlocal cartItemData = self:GetCartItemData();\n-\t\t\t\tif cartItemData then\n-\t\t\t\t\tEventRegistry:TriggerEvent(string.format(\"%s.%s\", HOUSING_MARKET_EVENT_NAMESPACE, ShoppingCartDataServices.AddToCart), cartItemData);\n-\t\t\t\tend\n+\t\t\t\tlocal elementData = {\n+\t\t\t\t\tbundleCatalogShopProductID = self.elementData.productID,\n+\t\t\t\t};\n+\n+\t\t\t\tEventRegistry:TriggerEvent(string.format(\"%s.%s\", HOUSING_MARKET_EVENT_NAMESPACE, ShoppingCartDataServices.AddToCart), elementData);\n \n \t\t\t\tlocal cartShownEvent = string.format(\"%s.%s\", HOUSING_MARKET_EVENT_NAMESPACE, ShoppingCartVisualServices.SetCartShown);\n \t\t\t\tlocal shown = true;\n@@ -199,34 +194,6 @@ function HousingMarketSmallProductDisplayMixin:StartPreview()\n \tend\n end\n \n-function HousingMarketSmallProductDisplayMixin:GetCartItemData()\n-\t-- Overrides HousingMarketProductDisplayMixin.\n-\n-\tlocal entryVariantID = self.elementData.entryVariantID;\n-\tif not entryVariantID or (entryVariantID.entryType ~= Enum.HousingCatalogEntryType.Decor) then\n-\t\treturn nil;\n-\tend\n-\n-\tlocal decorID = entryVariantID.recordID;\n-\tlocal entryInfo = C_HousingCatalog.GetCatalogEntryInfoByRecordID(Enum.HousingCatalogEntryType.D"
+        },
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.0.7.68367\n+12.0.7.68275"
+        }
+      ]
+    },
     {
       "sha": "c1e6bad95c73a0bd9c5f01267b520de5028a7c2b",
       "date": "2026-06-30T00:46:08Z",
