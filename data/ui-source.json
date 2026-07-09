@@ -5,12 +5,29 @@
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
   "m33kauras-midnight": {
-    "sha": "d701fff89fa84591c53c3fa89f718668d373bf62",
+    "sha": "c0893638f4bf3409de42872ff9d92713718769f6",
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-07-08T18:37:03.584Z",
+  "lastChecked": "2026-07-09T00:54:00.125Z",
   "changes": [
+    {
+      "sha": "c0893638f4bf3409de42872ff9d92713718769f6",
+      "date": "2026-07-09T00:20:03Z",
+      "message": "bufftrigger fix for 12.1",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/c0893638f4bf3409de42872ff9d92713718769f6",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/BuffTrigger2.lua",
+          "status": "modified",
+          "additions": 46,
+          "deletions": 5,
+          "patch": "@@ -305,6 +305,47 @@ local function CheckScanFuncs(scanFuncs, unit, filter, key)\n   end\n end\n \n+-- in 12.1 there is no way to iterate over all auras on the unit while auras are secret\n+-- but we can call C_UnitAuras.GetUnitAuraBySpellID for each spell id we're interested in\n+-- downside of that workaround is that we can't track multiple instances of the same spell id\n+-- and in case there are multiple auras with the same spell id we can't control which aura we are tracking\n+local SafeForEachAura\n+local aurasAreLocked = select(4, GetBuildInfo()) >= 120100\n+if aurasAreLocked then\n+  SafeForEachAura = function(unit, filter, maxCount, func, usePackedAura)\n+    if not C_Secrets.ShouldAurasBeSecret() then\n+      return AuraUtil.ForEachAura(unit, filter, maxCount, func, usePackedAura)\n+    else\n+\n+      local sfs = GetSubTable(scanFuncSpellId, unit, filter)\n+      if sfs then\n+        for spellID in next, sfs do\n+          local auraData = C_UnitAuras.GetUnitAuraBySpellID(unit, spellID)\n+          if auraData then\n+            if (filter == \"HELPFUL\" and auraData.isHelpful) or (filter == \"HARMFUL\" and auraData.isHarmful) then\n+              func(auraData)\n+            end\n+          end\n+        end\n+      end\n+\n+      local sfsg = GetSubTable(scanFuncSpellIdGroup, unit, filter)\n+      if sfsg then\n+        for spellID in next, sfsg do\n+          local auraData = C_UnitAuras.GetUnitAuraBySpellID(unit, spellID)\n+          if auraData then\n+            if (filter == \"HELPFUL\" and auraData.isHelpful) or (filter == \"HARMFUL\" and auraData.isHarmful) then\n+              func(auraData)\n+            end\n+          end\n+        end\n+      end\n+    end\n+  end\n+else\n+  SafeForEachAura = AuraUtil.ForEachAura\n+end\n+\n local TooltipHelper\n if newAPI then\n   ---@class TooltipHelper\n@@ -1801,7 +1842,7 @@ do\n         _time = GetTime()\n         _unit = unit\n         _filter = filter\n-        AuraUtil.ForEachAura(unit, filter, nil, HandleAura, true)\n+        SafeForEachAura(unit, filter, nil,"
+        }
+      ]
+    },
     {
       "sha": "6e96727fd523c80f2cd43dc1c43946b0336f1217",
       "date": "2026-07-07T00:01:12Z",
