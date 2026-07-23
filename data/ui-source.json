@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "6e96727fd523c80f2cd43dc1c43946b0336f1217",
+    "sha": "4383ced30106d51b27e3e86d1987f1552f0d259d",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,32 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-07-23T00:49:40.424Z",
+  "lastChecked": "2026-07-23T07:00:11.641Z",
   "changes": [
+    {
+      "sha": "4383ced30106d51b27e3e86d1987f1552f0d259d",
+      "date": "2026-07-23T01:01:33Z",
+      "message": "12.0.7 (68887)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/4383ced30106d51b27e3e86d1987f1552f0d259d",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "Interface/AddOns/Blizzard_HouseEditor/Blizzard_HouseEditorStorageFrame.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -323,7 +323,7 @@ function HouseEditorStorageFrameMixin:OnTabChanged()\n end\n \n function HouseEditorStorageFrameMixin:GetCurrentSavedStateKey()\n-\treturn self:GetTab();\n+\treturn C_HouseEditor.GetActiveHouseEditorMode()..\"_\"..self:GetTab();\n end\n \n function HouseEditorStorageFrameMixin:GetDefaultFocusedCategoryID()"
+        },
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.0.7.68453\n+12.0.7.68887"
+        }
+      ]
+    },
     {
       "sha": "c0893638f4bf3409de42872ff9d92713718769f6",
       "date": "2026-07-09T00:20:03Z",
