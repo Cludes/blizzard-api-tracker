@@ -5,12 +5,43 @@
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
   "m33kauras-midnight": {
-    "sha": "c0893638f4bf3409de42872ff9d92713718769f6",
+    "sha": "7c630673967320dcd7c266ddcbca5a37b32fe94f",
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-07-25T06:55:07.487Z",
+  "lastChecked": "2026-07-25T18:24:28.301Z",
   "changes": [
+    {
+      "sha": "7c630673967320dcd7c266ddcbca5a37b32fe94f",
+      "date": "2026-07-25T12:13:12Z",
+      "message": "Added option to force pixel perfect scale for borders",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/7c630673967320dcd7c266ddcbca5a37b32fe94f",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/BackdropTemplateM33kAuras.lua",
+          "status": "modified",
+          "additions": 9,
+          "deletions": 0,
+          "patch": "@@ -300,3 +300,12 @@ function BackdropTemplateM33kAurasMixin:SetBackdropBorderColor(r, g, b, a)\n \t\tend\n \tend\n end\n+\n+function BackdropTemplateM33kAurasMixin:ForEachPiece(callback)\n+\tfor pieceName in pairs(textureUVs) do\n+\t\tlocal region = self[pieceName];\n+\t\tif region then\n+\t\t\tcallback(pieceName, region);\n+\t\tend\n+\tend\n+end"
+        },
+        {
+          "filename": "M33kAuras/SubRegionTypes/Border.lua",
+          "status": "modified",
+          "additions": 43,
+          "deletions": 0,
+          "patch": "@@ -56,6 +56,49 @@ end\n local function modify(parent, region, parentData, data, first)\n   region:SetParent(parent)\n \n+\n+  if data.border_ppscale then -- hides/shows are required here to force a refresh of the region\n+    local pixelPerfectScale = PixelUtil.GetPixelToUIUnitFactor()\n+    region:ForEachPiece(function(pieceName, piece)\n+      piece:SetSnapToPixelGrid(false)\n+      if piece:GetTexelSnappingBias() ~= 0 then\n+        piece.originalSnappingBias = piece:GetTexelSnappingBias()\n+        piece:SetTexelSnappingBias(0)\n+      end\n+\n+      piece:SetIgnoreParentScale(true)\n+      piece:SetScale(pixelPerfectScale)\n+      piece:Hide()\n+      piece:Show()\n+    end)\n+\n+    region:SetIgnoreParentScale(true)\n+    region:SetScale(pixelPerfectScale)\n+    region:Hide()\n+    region:Show()\n+  else\n+\n+    region:ForEachPiece(function(pieceName, piece)\n+      piece:SetSnapToPixelGrid(true)\n+      if piece.originalSnappingBias then\n+        piece:SetTexelSnappingBias(piece.originalSnappingBias)\n+        piece.originalSnappingBias = nil\n+      end\n+\n+      piece:SetIgnoreParentScale(false)\n+      piece:SetScale(1)\n+      piece:Hide()\n+      piece:Show()\n+    end)\n+\n+    region:SetIgnoreParentScale(false)\n+    region:SetScale(1)\n+    region:Hide()\n+    region:Show()\n+  end\n+\n+\n+\n   local edgeFile = SharedMedia:Fetch(\"border\", data.border_edge)\n   if edgeFile and edgeFile ~= \"\" then\n     region:SetBackdrop({"
+        },
+        {
+          "filename": "M33kAurasOptions/SubRegionOptions/Border.lua",
+          "status": "modified",
+          "additions": 6,
+          "deletions": 0,
+          "patch": "@@ -64,6 +64,12 @@ local function createOptions(parentData, data, index, subIndex)\n       order = 7,\n       values = areaAnchors,\n       hidden = function() return parentData.regionType ~= \"aurabar\" end\n+    },\n+    border_ppscale = {\n+      type = \"toggle\",\n+      width = M33kAuras.doubleWidth,\n+      name = L[\"Force pixel perfect scale\"],\n+      order = 8,\n     }\n   }\n "
+        }
+      ]
+    },
     {
       "sha": "4383ced30106d51b27e3e86d1987f1552f0d259d",
       "date": "2026-07-23T01:01:33Z",
