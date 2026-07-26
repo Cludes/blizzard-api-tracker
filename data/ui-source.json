@@ -5,12 +5,46 @@
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
   "m33kauras-midnight": {
-    "sha": "7c630673967320dcd7c266ddcbca5a37b32fe94f",
+    "sha": "47383851b57adb1f89afe9d6b185ef64e2ad05c0",
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-07-25T18:24:28.301Z",
+  "lastChecked": "2026-07-26T00:52:52.594Z",
   "changes": [
+    {
+      "sha": "47383851b57adb1f89afe9d6b185ef64e2ad05c0",
+      "date": "2026-07-25T19:11:41Z",
+      "message": "use UnitClass directly for WA_ClassColorName",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/47383851b57adb1f89afe9d6b185ef64e2ad05c0",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/AuraEnvironment.lua",
+          "status": "modified",
+          "additions": 3,
+          "deletions": 8,
+          "patch": "@@ -114,17 +114,12 @@ local WA_ClassColorName = function(unit, maxlen)\n   if unit and UnitExists(unit) then\n     local name = M33kAuras.UnitName(unit)\n     if issecretvalue(name) then\n-      local GUID = UnitGUID(unit)\n-      if not GUID then\n+      local _, class = UnitClass(unit)\n+      if not class then\n         return name\n       end\n \n-      local _, englishClass = GetPlayerInfoByGUID(GUID)\n-      if not englishClass then\n-        return name\n-      end\n-\n-      local classColor = C_ClassColor.GetClassColor(englishClass)\n+      local classColor = C_ClassColor.GetClassColor(class)\n       return classColor:WrapTextInColorCode(name)\n     end\n     if maxlen and maxlen > 0 then"
+        }
+      ]
+    },
+    {
+      "sha": "d43ec5e5ee742d250e15d64b4006f99a3677ae97",
+      "date": "2026-07-25T18:57:19Z",
+      "message": "LCG update",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/d43ec5e5ee742d250e15d64b4006f99a3677ae97",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/Libs/LibCustomGlow-1.0/LibCustomGlow-1.0.lua",
+          "status": "modified",
+          "additions": 4,
+          "deletions": 2,
+          "patch": "@@ -6,11 +6,12 @@ https://www.wowace.com/projects/libbuttonglow-1-0\n -- luacheck: globals CreateFromMixins ObjectPoolMixin CreateTexturePool CreateFramePool\n \n local MAJOR_VERSION = \"LibCustomGlow-1.0-m33kauras\"\n-local MINOR_VERSION = 22\n+local MINOR_VERSION = 25\n if not LibStub then error(MAJOR_VERSION .. \" requires LibStub.\") end\n local lib, oldversion = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)\n if not lib then return end\n local Masque = LibStub(\"Masque\", true)\n+local AnimateTexCoords = (TextureUtil and TextureUtil.AnimateTexCoords) or _G.AnimateTexCoords\n \n local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE\n local textureList = {\n@@ -547,7 +548,8 @@ end\n local function bgUpdate(self, elapsed)\n     AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, self.throttle);\n     local cooldown = self:GetParent().cooldown;\n-    if(cooldown and cooldown:IsShown() and cooldown:GetCooldownDuration() > 3000) then\n+    local duration = cooldown and cooldown:IsShown() and cooldown:GetCooldownDuration()\n+    if((not issecretvalue or not issecretvalue(duration)) and duration and duration > 3000) then\n         self:SetAlpha(0.5);\n     else\n         self:SetAlpha(1.0);"
+        }
+      ]
+    },
     {
       "sha": "7c630673967320dcd7c266ddcbca5a37b32fe94f",
       "date": "2026-07-25T12:13:12Z",
