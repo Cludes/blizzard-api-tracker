@@ -5,12 +5,29 @@
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
   "m33kauras-midnight": {
-    "sha": "47383851b57adb1f89afe9d6b185ef64e2ad05c0",
+    "sha": "f3fa9de878df229ccdca1f1a1159cfda8bb0fd43",
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-07-31T07:09:32.523Z",
+  "lastChecked": "2026-07-31T12:46:50.666Z",
   "changes": [
+    {
+      "sha": "f3fa9de878df229ccdca1f1a1159cfda8bb0fd43",
+      "date": "2026-07-31T12:29:12Z",
+      "message": "Prints from custom code will now attach a clickable hyperlink that when left clicked will print the name of aura or when right clicked try to open that aura in options (thanks asakawa)",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/f3fa9de878df229ccdca1f1a1159cfda8bb0fd43",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/AuraEnvironment.lua",
+          "status": "modified",
+          "additions": 31,
+          "deletions": 0,
+          "patch": "@@ -413,6 +413,35 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)\n   end\n end\n \n+EventRegistry:RegisterCallback(\"SetItemRef\", function(_, link, text, button, chatFrame)\n+  local linkType, addonName, waID, uid = strsplit(\":\", link)\n+  if linkType == \"addon\" and addonName == \"M33kAuras\" then\n+    if button == \"RightButton\" then\n+      if (not Private.LoadOptions() or not M33kAuras.IsOptionsOpen()) then\n+        M33kAuras.ToggleOptions(nil, Private)\n+        C_Timer.After(1, function() M33kAuras.PickDisplay(waID) end)\n+      else\n+        M33kAuras.PickDisplay(waID)\n+      end\n+    else\n+      print(\"Print from WA:\", [[\"]]..waID..[[\"]], \"|n|cff999999(right click the link above to open in config)|r\")\n+    end\n+  end\n+end)\n+\n+local function getHyperlinkForPrint()\n+  local id, uid = current_aura_env.id, current_uid\n+  if id then\n+    return string.format(\"|Haddon:M33kAuras:%s:%s|h|cff666666[WA]|r|h\", id, uid)\n+  else\n+    return \"Unknown Aura\"\n+  end\n+end\n+\n+local function printID(...)\n+  print(getHyperlinkForPrint(), ...)\n+end\n+\n local function DebugPrint(...)\n   Private.DebugLog.Print(current_uid, ...)\n end\n@@ -587,6 +616,8 @@ local exec_env_custom = setmetatable(CopyTable(mixins),\n       return current_aura_env and Private.AuraEnvironmentWrappedSystem.Get(\"C_Timer\",\n                                       current_aura_env.id, current_aura_env.cloneId)\n                               or C_Timer\n+    elseif k == \"print\" then\n+     return current_aura_env and printID or print\n     elseif blockedFunctions[k] then\n       blocked(k)\n       return function(_) end"
+        }
+      ]
+    },
     {
       "sha": "47383851b57adb1f89afe9d6b185ef64e2ad05c0",
       "date": "2026-07-25T19:11:41Z",
