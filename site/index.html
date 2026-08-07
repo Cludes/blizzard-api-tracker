@@ -801,7 +801,7 @@ footer a:hover { color: var(--text-secondary); }
   </div>
   <div class="header-meta">
     <div class="live-dot" title="Auto-updates every 6 hours"></div>
-    <span>Updated Fri, 07 Aug 2026 07:26:39 GMT</span>
+    <span>Updated Fri, 07 Aug 2026 13:18:17 GMT</span>
   </div>
   <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="site-nav">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -845,13 +845,18 @@ footer a:hover { color: var(--text-secondary); }
   </div>
   <div class="stat-card">
     <div class="stat-label">UI Commits</div>
-    <div class="stat-value">82</div>
+    <div class="stat-value">83</div>
     <div class="stat-sub">Across tracked repos</div>
     <div class="stat-indicator" style="background:var(--purple)"></div>
   </div>
 </div>
   <h3 style="font-size:var(--text-xs);font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:var(--space-2)">Recent Activity</h3>
   <div class="activity-feed">
+    <div class="activity-item">
+      <div class="activity-dot" style="background:var(--orange)"></div>
+      <div class="activity-text"><span class="badge badge-orange">M33kAuras</span> <a href="https://github.com/m33shoq/M33kAuras/commit/b2e246c26b288e77b69782f310e2fa5cc0d25741" target="_blank" rel="noopener">Allow disabling print tracking with `/wa trackprint`</a></div>
+      <div class="activity-time" title="Fri, 07 Aug 2026 12:50:56 GMT">27m ago</div>
+    </div>
     <div class="activity-item">
       <div class="activity-dot" style="background:var(--accent)"></div>
       <div class="activity-text"><span class="badge badge-blue">UI Source</span> <a href="https://github.com/Gethe/wow-ui-source/commit/c878310d8432a65bac029c7bacc24eeb2e662bbe" target="_blank" rel="noopener">12.0.7 (68974)</a></div>
@@ -865,17 +870,12 @@ footer a:hover { color: var(--text-secondary); }
     <div class="activity-item">
       <div class="activity-dot" style="background:var(--orange)"></div>
       <div class="activity-text"><span class="badge badge-orange">M33kAuras</span> <a href="https://github.com/m33shoq/M33kAuras/commit/f3fa9de878df229ccdca1f1a1159cfda8bb0fd43" target="_blank" rel="noopener">Prints from custom code will now attach a clickable hyperlink that when left clicked will print the name of aura or when right clicked try to open that aura in options (thanks asakawa)</a></div>
-      <div class="activity-time" title="Fri, 31 Jul 2026 12:29:12 GMT">6d ago</div>
+      <div class="activity-time" title="Fri, 31 Jul 2026 12:29:12 GMT">7d ago</div>
     </div>
     <div class="activity-item">
       <div class="activity-dot" style="background:var(--orange)"></div>
       <div class="activity-text"><span class="badge badge-orange">M33kAuras</span> <a href="https://github.com/m33shoq/M33kAuras/commit/47383851b57adb1f89afe9d6b185ef64e2ad05c0" target="_blank" rel="noopener">use UnitClass directly for WA_ClassColorName</a></div>
       <div class="activity-time" title="Sat, 25 Jul 2026 19:11:41 GMT">12d ago</div>
-    </div>
-    <div class="activity-item">
-      <div class="activity-dot" style="background:var(--orange)"></div>
-      <div class="activity-text"><span class="badge badge-orange">M33kAuras</span> <a href="https://github.com/m33shoq/M33kAuras/commit/d43ec5e5ee742d250e15d64b4006f99a3677ae97" target="_blank" rel="noopener">LCG update</a></div>
-      <div class="activity-time" title="Sat, 25 Jul 2026 18:57:19 GMT">12d ago</div>
     </div>
     <div class="activity-item">
       <div class="activity-dot" style="background:var(--accent)"></div>
@@ -1022,9 +1022,30 @@ footer a:hover { color: var(--text-secondary); }
       </div>
       <div class="card">
         <div class="card-header">
+          <a href="https://github.com/m33shoq/M33kAuras/commit/b2e246c26b288e77b69782f310e2fa5cc0d25741" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">b2e246c</a>
+          <span class="card-title">Allow disabling print tracking with `/wa trackprint`</span>
+          <span class="muted hide-mobile" title="Fri, 07 Aug 2026 12:50:56 GMT">27m ago</span>
+        </div>
+        <ul class="file-list"><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">M33kAuras/AuraEnvironment.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+2</span>
+            <span class="diff-rem">-2</span>
+          </span>
+        </li><li>
+          <span class="badge badge-blue">modified</span>
+          <span class="mono truncate">M33kAuras/M33kAuras.lua</span>
+          <span class="diff-stats" style="margin-left:auto">
+            <span class="diff-add">+4</span>
+            <span class="diff-rem">-0</span>
+          </span>
+        </li></ul>
+      </div><div class="card">
+        <div class="card-header">
           <a href="https://github.com/m33shoq/M33kAuras/commit/f3fa9de878df229ccdca1f1a1159cfda8bb0fd43" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">f3fa9de</a>
           <span class="card-title">Prints from custom code will now attach a clickable hyperlink that when left clicked will print the name of aura or when right clicked try to open that aura in options (thanks asakawa)</span>
-          <span class="muted hide-mobile" title="Fri, 31 Jul 2026 12:29:12 GMT">6d ago</span>
+          <span class="muted hide-mobile" title="Fri, 31 Jul 2026 12:29:12 GMT">7d ago</span>
         </div>
         <ul class="file-list"><li>
           <span class="badge badge-blue">modified</span>
@@ -1066,7 +1087,7 @@ footer a:hover { color: var(--text-secondary); }
         <div class="card-header">
           <a href="https://github.com/m33shoq/M33kAuras/commit/7c630673967320dcd7c266ddcbca5a37b32fe94f" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">7c63067</a>
           <span class="card-title">Added option to force pixel perfect scale for borders</span>
-          <span class="muted hide-mobile" title="Sat, 25 Jul 2026 12:13:12 GMT">12d ago</span>
+          <span class="muted hide-mobile" title="Sat, 25 Jul 2026 12:13:12 GMT">13d ago</span>
         </div>
         <ul class="file-list"><li>
           <span class="badge badge-blue">modified</span>
@@ -1410,20 +1431,6 @@ footer a:hover { color: var(--text-secondary); }
           <span class="diff-stats" style="margin-left:auto">
             <span class="diff-add">+1</span>
             <span class="diff-rem">-1</span>
-          </span>
-        </li></ul>
-      </div><div class="card">
-        <div class="card-header">
-          <a href="https://github.com/m33shoq/M33kAuras/commit/9b66fc9bbe032f6d45692d45872a4eed5e5755f1" target="_blank" rel="noopener" class="mono" style="flex-shrink:0;color:var(--text-muted)">9b66fc9</a>
-          <span class="card-title">make sure to show proper charge duration when spell is on gcd</span>
-          <span class="muted hide-mobile" title="Sun, 10 May 2026 16:39:18 GMT">10 May 2026</span>
-        </div>
-        <ul class="file-list"><li>
-          <span class="badge badge-blue">modified</span>
-          <span class="mono truncate">M33kAuras/GenericTrigger.lua</span>
-          <span class="diff-stats" style="margin-left:auto">
-            <span class="diff-add">+3</span>
-            <span class="diff-rem">-3</span>
           </span>
         </li></ul>
       </div>

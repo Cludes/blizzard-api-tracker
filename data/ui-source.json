@@ -5,12 +5,36 @@
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
   "m33kauras-midnight": {
-    "sha": "f3fa9de878df229ccdca1f1a1159cfda8bb0fd43",
+    "sha": "b2e246c26b288e77b69782f310e2fa5cc0d25741",
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-08-07T07:26:28.960Z",
+  "lastChecked": "2026-08-07T13:18:03.181Z",
   "changes": [
+    {
+      "sha": "b2e246c26b288e77b69782f310e2fa5cc0d25741",
+      "date": "2026-08-07T12:50:56Z",
+      "message": "Allow disabling print tracking with `/wa trackprint`",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/b2e246c26b288e77b69782f310e2fa5cc0d25741",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/AuraEnvironment.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 2,
+          "patch": "@@ -424,7 +424,7 @@ EventRegistry:RegisterCallback(\"SetItemRef\", function(_, link, text, button, cha\n         M33kAuras.PickDisplay(waID)\n       end\n     else\n-      print(\"Print from WA:\", [[\"]]..waID..[[\"]], \"|n|cff999999(right click the link above to open in config)|r\")\n+      print(\"Print from WA:\", [[\"]]..waID..[[\"]], \"|n|cff999999(right click the link above to open in config, /wa trackprint to toggle the hyperlink display)|r\")\n     end\n   end\n end)\n@@ -617,7 +617,7 @@ local exec_env_custom = setmetatable(CopyTable(mixins),\n                                       current_aura_env.id, current_aura_env.cloneId)\n                               or C_Timer\n     elseif k == \"print\" then\n-     return current_aura_env and printID or print\n+     return current_aura_env and not Private.db.disableTrackPrints and printID or print\n     elseif blockedFunctions[k] then\n       blocked(k)\n       return function(_) end"
+        },
+        {
+          "filename": "M33kAuras/M33kAuras.lua",
+          "status": "modified",
+          "additions": 4,
+          "deletions": 0,
+          "patch": "@@ -185,6 +185,7 @@ function Private.PrintHelp()\n   print(L[\"/wa pstop - Finish profiling\"])\n   print(L[\"/wa pprint - Show the results from the most recent profiling\"])\n   print(L[\"/wa repair - Repair tool\"])\n+  print(L[\"/wa trackprint - Toggle the display of a hyperlink in the chat frame when an aura prints a message.\"])\n   print(L[\"If you require additional assistance, please open a ticket on GitHub or visit our Discord at https://discord.gg/M33kAuras!\"])\n end\n \n@@ -216,6 +217,9 @@ function SlashCmdList.M33kAuras(input)\n     Private.PrintHelp();\n   elseif msg == \"repair\" then\n     StaticPopup_Show(\"M33kAuras_CONFIRM_REPAIR\", nil, nil, {reason = \"user\"})\n+  elseif msg == \"trackprint\" then\n+    Private.db.disableTrackPrints = not Private.db.disableTrackPrints\n+    prettyPrint(L[\"Print tracking is now %s\"]:format(Private.db.disableTrackPrints and L[\"disabled\"] or L[\"enabled\"]))\n   elseif msg == \"ff\" or msg == \"feat\" or msg == \"feature\" then\n     if #args < 2 then\n       local features = Private.Features:ListFeatures()"
+        }
+      ]
+    },
     {
       "sha": "c878310d8432a65bac029c7bacc24eeb2e662bbe",
       "date": "2026-08-03T23:01:08Z",
