@@ -1,5 +1,5 @@
 {
-  "lastChecked": "2026-08-11T13:20:20.255Z",
+  "lastChecked": "2026-08-11T19:11:17.096Z",
   "latestBuild": "12.1.0.69214",
   "builds": [
     {
@@ -7,9 +7,9 @@
       "version": "12.1.0.69214",
       "created_at": "2026-08-10 22:33:02",
       "build_config": "742fe96462414a88e1b1c35f5d09e2c5",
-      "product_config": "",
-      "cdn_config": "47455f3a16fc37b8a34dbeebef587d3f",
-      "is_bgdl": true
+      "product_config": "53020d32e1a25648c8e1eafd5771935f",
+      "cdn_config": "58c5b154cd4305b529d77f8cabe995a0",
+      "is_bgdl": false
     },
     {
       "product": "wow",
