@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "eb941aad028d73ddc69e3e8ef4da709f4d3cd744",
+    "sha": "710f59e457317676c0f699e6addaf2c405c2a1a4",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,81 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-08-12T19:10:10.460Z",
+  "lastChecked": "2026-08-13T02:30:03.899Z",
   "changes": [
+    {
+      "sha": "710f59e457317676c0f699e6addaf2c405c2a1a4",
+      "date": "2026-08-13T01:46:01Z",
+      "message": "12.1.0 (69283)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/710f59e457317676c0f699e6addaf2c405c2a1a4",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DiscordConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 0,
+          "deletions": 1,
+          "patch": "@@ -45,7 +45,6 @@ local DiscordConstants =\n \t\t\t{\n \t\t\t\t{ Name = \"userID\", Type = \"DiscordID\", Nilable = false },\n \t\t\t\t{ Name = \"globalName\", Type = \"string\", Nilable = false },\n-\t\t\t\t{ Name = \"username\", Type = \"string\", Nilable = false },\n \t\t\t\t{ Name = \"type\", Type = \"DiscordDisplayNameType\", Nilable = false, Default = \"Default\" },\n \t\t\t\t{ Name = \"lastOnlineGUID\", Type = \"WOWGUID\", Nilable = false },\n \t\t\t\t{ Name = \"lastOnlineName\", Type = \"string\", Nilable = false },"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DiscordDocumentation.lua",
+          "status": "modified",
+          "additions": 16,
+          "deletions": 0,
+          "patch": "@@ -39,6 +39,22 @@ local Discord =\n \t\t\t\t{ Name = \"userID\", Type = \"DiscordID\", Nilable = false },\n \t\t\t},\n \t\t},\n+\t\t{\n+\t\t\tName = \"GetDiscordUserName\",\n+\t\t\tType = \"Function\",\n+\t\t\tHasRestrictions = true,\n+\t\t\tSecretArguments = \"AllowedWhenUntainted\",\n+\n+\t\t\tArguments =\n+\t\t\t{\n+\t\t\t\t{ Name = \"userID\", Type = \"DiscordID\", Nilable = false },\n+\t\t\t},\n+\n+\t\t\tReturns =\n+\t\t\t{\n+\t\t\t\t{ Name = \"userName\", Type = \"KStringDiscordUserName\", Nilable = false },\n+\t\t\t},\n+\t\t},\n \t\t{\n \t\t\tName = \"GetDisplayNameType\",\n \t\t\tType = \"Function\","
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_Communities/CommunitiesChatFrame.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -304,7 +304,7 @@ function CommunitiesChatMixin:FormatMessage(clubId, streamId, message)\n \t\tlink = GetBNPlayerCommunityLink(name, displayName, message.author.bnetAccountId, clubId, streamId, message.messageId.epoch, message.messageId.position);\n \telseif message.author.discordInfo and message.author.discordInfo.fromDiscord then\n \t\tlocal playerName = ChatFrameUtil.GetNameForDiscordMessage(message.author.discordInfo);\n-\t\tlink = GetDiscordUserCommunityLink(playerName, message.author.bnetAccountId, message.author.discordInfo.userID, message.author.discordInfo.username, clubId, streamId, message.messageId.epoch, message.messageId.position);\n+\t\tlink = GetDiscordUserCommunityLink(playerName, message.author.bnetAccountId, message.author.discordInfo.userID, clubId, streamId, message.messageId.epoch, message.messageId.position);\n \telseif message.author.clubType == Enum.ClubType.Character or message.author.clubType == Enum.ClubType.Guild then\n \t\tlocal classInfo = message.author.classID and C_CreatureInfo.GetClassInfo(message.author.classID);\n \t\tif classInfo then"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_DelvesDifficultyPicker/Blizzard_DelvesDifficultyPicker.lua",
+          "status": "modified",
+          "additions": 27,
+          "deletions": 26,
+          "patch": "@@ -123,8 +123,8 @@ function DelvesDifficultyPickerFrameMixin:OnEvent(event, ...)\n \t\tif self.displayMode == DelvesDisplayMode.Traits then\n \t\t\tself.ChallengesContainerFrame:CheckPartyLeader();\n \t\tend\n-\tend \n-end \n+\tend\n+end\n \n function DelvesDifficultyPickerFrameMixin:GetTieredEntranceTypeData(entranceType)\n \tentranceType = entranceType or self.entranceType;\n@@ -134,7 +134,7 @@ end\n function DelvesDifficultyPickerFrameMixin:OnShow()\n \tself:ClearAllPoints();\n \tself.entranceType = C_DelvesUI.GetTieredEntranceType();\n-\t\n+\n \tself:SetPoint(\"CENTER\", UIParent, \"CENTER\", 0, 110);\n \tFrameUtil.RegisterFrameForEvents(self, DELVES_DIFFICULTY_PICKER_EVENTS);\n \tself.Dropdown:RegisterCallback(DropdownButtonMixin.Event.OnMenuOpen, function(dropdown)\n@@ -155,7 +155,7 @@ function DelvesDifficultyPickerFrameMixin:OnShow()\n \t\tself:TryShowHelpTip();\n \t\tself.newTiers = {};\n \tend);\n-\t\n+\n \tPlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);\n \tself:SetInitialTier();\n \tself:SetupViewRewardButton(self.entranceType);\n@@ -322,10 +322,10 @@ function DelvesDifficultyPickerFrameMixin:CheckForNewTierUnlocks()\n \t\t\t\tself.newTiers[tierInfo.tier] = true;\n \t\t\t\tself.Dropdown.NewLabel:Show();\n \t\t\t\tnewHighestUnlockedTier = tierInfo.tier;\n-\t\t\t-- Tier is locked, but old highest is higher somehow or doesn't exist - we should rollback or reset \n+\t\t\t-- Tier is locked, but old highest is higher somehow or doesn't exist - we should rollback or reset\n \t\t\telseif not tierInfo.unlocked and oldHighestUnlockedTier >= tierInfo.tier then\n \t\t\t\tnewHighestUnlockedTier = tierInfo.tier - 1;\n-\t\t\t\tif newHighestUnlockedTier < 1 or not tierInfos[newHighestUnlockedTier] then \n+\t\t\t\tif newHighestUnlockedTier < 1 or not tierInfos[newHighestUnlockedTier] then\n \t\t\t\t\tnewHighestUnlockedTier = 1;\n \t\t\t\tend\n \t\t\t\tbreak;\n@@ -398,7 +398,8 @@ function DelvesDifficultyPickerFrameMixin:CheckForActiveDelveAndUpdate()\n end\n \n local function IsSelected(tierInfo)\n-\treturn DelvesDifficultyPickerFrame:GetSelectedTierInfo().tier == tierInfo.tier;\n+\tlocal select"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_NewPlayerExperience/Blizzard_Tutorial.lua",
+          "status": "modified",
+          "additions": 6,
+          "deletions": 1,
+          "patch": "@@ -15,6 +15,12 @@ function NewPlayerExperience:Begin()\n end\n \n function NewPlayerExperience:OnTutorialsEnabled()\n+\tif self.IsActive then\n+\t\t-- Guard against a duplicate TutorialsEnabled broadcast re-running TutorialLogic:Begin().\n+\t\treturn;\n+\tend\n+\tself.IsActive = true;\n+\n \tlocal _, _, _, completed = GetAchievementInfo(TutorialManager.NPE_AchievementID);\n \tif ( completed == true ) then\n \t\t-- we have completed the NPE at least once, check to see if Tutorials are on\n@@ -40,7 +46,6 @@ function NewPlayerExperience:OnTutorialsEnabled()\n \tSetCVar(\"nameplateShowEnemies\", 1); -- 0\n \tMainMenuMicroButton_SetAlertsEnabled(false, \"NPEv2\"); --Turns off microtips\n \tTutorialLogic:Begin();\n-\tself.IsActive = true;\n end\n \n function NewPlayerExperience:OnTutorialsDisabled()"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_TutorialManager/Blizzard_TutorialManager.lua",
+          "status": "modified",
+          "additions": 6,
+          "deletions": 1,
+          "patch": "@@ -49,7 +49,12 @@ end\n function TutorialManager:OnSettingsLoaded(cvar, value)\n \tEventRegistry:TriggerEvent(\"TutorialManager.TutorialsInit\");\n \tlocal tutorialsSetting = Settings.GetSetting(\"showTutorials\");\n-\tself.IsActive = tutorialsSetting and tutorialsSetting:GetValue() or false;\n+\tlocal isActive = tutorialsSetting and tutorialsSetting:GetValue() or false;\n+\tif isActive == self.IsActive then\n+\t\t-- Begin() may have already announced this state; only re-broadcast on an actual transition.\n+\t\treturn;\n+\tend\n+\tself.IsActive = isActive;\n \tif self.IsActive then\n \t\tEventRegistry:TriggerEvent(\"TutorialManager.TutorialsEnabled\");\n \telse"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_UIPanels_Game/Mainline/ItemRef.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 2,
+          "patch": "@@ -123,9 +123,9 @@ function GetDiscordUserLink(linkDisplayText, bnetIDAccount, discordUserID, lineI\n \treturn LinkUtil.FormatLink(LinkTypes.DiscordUser, linkDisplayText, bnetIDAccount, discordUserID, lineID or 0, chatGroup, chatTarget or \"\");\n end\n \n-function GetDiscordUserCommunityLink(linkDisplayText, bnetIDAccount, discordUserID, username, clubId, streamId, epoch, position)\n+function GetDiscordUserCommunityLink(linkDisplayText, bnetIDAccount, discordUserID, clubId, streamId, epoch, position)\n \tclubId, streamId, epoch, position = SanitizeCommunityData(clubId, streamId, epoch, position);\n-\treturn LinkUtil.FormatLink(LinkTypes.DiscordUserCommunity, linkDisplayText, bnetIDAccount, discordUserID, username, clubId, streamId, epoch, position);\n+\treturn LinkUtil.FormatLink(LinkTypes.DiscordUserCommunity, linkDisplayText, bnetIDAccount, discordUserID, clubId, streamId, epoch, position);\n end\n \n function GetClubTicketLink(ticketId, clubName, clubType)"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_UIPanels_Game/Mainline/ItemRefHandlers.lua",
+          "status": "modified",
+          "additions": 7,
+          "deletions": 4,
+          "patch": "@@ -316,11 +316,13 @@ LinkUtil.RegisterLinkHandler(LinkTypes.DiscordUser,\n \tfunction(link, text, linkData, contextData)\n \t\tif ( contextData.button == \"RightButton\" ) then\n \n-\t\t\tlocal bnetIDAccount, discordUserID, globalName, lineID, chatGroup, chatTarget = string.split(\":\", linkData.options);\n+\t\t\t-- this should match \"GetDiscordUserLink()\" in ItemRef.lua\n+\t\t\tlocal bnetIDAccount, discordUserID, lineID, chatGroup, chatTarget = string.split(\":\", linkData.options);\n+\t\t\tdiscordUserID = tonumber(discordUserID);\n \n \t\t\tlocal menuContextData = \n \t\t\t{\n-\t\t\t\tname = string.format(DISCORD_USER_WITH_ID, globalName);\n+\t\t\t\tname = string.format(DISCORD_USER_WITH_ID, C_Discord.GetDiscordUserName(discordUserID));\n \t\t\t\tlineID = lineID,\n \t\t\t\tcommunityClubID = nil,\n \t\t\t\tcommunityStreamID = nil,\n@@ -343,11 +345,12 @@ LinkUtil.RegisterLinkHandler(LinkTypes.DiscordUserCommunity,\n \tfunction(link, text, linkData, contextData)\n \t\tif ( contextData.button == \"RightButton\" ) then\n \n-\t\t\tlocal bnetIDAccount, discordUserID, username, clubId, streamId, epoch, position = string.split(\":\", linkData.options);\n+\t\t\tlocal bnetIDAccount, discordUserID, clubId, streamId, epoch, position = string.split(\":\", linkData.options);\n+\t\t\tdiscordUserID = tonumber(discordUserID);\n \n \t\t\tlocal menuContextData = \n \t\t\t{\n-\t\t\t\tname = string.format(DISCORD_USER_WITH_ID, username);\n+\t\t\t\tname = string.format(DISCORD_USER_WITH_ID, C_Discord.GetDiscordUserName(discordUserID));\n \t\t\t\tlineID = nil,\n \t\t\t\tcommunityClubID = clubId,\n \t\t\t\tcommunityStreamID = streamId,"
+        },
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.0.69273\n+12.1.0.69283"
+        }
+      ]
+    },
     {
       "sha": "b4d7af68f758c57a44ad7df4e53f3e233c7d8c49",
       "date": "2026-08-12T09:13:49Z",

@@ -1,46 +1,46 @@
 {
-  "lastChecked": "2026-08-12T02:28:53.465Z",
-  "lastBuild": "12.1.0.69273",
+  "lastChecked": "2026-08-13T02:30:15.461Z",
+  "lastBuild": "12.1.0.69283",
   "tables": {
     "SpellMisc": {
-      "lastChecked": "2026-08-12T02:28:51.620Z",
-      "latestBuild": "12.1.0.69273"
+      "lastChecked": "2026-08-13T02:30:14.168Z",
+      "latestBuild": "12.1.0.69283"
     },
     "SpellAuraOptions": {
-      "lastChecked": "2026-08-12T02:28:52.038Z",
-      "latestBuild": "12.1.0.69273"
+      "lastChecked": "2026-08-13T02:30:14.519Z",
+      "latestBuild": "12.1.0.69283"
     },
     "SpellEffect": {
-      "lastChecked": "2026-08-12T02:28:52.447Z",
-      "latestBuild": "12.1.0.69273"
+      "lastChecked": "2026-08-13T02:30:14.635Z",
+      "latestBuild": "12.1.0.69283"
     },
     "SpellName": {
-      "lastChecked": "2026-08-12T02:28:52.590Z",
-      "latestBuild": "12.1.0.69273"
+      "lastChecked": "2026-08-13T02:30:14.753Z",
+      "latestBuild": "12.1.0.69283"
     },
     "SpellCooldowns": {
-      "lastChecked": "2026-08-12T02:28:52.744Z",
-      "latestBuild": "12.1.0.69273"
+      "lastChecked": "2026-08-13T02:30:14.871Z",
+      "latestBuild": "12.1.0.69283"
     },
     "SpellInterrupts": {
-      "lastChecked": "2026-08-12T02:28:52.884Z",
-      "latestBuild": "12.1.0.69273"
+      "lastChecked": "2026-08-13T02:30:14.990Z",
+      "latestBuild": "12.1.0.69283"
     },
     "SpellCategories": {
-      "lastChecked": "2026-08-12T02:28:53.037Z",
-      "latestBuild": "12.1.0.69273"
+      "lastChecked": "2026-08-13T02:30:15.108Z",
+      "latestBuild": "12.1.0.69283"
     },
     "ChrSpecialization": {
-      "lastChecked": "2026-08-12T02:28:53.177Z",
-      "latestBuild": "12.1.0.69273"
+      "lastChecked": "2026-08-13T02:30:15.226Z",
+      "latestBuild": "12.1.0.69283"
     },
     "Difficulty": {
-      "lastChecked": "2026-08-12T02:28:53.325Z",
-      "latestBuild": "12.1.0.69273"
+      "lastChecked": "2026-08-13T02:30:15.345Z",
+      "latestBuild": "12.1.0.69283"
     },
     "Map": {
-      "lastChecked": "2026-08-12T02:28:53.465Z",
-      "latestBuild": "12.1.0.69273"
+      "lastChecked": "2026-08-13T02:30:15.461Z",
+      "latestBuild": "12.1.0.69283"
     }
   },
   "changes": []
