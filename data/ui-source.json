@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "710f59e457317676c0f699e6addaf2c405c2a1a4",
+    "sha": "31c7f7b9cc79e56c986b365c06a6afbcf3c9177b",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,25 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-08-13T13:25:49.983Z",
+  "lastChecked": "2026-08-13T19:11:06.063Z",
   "changes": [
+    {
+      "sha": "31c7f7b9cc79e56c986b365c06a6afbcf3c9177b",
+      "date": "2026-08-13T19:01:27Z",
+      "message": "12.1.0 (69299)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/31c7f7b9cc79e56c986b365c06a6afbcf3c9177b",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.0.69283\n+12.1.0.69299"
+        }
+      ]
+    },
     {
       "sha": "710f59e457317676c0f699e6addaf2c405c2a1a4",
       "date": "2026-08-13T01:46:01Z",
