@@ -5,12 +5,29 @@
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
   "m33kauras-midnight": {
-    "sha": "b4d7af68f758c57a44ad7df4e53f3e233c7d8c49",
+    "sha": "aa34fa28cc6568d026871d6445f373ff87e8bf1b",
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-08-17T07:07:08.698Z",
+  "lastChecked": "2026-08-17T12:56:10.933Z",
   "changes": [
+    {
+      "sha": "aa34fa28cc6568d026871d6445f373ff87e8bf1b",
+      "date": "2026-08-17T10:34:34Z",
+      "message": "Add a warning in aura trigger about 12.1 restrictions",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/aa34fa28cc6568d026871d6445f373ff87e8bf1b",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAurasOptions/BuffTrigger2.lua",
+          "status": "modified",
+          "additions": 6,
+          "deletions": 0,
+          "patch": "@@ -385,6 +385,12 @@ local function GetBuffTriggerOptions(data, triggernum)\n       name = L[\"Spell Selection Filters\"],\n       order = 11.15,\n     },\n+    restrictions12_1Warning = {\n+      type = \"description\",\n+      width = M33kAuras.doubleWidth,\n+      name = L[\"Since 12.1 when aura secrecy restrictions are active(combat or active m+), M33kAuras can only track \\\"Never Secret\\\" auras by exact spell ID. Name(s), Ignored Name(s), and Ignored Exact Spell ID(s) will no longer work.\"],\n+      order = 11.16,\n+    },\n     use_debuffClass = {\n       type = \"toggle\",\n       width = M33kAuras.normalWidth,"
+        }
+      ]
+    },
     {
       "sha": "31c7f7b9cc79e56c986b365c06a6afbcf3c9177b",
       "date": "2026-08-13T19:01:27Z",
