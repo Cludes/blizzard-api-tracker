@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "31c7f7b9cc79e56c986b365c06a6afbcf3c9177b",
+    "sha": "9f2b839dbb9059f00dedb10628db1da28dd9cad4",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,49 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-08-17T18:48:57.326Z",
+  "lastChecked": "2026-08-18T01:39:04.543Z",
   "changes": [
+    {
+      "sha": "9f2b839dbb9059f00dedb10628db1da28dd9cad4",
+      "date": "2026-08-18T01:01:21Z",
+      "message": "12.1.0 (69382)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/9f2b839dbb9059f00dedb10628db1da28dd9cad4",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.0.69323\n+12.1.0.69382"
+        }
+      ]
+    },
+    {
+      "sha": "862165d6af6e15313db90424b9d04f22c70c3293",
+      "date": "2026-08-17T20:31:08Z",
+      "message": "12.1.0 (69323)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/862165d6af6e15313db90424b9d04f22c70c3293",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "Interface/AddOns/Blizzard_CooldownViewer/CooldownViewer.lua",
+          "status": "modified",
+          "additions": 8,
+          "deletions": 4,
+          "patch": "@@ -964,12 +964,16 @@ local suppressedCooldownCategories = {\n \t[1141] = true, -- Item burst cooldown category\n };\n \n-function ShouldDisplaySpellCooldown(cooldownInfo)\n-\tif not cooldownInfo then\n+function CooldownViewerCooldownItemMixin:ShouldDisplaySpellCooldown(spellCooldownInfo)\n+\tif not spellCooldownInfo then\n \t\treturn false;\n \tend\n \n-\tif cooldownInfo.activeCategory and suppressedCooldownCategories[cooldownInfo.activeCategory] then\n+\tif spellCooldownInfo.activeCategory and suppressedCooldownCategories[spellCooldownInfo.activeCategory] then\n+\t\treturn false;\n+\tend\n+\n+\tif spellCooldownInfo.isOnGCD and self:GetEquipSlot() then\n \t\treturn false;\n \tend\n \n@@ -980,7 +984,7 @@ function CooldownViewerCooldownItemMixin:CheckCacheCooldownValuesFromSpellCooldo\n \tif not self:HasVisualDataSource_Charges() then\n \t\tlocal spellCooldownInfo = self:GetSpellCooldownInfo();\n \n-\t\tif ShouldDisplaySpellCooldown(spellCooldownInfo) then\n+\t\tif self:ShouldDisplaySpellCooldown(spellCooldownInfo) then\n \t\t\tlocal spellID = self:GetSpellID();\n \t\t\t-- CDMDebugGetDebugger():CheckDisplayCooldownInfo(\"CheckCacheCooldownValuesFromSpellCooldown\", spellID, spellCooldownInfo);\n "
+        },
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.0.69299\n+12.1.0.69323"
+        }
+      ]
+    },
     {
       "sha": "aa34fa28cc6568d026871d6445f373ff87e8bf1b",
       "date": "2026-08-17T10:34:34Z",
