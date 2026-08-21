@@ -5,12 +5,50 @@
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
   "m33kauras-midnight": {
-    "sha": "aa34fa28cc6568d026871d6445f373ff87e8bf1b",
+    "sha": "f3478881f05a49babbd3a67ba858717eb58bafaf",
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-08-21T06:57:09.083Z",
+  "lastChecked": "2026-08-21T12:59:59.913Z",
   "changes": [
+    {
+      "sha": "f3478881f05a49babbd3a67ba858717eb58bafaf",
+      "date": "2026-08-21T10:25:56Z",
+      "message": "merge font updates stuff from WeakAuras",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/f3478881f05a49babbd3a67ba858717eb58bafaf",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/RegionTypes/Text.lua",
+          "status": "modified",
+          "additions": 27,
+          "deletions": 10,
+          "patch": "@@ -6,6 +6,7 @@ local Private = select(2, ...)\n \n local SharedMedia = LibStub(\"LibSharedMedia-3.0\");\n local L = M33kAuras.L;\n+local FontStringScaleAnimationMode = Enum and Enum.FontStringScaleAnimationMode\n \n local defaultFont = M33kAuras.defaultFont\n local defaultFontSize = M33kAuras.defaultFontSize\n@@ -107,6 +108,8 @@ local function SetCleanText(self, ...)\n   self:_SetText(...)\n end\n \n+local fontObjectCounter = 0\n+\n local function create(parent)\n   local region = CreateFrame(\"Frame\", nil, parent);\n   region.regionType = \"text\"\n@@ -117,6 +120,11 @@ local function create(parent)\n   text:SetWordWrap(true);\n   text:SetNonSpaceWrap(true);\n \n+  local fontObject = CreateFont(\"M33kAuras-Text-Font\" .. fontObjectCounter)\n+  fontObjectCounter =  fontObjectCounter + 1\n+  region.text:SetFontObject(fontObject)\n+  region.fontObject = fontObject\n+\n   text._SetText = text.SetText;\n   text.SetText = SetCleanText;\n \n@@ -129,21 +137,25 @@ end\n local function modify(parent, region, data)\n   Private.regionPrototype.modify(parent, region, data);\n   local text = region.text;\n+  local fontObject = region.fontObject\n   text:ClearText();\n \n   local fontPath = SharedMedia:Fetch(\"font\", data.font);\n-  text:SetFont(fontPath, data.fontSize, data.outline == \"None\" and \"\" or data.outline);\n+  local outline = data.outline == \"None\" and \"\" or data.outline\n+  local slugFont = data.outline == \"SLUG\" or data.outline == \"OUTLINE|SLUG\" or data.outline == \"THICKOUTLINE|SLUG\"\n+  if text.SetScaleAnimationMode and FontStringScaleAnimationMode then\n+    text:SetScaleAnimationMode(slugFont and FontStringScaleAnimationMode.Vertex or FontStringScaleAnimationMode.FontSize)\n+  end\n+  text:SetFont(fontPath, data.fontSize, outline);\n   if not text:GetFont() and fontPath then -- workaround font not loading correctly\n-    local objectName = \"M33kAuras-Font-\" .. data.font\n-    local fontObject = _G[objectName] or CreateFont(objectName)\n-    fontObject:SetFont(fontPath, data.fontSize, data.outline == \"None\" and \"\" or d"
+        },
+        {
+          "filename": "M33kAuras/SubRegionTypes/SubText.lua",
+          "status": "modified",
+          "additions": 29,
+          "deletions": 9,
+          "patch": "@@ -6,6 +6,7 @@ local Private = select(2, ...)\n \n local SharedMedia = LibStub(\"LibSharedMedia-3.0\");\n local L = M33kAuras.L;\n+local FontStringScaleAnimationMode = Enum and Enum.FontStringScaleAnimationMode\n \n local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20\n \n@@ -175,6 +176,7 @@ local function getRotateOffset(object, degrees, point)\n     return 0, 0;\n   end\n end\n+local fontObjectCounter = 0\n \n local function create()\n   local region = CreateFrame(\"Frame\", nil, UIParent);\n@@ -193,6 +195,11 @@ local function create()\n   text:SetWordWrap(true)\n   text:SetNonSpaceWrap(true)\n \n+  local fontObject = CreateFont(\"M33kAuras-SubText-Font\" .. fontObjectCounter)\n+  fontObjectCounter =  fontObjectCounter + 1\n+  region.text:SetFontObject(fontObject)\n+  region.fontObject = fontObject\n+\n   return region;\n end\n \n@@ -207,27 +214,40 @@ end\n local function modify(parent, region, parentData, data, first)\n   region:SetParent(parent)\n   local text = region.text;\n+  local fontObject = region.fontObject\n \n   local fontPath = SharedMedia:Fetch(\"font\", data.text_font);\n-  text:SetFont(fontPath, data.text_fontSize, data.text_fontType == \"None\" and \"\" or data.text_fontType);\n+  local fontType = data.text_fontType == \"None\" and \"\" or data.text_fontType\n+  local slugFont = data.text_fontType == \"SLUG\" or data.text_fontType == \"OUTLINE|SLUG\" or data.text_fontType == \"THICKOUTLINE|SLUG\"\n+  if text.SetScaleAnimationMode and FontStringScaleAnimationMode then\n+    text:SetScaleAnimationMode(slugFont and FontStringScaleAnimationMode.Vertex or FontStringScaleAnimationMode.FontSize)\n+  end\n+  if text.SetSmoothScaling then\n+    text:SetSmoothScaling(data.text_smoothScaling or false) -- doesn't accept nil\n+  end\n+  text:SetFont(fontPath, data.text_fontSize, fontType);\n   if not text:GetFont() and fontPath then -- workaround font not loading correctly\n-    local objectName = \"M33kAuras-Font-\" .. data.text_font\n-    local fontObject = _G[objectNa"
+        },
+        {
+          "filename": "M33kAurasOptions/RegionOptions/Text.lua",
+          "status": "modified",
+          "additions": 73,
+          "deletions": 20,
+          "patch": "@@ -141,41 +141,70 @@ local function createOptions(id, data)\n       hasAlpha = true,\n       order = 47\n     },\n-\n+    outline = {\n+      type = \"select\",\n+      width = M33kAuras.normalWidth,\n+      name = L[\"Outline\"],\n+      order = 47.5,\n+      values = OptionsPrivate.Private.font_flags,\n+    },\n     fontFlagsDescription = {\n       order = 48,\n       width = M33kAuras.doubleWidth,\n       type = \"execute\",\n       control = \"M33kAurasExpandSmall\",\n       name = function()\n-        local textFlags = OptionsPrivate.Private.font_flags[data.outline]\n+        local hideShadow = data.outline == \"OUTLINE|SLUG\" or data.outline == \"THICKOUTLINE|SLUG\"\n         local color = format(\"%02x%02x%02x%02x\",\n                              data.shadowColor[4] * 255, data.shadowColor[1] * 255,\n                              data.shadowColor[2] * 255, data.shadowColor[3]*255)\n \n-        local textJustify = \"\"\n+        local text = \"\"\n         if data.justify == \"CENTER\" then\n           -- CENTER is default\n         elseif data.justify == \"LEFT\" then\n-          textJustify = \" \" .. L[\"and aligned left\"]\n+          text = L[\"Aligned left\"]\n         elseif data.justify == \"RIGHT\" then\n-          textJustify = \" \" ..  L[\"and aligned right\"]\n+          text =  L[\"Aligned right\"]\n         end\n \n-        local textWidth = \"\"\n         if data.automaticWidth == \"Fixed\" then\n           local wordWarp = \"\"\n           if data.wordWrap == \"WordWrap\" then\n             wordWarp = L[\"wrapping\"]\n           else\n             wordWarp = L[\"eliding\"]\n           end\n-          textWidth = \" \"..L[\"and with width |cFFFF0000%s|r and %s\"]:format(data.fixedWidth, wordWarp)\n+          if text == \"\" then\n+            text = L[\"Width |cFFFF0000%s|r and %s\"]:format(data.fixedWidth, wordWarp)\n+          else\n+            text = text .. \" \" .. L[\"and with width |cFFFF0000%s|r and %s\"]:format(data.fixedWidth, wordWarp)\n+          end\n         end\n \n-        local secondline = L[\"|cFFffcc00Font Flags:|r |cFFFF0000%s|r an"
+        },
+        {
+          "filename": "M33kAurasOptions/SubRegionOptions/SubText.lua",
+          "status": "modified",
+          "additions": 82,
+          "deletions": 32,
+          "patch": "@@ -37,17 +37,10 @@ local function createOptions(parentData, data, index, subIndex)\n     __order = 1,\n     text_visible = {\n       type = \"toggle\",\n-      width = M33kAuras.halfWidth,\n+      width = M33kAuras.normalWidth,\n       order = 9,\n       name = L[\"Show Text\"],\n     },\n-    text_color = {\n-      type = \"color\",\n-      width = M33kAuras.halfWidth,\n-      name = L[\"Color\"],\n-      hasAlpha = true,\n-      order = 10,\n-    },\n     text_text = {\n       type = \"input\",\n       width = M33kAuras.normalWidth - 0.15,\n@@ -111,48 +104,89 @@ local function createOptions(parentData, data, index, subIndex)\n       softMax = 72,\n       step = 1,\n     },\n+\n+    text_color = {\n+      type = \"color\",\n+      width = M33kAuras.normalWidth,\n+      name = L[\"Color\"],\n+      hasAlpha = true,\n+      order = 15,\n+    },\n+    text_fontType = {\n+      type = \"select\",\n+      width = M33kAuras.normalWidth,\n+      name = L[\"Outline\"],\n+      order = 16,\n+      values = OptionsPrivate.Private.font_flags,\n+    },\n     text_fontFlagsDescription = {\n       type = \"execute\",\n       control = \"M33kAurasExpandSmall\",\n       name = function()\n-        local textFlags = OptionsPrivate.Private.font_flags[data.text_fontType]\n+        local hideShadow = data.text_fontType == \"OUTLINE|SLUG\" or data.text_fontType == \"THICKOUTLINE|SLUG\"\n         local color = format(\"%02x%02x%02x%02x\",\n                              data.text_shadowColor[4] * 255, data.text_shadowColor[1] * 255,\n                              data.text_shadowColor[2] * 255, data.text_shadowColor[3]*255)\n \n-        local textJustify = \"\"\n+        local text = \"\"\n         if data.text_justify == \"CENTER\" then\n           -- CENTER is default\n         elseif data.text_justify == \"LEFT\" then\n-          textJustify = \" \" .. L[\"and aligned left\"]\n+          text = L[\"Aligned left\"]\n         elseif data.text_justify == \"RIGHT\" then\n-          textJustify = \" \" ..  L[\"and aligned right\"]\n+          text = L[\"Aligned right\"]\n         end\n \n-       "
+        }
+      ]
+    },
     {
       "sha": "81d15e42f16f3473131880500e7a8c8eb88fa5e6",
       "date": "2026-08-20T19:26:18Z",

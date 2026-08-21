@@ -1,7 +1,16 @@
 {
-  "lastChecked": "2026-08-21T06:57:22.188Z",
-  "latestBuild": "12.1.0.69382",
+  "lastChecked": "2026-08-21T13:00:10.854Z",
+  "latestBuild": "12.1.0.69404",
   "builds": [
+    {
+      "product": "wow",
+      "version": "12.1.0.69404",
+      "created_at": "2026-08-20 19:18:02",
+      "build_config": "cfacf8406f26370199753c06462477ff",
+      "product_config": "53020d32e1a25648c8e1eafd5771935f",
+      "cdn_config": "bcb4e3ada71eeca015d6d77532b266f4",
+      "is_bgdl": false
+    },
     {
       "product": "wow",
       "version": "12.1.0.69382",
@@ -172,15 +181,6 @@
       "product_config": "c5983bded94d708c1958dde1fa6dbf22",
       "cdn_config": "2374bc9b22181d368eab210a0374bdf0",
       "is_bgdl": false
-    },
-    {
-      "product": "wow",
-      "version": "12.0.7.67808",
-      "created_at": "2026-06-15 22:45:02",
-      "build_config": "29c0b9858abc172f5a6a29377c8493d8",
-      "product_config": "53020d32e1a25648c8e1eafd5771935f",
-      "cdn_config": "2374bc9b22181d368eab210a0374bdf0",
-      "is_bgdl": true
     }
   ],
   "diffs": []
