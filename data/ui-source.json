@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "9f2b839dbb9059f00dedb10628db1da28dd9cad4",
+    "sha": "81d15e42f16f3473131880500e7a8c8eb88fa5e6",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,144 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-08-20T18:49:39.172Z",
+  "lastChecked": "2026-08-21T01:44:57.545Z",
   "changes": [
+    {
+      "sha": "81d15e42f16f3473131880500e7a8c8eb88fa5e6",
+      "date": "2026-08-20T19:26:18Z",
+      "message": "12.1.0 (69404)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/81d15e42f16f3473131880500e7a8c8eb88fa5e6",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/SimpleAnimAPIDocumentation.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 2,
+          "patch": "@@ -176,7 +176,7 @@ local SimpleAnimAPI =\n \t\t\tName = \"HookScript\",\n \t\t\tType = \"Function\",\n \t\t\tRequiresAssignableScript = true,\n-\t\t\tSecretArguments = \"NotAllowed\",\n+\t\t\tSecretArguments = \"AllowedWhenUntainted\",\n \t\t\tChecksForbiddenAspects = { { Argument = \"self\", Aspect = Enum.ForbiddenAspect.ScriptBindings } },\n \n \t\t\tArguments =\n@@ -354,7 +354,7 @@ local SimpleAnimAPI =\n \t\t\tName = \"SetScript\",\n \t\t\tType = \"Function\",\n \t\t\tRequiresAssignableScript = true,\n-\t\t\tSecretArguments = \"NotAllowed\",\n+\t\t\tSecretArguments = \"AllowedWhenUntainted\",\n \t\t\tChecksForbiddenAspects = { { Argument = \"self\", Aspect = Enum.ForbiddenAspect.ScriptBindings } },\n \n \t\t\tArguments ="
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/SimpleAnimGroupAPIDocumentation.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 2,
+          "patch": "@@ -162,7 +162,7 @@ local SimpleAnimGroupAPI =\n \t\t\tName = \"HookScript\",\n \t\t\tType = \"Function\",\n \t\t\tRequiresAssignableScript = true,\n-\t\t\tSecretArguments = \"NotAllowed\",\n+\t\t\tSecretArguments = \"AllowedWhenUntainted\",\n \t\t\tChecksForbiddenAspects = { { Argument = \"self\", Aspect = Enum.ForbiddenAspect.ScriptBindings } },\n \n \t\t\tArguments =\n@@ -327,7 +327,7 @@ local SimpleAnimGroupAPI =\n \t\t\tName = \"SetScript\",\n \t\t\tType = \"Function\",\n \t\t\tRequiresAssignableScript = true,\n-\t\t\tSecretArguments = \"NotAllowed\",\n+\t\t\tSecretArguments = \"AllowedWhenUntainted\",\n \t\t\tChecksForbiddenAspects = { { Argument = \"self\", Aspect = Enum.ForbiddenAspect.ScriptBindings } },\n \n \t\t\tArguments ="
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/SimpleScriptRegionAPIDocumentation.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 2,
+          "patch": "@@ -328,7 +328,7 @@ local SimpleScriptRegionAPI =\n \t\t\tName = \"HookScript\",\n \t\t\tType = \"Function\",\n \t\t\tRequiresAssignableScript = true,\n-\t\t\tSecretArguments = \"NotAllowed\",\n+\t\t\tSecretArguments = \"AllowedWhenUntainted\",\n \t\t\tChecksForbiddenAspects = { { Argument = \"self\", Aspect = Enum.ForbiddenAspect.ScriptBindings } },\n \n \t\t\tArguments =\n@@ -640,7 +640,7 @@ local SimpleScriptRegionAPI =\n \t\t\tName = \"SetScript\",\n \t\t\tType = \"Function\",\n \t\t\tRequiresAssignableScript = true,\n-\t\t\tSecretArguments = \"NotAllowed\",\n+\t\t\tSecretArguments = \"AllowedWhenUntainted\",\n \t\t\tChecksForbiddenAspects = { { Argument = \"self\", Aspect = Enum.ForbiddenAspect.ScriptBindings } },\n \n \t\t\tArguments ="
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_CooldownBroadcaster/Blizzard_CooldownBroadcaster.lua",
+          "status": "modified",
+          "additions": 26,
+          "deletions": 5,
+          "patch": "@@ -2,7 +2,9 @@ local ADDON_NAME, namespace = ...;\n local ADDON_PREFIX = \"CDSyncTR\";\n \n local MSG_INF, MSG_CD = \"INF\", \"CD\";\n-local MAX_COOLDOWNS = 6;\n+local MAX_BASE_COOLDOWNS = 6;\n+local MAX_INTERRUPT_COOLDOWNS = 2;\n+local MAX_COOLDOWNS = MAX_BASE_COOLDOWNS + MAX_INTERRUPT_COOLDOWNS;\n local MAX_ADDON_MESSAGE_LENGTH = 250;\n local THIRD_DECIMAL = \"%.3f\";\n local TRUNCATE_ZEROS = \"%.?0+$\";\n@@ -64,12 +66,12 @@ function CooldownSyncRelayMixin:GetSupportedTrackedSpells()\n \tif not specID then\n \t\treturn out, 0;\n \tend\n+\n \tlocal trackedBySpec = namespace.TrackedCooldownsBySpec;\n \tlocal spellList = trackedBySpec and trackedBySpec[specID];\n \tif type(spellList) ~= \"table\" then\n-\t\treturn out, specID;\n+\t\tspellList = {};\n \tend\n-\n \tlocal outLookup = {};\n \tlocal overrideOf = {};  -- overrideSpellID -> baseSpellID\n \n@@ -113,12 +115,31 @@ function CooldownSyncRelayMixin:GetSupportedTrackedSpells()\n \t\tend\n \tend\n \n-\tif #out > MAX_COOLDOWNS then\n-\t\tfor i = #out, MAX_COOLDOWNS + 1, -1 do\n+\tif #out > MAX_BASE_COOLDOWNS then\n+\t\tfor i = #out, MAX_BASE_COOLDOWNS + 1, -1 do\n \t\t\tout[i] = nil;\n \t\tend\n \tend\n \n+\tlocal interruptsBySpec = namespace.InterruptSpellsBySpec;\n+\tlocal interruptList = interruptsBySpec and interruptsBySpec[specID];\n+\tif type(interruptList) == \"table\" then\n+\t\tlocal interruptCount = 0;\n+\t\tfor i = 1, #interruptList do\n+\t\t\tif interruptCount >= MAX_INTERRUPT_COOLDOWNS then\n+\t\t\t\tbreak;\n+\t\t\tend\n+\t\t\tlocal spellID = interruptList[i];\n+\t\t\tif C_SpellBook.IsSpellKnownOrInSpellBook(spellID) then\n+\t\t\t\tif outLookup[spellID] then\n+\t\t\t\t\tremoveFromOut(spellID);\n+\t\t\t\tend\n+\t\t\t\tout[#out + 1] = spellID;\n+\t\t\t\tinterruptCount = interruptCount + 1;\n+\t\t\tend\n+\t\tend\n+\tend\n+\n \treturn out, specID;\n end\n "
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_CooldownBroadcaster/TrackedCooldowns.lua",
+          "status": "modified",
+          "additions": 112,
+          "deletions": 0,
+          "patch": "@@ -271,13 +271,15 @@ namespace.TrackedCooldownsBySpec = {\n \t\t51490, -- Thunderstorm\n \t\t192058, -- Capacitor Totem\n \t\t198103, -- Earth Elemental\n+\t\t51514, -- Hex\n \t},\n \t[263] = { -- Enhancement Shaman\n \t\t114051, -- Ascendance\n \t\t384352, -- Doom Winds\n \t\t108271, -- Astral Shift\n \t\t192058, -- Capacitor Totem\n \t\t198103, -- Earth Elemental\n+\t\t51514, -- Hex\n \t},\n \t[264] = { -- Restoration Shaman\n \t\t108280, -- Healing Tide Totem\n@@ -286,6 +288,7 @@ namespace.TrackedCooldownsBySpec = {\n \t\t108271, -- Astral Shift\n \t\t192058, -- Capacitor Totem\n \t\t198103, -- Earth Elemental\n+\t\t51514, -- Hex\n \t},\n \t[265] = { -- Affliction Warlock\n \t\t205180, -- Summon Darkglare\n@@ -329,6 +332,115 @@ namespace.TrackedCooldownsBySpec = {\n \t\t871, -- Shield Wall\n \t\t97462, -- Rallying Cry\n \t\t46968, -- Shockwave\n+\t\t1160, -- Demoralizing Shout\n+\t},\n+};\n+\n+namespace.InterruptSpellsBySpec = {\n+\t[250] = { -- Blood DK\n+\t\t47528, -- Mind Freeze\n+\t},\n+\t[251] = { -- Frost DK\n+\t\t47528, -- Mind Freeze\n+\t},\n+\t[252] = { -- Unholy DK\n+\t\t47528, -- Mind Freeze\n+\t},\n+\t[577] = { -- Havoc DH\n+\t\t183752, -- Disrupt\n+\t},\n+\t[581] = { -- Vengeance DH\n+\t\t183752, -- Disrupt\n+\t},\n+\t[1480] = { -- Devourer DH\n+\t\t183752, -- Disrupt\n+\t},\n+\t[102] = { -- Balance Druid\n+\t\t78675, -- Solar Beam\n+\t},\n+\t[103] = { -- Feral Druid\n+\t\t106839, -- Skull Bash\n+\t},\n+\t[104] = { -- Guardian Druid\n+\t\t106839, -- Skull Bash\n+\t},\n+\t[1467] = { -- Devastation Evoker\n+\t\t351338, -- Quell\n+\t},\n+\t[1473] = { -- Augmentation Evoker\n+\t\t351338, -- Quell\n+\t},\n+\t[253] = { -- Beast Mastery Hunter\n+\t\t147362, -- Counter Shot\n+\t},\n+\t[254] = { -- Marksmanship Hunter\n+\t\t147362, -- Counter Shot\n+\t},\n+\t[255] = { -- Survival Hunter\n+\t\t187707, -- Muzzle\n+\t},\n+\t[62] = { -- Arcane Mage\n+\t\t2139, -- Counterspell\n+\t},\n+\t[63] = { -- Fire Mage\n+\t\t2139, -- Counterspell\n+\t},\n+\t[64] = { -- Frost Mage\n+\t\t2139, -- Counterspell\n+\t},\n+\t[268] = { -- Brewmaster Monk\n+\t\t116705, -- Spear Hand Strike\n+\t},\n+\t[269] = { -- Windwalker Monk\n+\t\t116705, -- Spear Hand Strike\n+\t},\n+\t[66] = { -- Prote"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_GroupFinder/Mainline/LFGList.lua",
+          "status": "modified",
+          "additions": 4,
+          "deletions": 1,
+          "patch": "@@ -1707,10 +1707,11 @@ function LFGListApplicationViewer_UpdateInfo(self)\n \n \tself.DescriptionFrame.activityName = activityInfo.fullName;\n \n+\tlocal commentText = activeEntryInfo.comment or \"\";\n \tif activeEntryInfo.censored then\n \t\tself.DescriptionFrame.Text:SetFormattedText(\"%s |cff888888- %s|r\", self.DescriptionFrame.activityName, CENSORED_LFG_GROUP_HEADER_WARNNG);\n+\t\tcommentText = \"\";\n \telse\n-\t\tlocal commentText = activeEntryInfo.comment;\n \t\tif ( commentText == \"\" and activeEntryInfo.questID ) then\n \t\t\tcommentText = LFGListUtil_GetQuestDescription(activeEntryInfo.questID);\n \t\tend\n@@ -1721,6 +1722,8 @@ function LFGListApplicationViewer_UpdateInfo(self)\n \t\tend\n \tend\n \n+\tself.DescriptionFrame.comment = commentText;\n+\n \tlocal hasRestrictions = false;\n \tif (activityInfo.isPvpActivity) then\n \t\tif ( activeEntryInfo.requiredItemLevel == 0 ) then"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_HouseEditor/Blizzard_HouseEditorStorageFrame.lua",
+          "status": "modified",
+          "additions": 13,
+          "deletions": 2,
+          "patch": "@@ -450,7 +450,18 @@ end\n -- Expects a HousingFramesUtil.HouseChestTabs value\n function HouseEditorStorageFrameMixin:TrySetTab(tabEnum)\n \tlocal tabID = self.tabsByEnum[tabEnum];\n-\tif not tabID or not self:IsTabAvailable(tabID) then\n+\tif not tabID then\n+\t\treturn false;\n+\tend\n+\n+\t-- There's a chance we may get this as part of an editor mode change that we haven't reacted to yet\n+\t-- So be sure to update that first as it will affect tab availability\n+\tlocal currentMode = C_HouseEditor.GetActiveHouseEditorMode();\n+\tif self.catalogSearcher and currentMode ~= self.catalogSearcher:GetEditorModeContext() then\n+\t\tself:UpdateEditorMode(currentMode);\n+\tend\n+\n+\tif not self:IsTabAvailable(tabID) then\n \t\treturn false;\n \tend\n \n@@ -463,7 +474,7 @@ function HouseEditorStorageFrameMixin:IsTabAvailable(tabID)\n \t\treturn true;\n \tend\n \n-\tlocal showingRooms = self.catalogSearcher:GetEditorModeContext() == Enum.HouseEditorMode.Layout;\n+\tlocal showingRooms = self.catalogSearcher and self.catalogSearcher:GetEditorModeContext() == Enum.HouseEditorMode.Layout;\n \tif tabID == self.marketTabID then\n \t\tlocal marketEnabled = self:ShouldShowMarketTab();\n \t\treturn marketEnabled and not showingRooms;"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_HousingBlueprint/Blizzard_HousingBlueprintCollectionEntry.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 5,
+          "patch": "@@ -43,7 +43,7 @@ function HousingBlueprintCollectionEntryMixin:OnClick(button)\n \tif button == \"RightButton\" then\n \t\tself:ShowContextMenu();\n \telse\n-\t\tif IsModifiedClick(\"CHATLINK\") and not self.blueprintInfo.isAutoSave then\n+\t\tif IsModifiedClick(\"CHATLINK\") then\n \t\t\tlocal blueprintLink = C_HousingBlueprint.GetBlueprintHyperlink(self.blueprintInfo.shareCode);\n \t\t\tif not ChatFrameUtil.InsertLink(blueprintLink) then\n \t\t\t\tChatFrameUtil.OpenChat(blueprintLink);\n@@ -70,10 +70,7 @@ function HousingBlueprintCollectionEntryMixin:OnEnter()\n \t\n \tlocal dateTimeStr = self:GetDateTimeStr(--[[excludeTime=]]false);\n \tGameTooltip_AddNormalLine(tooltip, HOUSING_BLUEPRINT_COLLECTION_TIMESTAMP_FMT:format(dateTimeStr));\n-\n-\tif not self.blueprintInfo.isAutoSave then\n-\t\tGameTooltip_AddInstructionLine(tooltip, CLUB_FINDER_SHIFT_CLICK_LINK);\n-\tend\n+\tGameTooltip_AddInstructionLine(tooltip, CLUB_FINDER_SHIFT_CLICK_LINK);\n \n \tGameTooltip:Show();\n \tself:UpdateStateVisuals();"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_HousingBlueprint/Blizzard_HousingBlueprintUtils.lua",
+          "status": "modified",
+          "additions": 20,
+          "deletions": 20,
+          "patch": "@@ -23,11 +23,6 @@ function HousingBlueprintUtils.CreateBlueprintInfoContextMenu(rootDescription, b\n \t\t\tHousingFramesUtil.ShowBlueprintImport(blueprintInfo.shareCode);\n \t\tend);\n \tend\n-\n-\tif blueprintInfo.isAutoSave then\n-\t\trootDescription:CreateTitle(HOUSING_BLUEPRINT_COLLECTION_READONLY_BACKUP);\n-\t\treturn;\t\t\t\n-\tend\n \t\n \trootDescription:CreateButton(HOUSING_BLUEPRINT_EXPORT_CHAT_LINK_BUTTON, function()\n \t\tlocal blueprintLink = C_HousingBlueprint.GetBlueprintHyperlink(blueprintInfo.shareCode);\n@@ -39,21 +34,26 @@ function HousingBlueprintUtils.CreateBlueprintInfoContextMenu(rootDescription, b\n \t\tCopyToClipboard(blueprintInfo.shareCode);\n \t\tChatFrameUtil.DisplaySystemMessageInPrimary(HOUSING_BLUEPRINT_EXPORT_CLIPBOARD_CONFIRMATION);\n \tend);\n-\trootDescription:CreateButton(HOUSING_BLUEPRINT_COLLECTION_RENAME, function()\n-\t\tHousingBlueprintRenameFrame:ShowForBlueprint(blueprintInfo);\n-\tend);\n-\trootDescription:CreateButton(HOUSING_BLUEPRINT_COLLECTION_DELETE, function()\n-\t\tlocal popupData = {\n-\t\t\tshareCode = blueprintInfo.shareCode,\n-\t\t\tonDeleteConfirmed = params.onDeleteConfirm,\n-\t\t\tonClosed = params.onStateChange,\n-\t\t\tconfirmationString = HOUSING_BLUEPRINT_DELETE_CONFIRMATION_STRING,\n-\t\t};\n-\t\tStaticPopup_Show(\"CONFIRM_BLUEPRINT_DELETE\", HOUSING_BLUEPRINT_DELETE_CONFIRMATION_STRING, nil, popupData);\n-\t\tif params.onStateChange then\n-\t\t\tparams.onStateChange();\n-\t\tend\n-\tend);\n+\n+\tif blueprintInfo.isAutoSave then\n+\t\trootDescription:CreateTitle(HOUSING_BLUEPRINT_COLLECTION_READONLY_BACKUP);\n+\telse\n+\t\trootDescription:CreateButton(HOUSING_BLUEPRINT_COLLECTION_RENAME, function()\n+\t\t\tHousingBlueprintRenameFrame:ShowForBlueprint(blueprintInfo);\n+\t\tend);\n+\t\trootDescription:CreateButton(HOUSING_BLUEPRINT_COLLECTION_DELETE, function()\n+\t\t\tlocal popupData = {\n+\t\t\t\tshareCode = blueprintInfo.shareCode,\n+\t\t\t\tonDeleteConfirmed = params.onDeleteConfirm,\n+\t\t\t\tonClosed = params.onStateChange,\n+\t\t\t\tconfirmationString = HOUSING_BLUEPRINT_DELETE_CONFIRMATION_STRING,\n+\t\t\t};\n+\t\t\tStaticPopup_Show("
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_LFGUtil/Classic/LFGUtil.lua",
+          "status": "modified",
+          "additions": 4,
+          "deletions": 0,
+          "patch": "@@ -123,3 +123,7 @@ function SocialQueueUtil_GetRelationshipInfo(guid, missingNameFallback, clubId)\n \n \treturn name, FRIENDS_WOW_NAME_COLOR_CODE, nil, playerLink;\n end\n+\n+function OverrideLFGSetRoleRestriction()\n+\treturn false;\n+end"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_LFGUtil/Mainline/LFGUtil.lua",
+          "status": "modified",
+          "additions": 4,
+          "deletions": 0,
+          "patch": "@@ -307,3 +307,7 @@ function CreatePendingInviteConfirmationText_GetWarnings(invite, name, guid, rol\n \n \treturn table.concat(warnings, \"\\n\");\n end\n+\n+function OverrideLFGSetRoleRestriction()\n+\treturn C_DelvesUI.HasActiveLFGLair();\n+end"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_PartyPoseUI/Blizzard_PartyPoseUI_Bootstrap.lua",
+          "status": "modified",
+          "additions": 4,
+          "deletions": 4,
+          "patch": "@@ -5,15 +5,15 @@ function PartyPose_LoadUI()\n end\n \n function IslandsPartyPoseFrame_TryShow(mapID, winner)\n-\tif PartyPose_LoadUI() then\n-\t\tIslandsPartyPoseFrame:LoadScreenData(mapID, winner);\n+\tif IslandsPartyPose_LoadUI() then\n+\t\tIslandsPartyPoseFrame:LoadScreen(mapID, winner);\n \t\tShowUIPanel(IslandsPartyPoseFrame);\n \tend\n end\n \n function WarfrontsPartyPoseFrame_TryShow(mapID, winner)\n-\tif PartyPose_LoadUI() then\n-\t\tWarfrontsPartyPoseFrame:LoadScreenData(mapID, winner);\n+\tif WarfrontsPartyPose_LoadUI() then\n+\t\tWarfrontsPartyPoseFrame:LoadScreen(mapID, winner);\n \t\tShowUIPanel(WarfrontsPartyPoseFrame);\n \tend\n end"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_RecruitAFriend/RecruitAFriendSocialView.lua",
+          "status": "modified",
+          "additions": 7,
+          "deletions": 1,
+          "patch": "@@ -113,13 +113,14 @@ function RecruitAFriendFrameSocialViewMixin:OnLoad()\n \tSocialUIScrollableElementExtentPreviewerMixin.OnLoad(self);\n \tself:RegisterScrollableTemplatesForExtentPreview({ self.scrollContentsTemplate });\n \n+\t-- The base OnLoad sets the \"no recruits\" text, so we initialize our scrollbox first\n+\tself:InitializeNoRecruitsScrollBox();\n \tRecruitAFriendFrameMixin.OnLoad(self);\n \n \tself:InitializeRecruitHeader();\n \tself:InitializeTopDividerAnchoring();\n \tself:InitializeActionButton();\n \tself:InitializeClaimOrViewRewardButton();\n-\tself:InitializeNoRecruitsScrollBox();\n end\n \n function RecruitAFriendFrameSocialViewMixin:InitializeRecruitHeader()\n@@ -176,6 +177,9 @@ function RecruitAFriendFrameSocialViewMixin:OnShow()\n \tRecruitAFriendFrameMixin.OnShow(self);\n \n \tEventRegistry:RegisterCallback(\"TextSizeManager.OnTextScaleUpdated\", self.OnTextScaleUpdated, self);\n+\n+\t-- We stop listening for scale changes while we're hidden, so refresh everything that scales with the font size\n+\tself:OnTextScaleUpdated();\n end\n \n function RecruitAFriendFrameSocialViewMixin:OnTextScaleUpdated()\n@@ -236,6 +240,8 @@ end\n \n function RecruitAFriendFrameSocialViewMixin:SetNoRecruitsText(text)\n \tself.NoRecruitsScrollBox.NoRecruitsDesc:SetText(text);\n+\tself.NoRecruitsScrollBox:FullUpdate(ScrollBoxConstants.UpdateImmediately);\n+\tself.NoRecruitsScrollBox:ScrollToBegin();\n end\n \n RecruitAFriendSocialViewActionButtonMixin = CreateFromMixins(SocialUIActionButtonMixin);"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_SocialUI/Mainline/SocialUI.lua",
+          "status": "modified",
+          "additions": 41,
+          "deletions": 4,
+          "patch": "@@ -103,6 +103,7 @@ function SocialUIFrameMixin:InitializeTabSystem()\n \tself:InitializeTabDefinitions();\n \tself.availableTabData = {};\n \tself.selectedTab = nil;\n+\tself.lastSelectedTabType = nil;\n \tself.deferredOpenTabType = nil;\n \tself.deferredSideWindowType = nil;\n \tself.glowingTabTypes = {};\n@@ -139,6 +140,10 @@ local function IsTabSupported(tabData)\n \treturn tabData.IsSupported == nil or tabData.IsSupported();\n end\n \n+local function IsTabEnabled(tabData)\n+\treturn tabData.GetEnabledState == nil or tabData.GetEnabledState();\n+end\n+\n function SocialUIFrameMixin:InitializeTabDefinitions()\n \t-- Example tab definition:\n \t-- [SocialUITabType.MyFeature] =\t\t\t\t\t\t\t-- Add a new SocialUITabType in SocialUISharedConstants.lua\n@@ -304,7 +309,7 @@ function SocialUIFrameMixin:Reset()\n \tif deferredOpenTabType then\n \t\tself:SelectTab(deferredOpenTabType);\n \telse\n-\t\tself:SelectFirstAvailableTab();\n+\t\tself:SelectBestDefaultTab();\n \tend\n \n \tlocal deferredSideWindowType = self:ConsumeDeferredSideWindow();\n@@ -461,9 +466,33 @@ function SocialUIFrameMixin:OnOpenToTabRequested(tabType)\n \tToggleSocialUI();\n end\n \n-function SocialUIFrameMixin:SelectFirstAvailableTab()\n-\tlocal firstAvailableTabType = #self.availableTabData > 0 and self.availableTabData[1].tabType or nil;\n-\tself:SelectTab(firstAvailableTabType);\n+function SocialUIFrameMixin:SelectBestDefaultTab()\n+\tlocal bestDefaultTabType = self:GetBestDefaultTabType();\n+\tself:SelectTab(bestDefaultTabType);\n+end\n+\n+function SocialUIFrameMixin:GetBestDefaultTabType()\n+\tlocal lastSelectedTabData = self:GetDataForAvailableTab(self.lastSelectedTabType);\n+\tlocal canReturnToLastSelectedTab = (lastSelectedTabData ~= nil) and IsTabEnabled(lastSelectedTabData);\n+\tif canReturnToLastSelectedTab then\n+\t\treturn self.lastSelectedTabType;\n+\tend\n+\n+\treturn self:GetFirstEnabledTabType();\n+end\n+\n+function SocialUIFrameMixin:GetFirstEnabledTabType()\n+\tfor _index, tabData in ipairs(self.availableTabData) do\n+\t\tif IsTabEnabled(tabData) then\n+\t\t\treturn tabData.tab"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_SocialUI/Mainline/SocialUITemplates.lua",
+          "status": "modified",
+          "additions": 12,
+          "deletions": 0,
+          "patch": "@@ -9,6 +9,7 @@ function SocialUITabMixin:Initialize(tabData)\n \tself.tooltipText = HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(tabData.tabName);\n \tself.activeAtlas = tabData.iconAtlas;\n \tself.inactiveAtlas = tabData.iconInactiveAtlas or tabData.iconAtlas;\n+\tself:SetChecked(false);\n \tself:RefreshCounter();\n \tself:RefreshEnabledState();\n end\n@@ -378,6 +379,17 @@ local SocialUIBattleNetControlsContainerEvents =\n \t\"FRAMES_LOADED\",\n };\n \n+function SocialUIBattleNetControlsContainerMixin:OnLoad()\n+\t--[[\n+\tText truncation can cause the image substitution markup to be rendered\n+\tinstead of the status icon. Extend the text anchor generously so that the\n+\ttruncation does not occur.\n+\t]]--\n+\tself.OnlineStatusDropdown.Text:ClearAllPoints();\n+\tself.OnlineStatusDropdown.Text:SetPoint(\"TOPRIGHT\", self.OnlineStatusDropdown.Arrow, \"LEFT\", 40, 0);\n+\tself.OnlineStatusDropdown.Text:SetPoint(\"TOPLEFT\", 8, -8);\n+end\n+\n function SocialUIBattleNetControlsContainerMixin:OnShow()\n \tFrameUtil.RegisterFrameForEvents(self, SocialUIBattleNetControlsContainerEvents);\n \tEventRegistry:RegisterCallback(\"TextSizeManager.OnTextScaleUpdated\", self.LayoutPersonalBattleTagDisplayText, self);"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_SocialUI/Mainline/SocialUITemplates.xml",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -138,6 +138,7 @@\n \t\t\t</Layer>\n \t\t</Layers>\n \t\t<Scripts>\n+\t\t\t<OnLoad method=\"OnLoad\"/>\n \t\t\t<OnEvent method=\"OnEvent\"/>\n \t\t\t<OnShow method=\"OnShow\"/>\n \t\t\t<OnHide method=\"OnHide\"/>"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_UnitPopupShared/UnitPopupSharedButtonMixins.lua",
+          "status": "modified",
+          "additions": 5,
+          "deletions": 0,
+          "patch": "@@ -3464,6 +3464,11 @@ function UnitPopupSelectRoleButtonMixin:CanShow(contextData)\n \t\treturn false; \n \tend\n \n+\t-- override to allow set role for LFG Lair\n+\tif OverrideLFGSetRoleRestriction() then\n+\t\treturn true;\n+\tend\n+\n \tif HasLFGRestrictions() then\n \t\treturn false;\n \tend"
+        },
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.0.69382\n+12.1.0.69404"
+        }
+      ]
+    },
     {
       "sha": "9f2b839dbb9059f00dedb10628db1da28dd9cad4",
       "date": "2026-08-18T01:01:21Z",
