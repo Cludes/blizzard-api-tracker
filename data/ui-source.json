@@ -5,12 +5,53 @@
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
   "m33kauras-midnight": {
-    "sha": "f3478881f05a49babbd3a67ba858717eb58bafaf",
+    "sha": "72976d38a7d62bb0f102600e2c2ae881f5ef7dc4",
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-08-23T01:48:21.915Z",
+  "lastChecked": "2026-08-23T06:51:37.359Z",
   "changes": [
+    {
+      "sha": "72976d38a7d62bb0f102600e2c2ae881f5ef7dc4",
+      "date": "2026-08-23T04:06:58Z",
+      "message": "ensure that on unload script fires even if unload happened while options window was open",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/72976d38a7d62bb0f102600e2c2ae881f5ef7dc4",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/M33kAuras.lua",
+          "status": "modified",
+          "additions": 13,
+          "deletions": 2,
+          "patch": "@@ -312,6 +312,8 @@ Private.regions = {};\n -- keyed on id, contains bool indicating whether the aura is loaded\n Private.loaded = {};\n local loaded = Private.loaded;\n+-- Snapshot of the load state when pausing, before options changes can update loaded.\n+local loadedBeforePause = {};\n \n -- contains regions for clones\n Private.clones = {};\n@@ -1503,6 +1505,13 @@ function M33kAuras.IsPaused()\n end\n \n function Private.Pause()\n+  if not paused then\n+    wipe(loadedBeforePause)\n+    for id, isLoaded in pairs(loaded) do\n+      loadedBeforePause[id] = isLoaded\n+    end\n+  end\n+\n   for id, states in pairs(triggerState) do\n     local changed\n     for triggernum in ipairs(states) do\n@@ -2033,14 +2042,15 @@ local function UnloadAll()\n     triggerSystem.UnloadAll();\n   end\n \n-  for id in pairs(loaded) do\n+  for id in pairs(loadedBeforePause) do\n     local func = Private.customActionsFunctions[id] and Private.customActionsFunctions[id][\"unload\"]\n     if func then\n       Private.ActivateAuraEnvironment(id)\n       xpcall(func, Private.GetErrorHandlerId(id, \"onUnload\"))\n       Private.ActivateAuraEnvironment(nil)\n     end\n   end\n+  wipe(loadedBeforePause)\n   wipe(loaded);\n end\n \n@@ -2312,6 +2322,8 @@ function M33kAuras.Rename(data, newid)\n \n   loaded[newid] = loaded[oldid];\n   loaded[oldid] = nil;\n+  loadedBeforePause[newid] = loadedBeforePause[oldid];\n+  loadedBeforePause[oldid] = nil;\n   loadFuncs[newid] = loadFuncs[oldid];\n   loadFuncs[oldid] = nil;\n \n@@ -6784,4 +6796,3 @@ do\n     return data.regionType == \"group\" or data.regionType == \"dynamicgroup\"\n   end\n end\n-"
+        }
+      ]
+    },
+    {
+      "sha": "bc9965fd23c85c1e2bbddd3ab6e90fd340ac2b73",
+      "date": "2026-08-23T03:58:20Z",
+      "message": "small fix",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/bc9965fd23c85c1e2bbddd3ab6e90fd340ac2b73",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAurasOptions/RegionOptions/Text.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 1,
+          "patch": "@@ -252,7 +252,8 @@ local function createOptions(id, data)\n       width = M33kAuras.normalWidth,\n       order = 48.3,\n       hidden = function()\n-        return hiddenFontExtra() or data.outline ~= \"OUTLINE|SLUG\" or data.outline ~= \"THICKOUTLINE|SLUG\"\n+        return hiddenFontExtra()\n+          or (data.outline ~= \"OUTLINE|SLUG\" and data.outline ~= \"THICKOUTLINE|SLUG\")\n       end\n     },\n "
+        },
+        {
+          "filename": "M33kAurasOptions/SubRegionOptions/SubText.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 1,
+          "patch": "@@ -236,7 +236,8 @@ local function createOptions(parentData, data, index, subIndex)\n       width = M33kAuras.normalWidth,\n       order = 47,\n       hidden = function()\n-        return hiddenFontExtra() or data.text_fontType ~= \"OUTLINE|SLUG\" or data.text_fontType ~= \"THICKOUTLINE|SLUG\"\n+        return hiddenFontExtra()\n+          or (data.text_fontType ~= \"OUTLINE|SLUG\" and data.text_fontType ~= \"THICKOUTLINE|SLUG\")\n       end\n     },\n "
+        }
+      ]
+    },
     {
       "sha": "f3478881f05a49babbd3a67ba858717eb58bafaf",
       "date": "2026-08-21T10:25:56Z",
