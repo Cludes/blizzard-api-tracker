@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "86017d5af966acb89d5d46747761c011eb0d783c",
+    "sha": "027d26c3406d3de2cbd2b1f67d468fe033a1bcd4",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,32 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-08-25T12:58:54.466Z",
+  "lastChecked": "2026-08-25T18:48:25.108Z",
   "changes": [
+    {
+      "sha": "027d26c3406d3de2cbd2b1f67d468fe033a1bcd4",
+      "date": "2026-08-25T14:31:13Z",
+      "message": "12.1.0 (69497)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/027d26c3406d3de2cbd2b1f67d468fe033a1bcd4",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/VoiceChatDocumentation.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 2,
+          "patch": "@@ -828,7 +828,7 @@ local VoiceChat =\n \t\t\tArguments =\n \t\t\t{\n \t\t\t\t{ Name = \"voiceID\", Type = \"number\", Nilable = false, NeverSecret = true },\n-\t\t\t\t{ Name = \"text\", Type = \"cstring\", Nilable = false },\n+\t\t\t\t{ Name = \"text\", Type = \"cstring\", Nilable = false, ConditionalSecret = true },\n \t\t\t\t{ Name = \"rate\", Type = \"number\", Nilable = false, NeverSecret = true },\n \t\t\t\t{ Name = \"volume\", Type = \"number\", Nilable = false, NeverSecret = true },\n \t\t\t\t{ Name = \"overlap\", Type = \"bool\", Nilable = false, NeverSecret = true, Default = false },\n@@ -1278,7 +1278,7 @@ local VoiceChat =\n \t\t\tPayload =\n \t\t\t{\n \t\t\t\t{ Name = \"utteranceID\", Type = \"number\", Nilable = false },\n-\t\t\t\t{ Name = \"bookmarkName\", Type = \"cstring\", Nilable = false },\n+\t\t\t\t{ Name = \"bookmarkName\", Type = \"cstring\", Nilable = false, ConditionalSecret = true },\n \t\t\t},\n \t\t},\n \t\t{"
+        },
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.0.69465\n+12.1.0.69497"
+        }
+      ]
+    },
     {
       "sha": "86017d5af966acb89d5d46747761c011eb0d783c",
       "date": "2026-08-24T19:00:56Z",
