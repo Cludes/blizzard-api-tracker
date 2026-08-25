@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "81d15e42f16f3473131880500e7a8c8eb88fa5e6",
+    "sha": "86017d5af966acb89d5d46747761c011eb0d783c",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,46 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-08-24T18:50:10.430Z",
+  "lastChecked": "2026-08-25T01:40:23.400Z",
   "changes": [
+    {
+      "sha": "86017d5af966acb89d5d46747761c011eb0d783c",
+      "date": "2026-08-24T19:00:56Z",
+      "message": "12.1.0 (69465)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/86017d5af966acb89d5d46747761c011eb0d783c",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua",
+          "status": "modified",
+          "additions": 18,
+          "deletions": 0,
+          "patch": "@@ -739,6 +739,8 @@ local Unit =\n \t\t\t{\n \t\t\t\t{ Name = \"unit\", Type = \"UnitToken\", Nilable = false },\n \t\t\t\t{ Name = \"target\", Type = \"UnitToken\", Nilable = false },\n+\t\t\t\t{ Name = \"canAssistImmunePC\", Type = \"bool\", Nilable = false, Default = false },\n+\t\t\t\t{ Name = \"canAssistUninteractable\", Type = \"bool\", Nilable = false, Default = false },\n \t\t\t},\n \n \t\t\tReturns =\n@@ -2192,6 +2194,22 @@ local Unit =\n \t\t\t\t{ Name = \"result\", Type = \"bool\", Nilable = false },\n \t\t\t},\n \t\t},\n+\t\t{\n+\t\t\tName = \"UnitIsPlayerControlledOrGroupMember\",\n+\t\t\tType = \"Function\",\n+\t\t\tSecretArguments = \"AllowedWhenUntainted\",\n+\t\t\tDocumentation = { \"Returns true for 'player', 'pet', 'vehicle', or any of 'partyn', 'partypetn', 'raidn', 'raidpetn'\" },\n+\n+\t\t\tArguments =\n+\t\t\t{\n+\t\t\t\t{ Name = \"unit\", Type = \"UnitToken\", Nilable = false },\n+\t\t\t},\n+\n+\t\t\tReturns =\n+\t\t\t{\n+\t\t\t\t{ Name = \"result\", Type = \"bool\", Nilable = false },\n+\t\t\t},\n+\t\t},\n \t\t{\n \t\t\tName = \"UnitIsPossessed\",\n \t\t\tType = \"Function\","
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_AuraContainer/Blizzard_AuraContainerUtil.lua",
+          "status": "modified",
+          "additions": 12,
+          "deletions": 2,
+          "patch": "@@ -24,11 +24,21 @@ function AuraContainerUtil.CanApplyIdentityCandidateFilters(unitToken, auraData)\n \t\treturn true;\n \tend\n \n-\tif auraData.isHarmful and UnitCanAssist(\"player\", unitToken) then\n+\t-- Filtering helpful spells on the active player / any group members (or their pets) is always allowed.\n+\t-- In some edge cases like with Mind Control, the UnitCanAssist checks below can return false for group members.\n+\tif auraData.isHelpful and UnitIsPlayerControlledOrGroupMember(unitToken) then\n+\t\treturn true;\n+\tend\n+\n+\t-- For the purpose of this test ignore immune/uninteractable restrictions otherwise\n+\t-- filters won't be applied when the player is in a vehicle, teleporting, etc.\n+\tlocal canAssistImmune = true;\n+\tlocal canAssistUninteractable = true;\n+\tif auraData.isHarmful and UnitCanAssist(\"player\", unitToken, canAssistImmune, canAssistUninteractable) then\n \t\treturn false;\n \tend\n \n-\tif auraData.isHelpful and not UnitCanAssist(\"player\", unitToken) then\n+\tif auraData.isHelpful and not UnitCanAssist(\"player\", unitToken, canAssistImmune, canAssistUninteractable) then\n \t\treturn false;\n \tend\n "
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_PrivateAurasUI/Blizzard_PrivateAurasUI.lua",
+          "status": "modified",
+          "additions": 5,
+          "deletions": 1,
+          "patch": "@@ -277,7 +277,11 @@ function PrivateAuraMixin:ApplyVisualAlert(visualAlert)\n \tself.currentVisualAlert = visualAlert;\n \n \tif visualAlert then\n-\t\tself.activeVisualAlert = PrivateVisualAlertsManager:AcquireAlert(visualAlert, self);\n+\t\t-- visualAlert is secret due to the spell ID it is based on being secret.\n+\t\t-- visualAlert then controls template name for the pooled frames but pools do not support template name being a secret.\n+\t\t-- Manually unwrap it here in the secure environment as a workaround.\n+\t\tlocal visualAlertType = secretunwrap(visualAlert); \n+\t\tself.activeVisualAlert = PrivateVisualAlertsManager:AcquireAlert(visualAlertType, self);\n \t\tself.activeVisualAlert:SetManualRelease(true);\n \tend\n end"
+        },
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.0.69404\n+12.1.0.69465"
+        }
+      ]
+    },
     {
       "sha": "72976d38a7d62bb0f102600e2c2ae881f5ef7dc4",
       "date": "2026-08-23T04:06:58Z",
