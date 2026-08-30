@@ -5,12 +5,94 @@
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
   "m33kauras-midnight": {
-    "sha": "72976d38a7d62bb0f102600e2c2ae881f5ef7dc4",
+    "sha": "b793b53009fb0ad0e6cc6bd567bc0901329b2f3a",
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-08-30T11:43:19.723Z",
+  "lastChecked": "2026-08-30T16:30:47.958Z",
   "changes": [
+    {
+      "sha": "b793b53009fb0ad0e6cc6bd567bc0901329b2f3a",
+      "date": "2026-08-30T14:18:11Z",
+      "message": "encode aura id in the print hyperlinks to not mess up hyperlink parsing for auras with `:` in the id",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/b793b53009fb0ad0e6cc6bd567bc0901329b2f3a",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/AuraEnvironment.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 0,
+          "patch": "@@ -417,6 +417,7 @@ end\n \n EventRegistry:RegisterCallback(\"SetItemRef\", function(_, link, text, button, chatFrame)\n   local linkType, addonName, waID, uid = strsplit(\":\", link)\n+  waID = waID and C_EncodingUtil.DecodeBase64(waID)\n   if linkType == \"addon\" and addonName == \"M33kAuras\" then\n     if button == \"RightButton\" then\n       if (not Private.LoadOptions() or not M33kAuras.IsOptionsOpen()) then\n@@ -434,6 +435,7 @@ end)\n local function getHyperlinkForPrint()\n   local id, uid = current_aura_env.id, current_uid\n   if id then\n+    id = C_EncodingUtil.EncodeBase64(id)\n     return string.format(\"|Haddon:M33kAuras:%s:%s|h|cff666666[WA]|r|h\", id, uid)\n   else\n     return \"Unknown Aura\""
+        }
+      ]
+    },
+    {
+      "sha": "ca4718bc45898994a7007065aa164f2cfb88fd08",
+      "date": "2026-08-30T14:11:17Z",
+      "message": "Ensure onUnload and onLoad scripts are ran when re/initializing aura environment",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/ca4718bc45898994a7007065aa164f2cfb88fd08",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/AuraEnvironment.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 0,
+          "patch": "@@ -314,6 +314,7 @@ end\n \n function Private.ClearAuraEnvironment(id)\n   if environment_initialized[id] == 2 then\n+    Private.DeactivateAuraEnvironmentLifecycle(id)\n     Private.SaveAuraEnvironment(id)\n     environment_initialized[id] = nil\n     aura_environments[id] = nil\n@@ -409,6 +410,7 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)\n           xpcall(func, Private.GetErrorHandlerId(id, \"init\"))\n         end\n       end\n+      Private.ActivateAuraEnvironmentLifecycle(id)\n     end\n   end\n end"
+        },
+        {
+          "filename": "M33kAuras/Init.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 0,
+          "patch": "@@ -54,6 +54,8 @@ Private.frames = {}\n --- @class Private\n --- @field ActivateAuraEnvironment fun(id: auraId?, cloneId: string?, state: state?, states: state[]?, config: boolean?)\n --- @field ActivateAuraEnvironmentForRegion fun(region: table, onlyConfig: boolean?)\n+--- @field ActivateAuraEnvironmentLifecycle fun(id: auraId)\n+--- @field DeactivateAuraEnvironmentLifecycle fun(id: auraId)\n --- @field AddToWatchedTriggerDelay fun(id: auraId, triggerNum: number)\n --- @field anchor_frame_types table<anchorFrameTypes, string>\n --- @field anchor_frame_types_group table<anchorFrameTypes, string>"
+        },
+        {
+          "filename": "M33kAuras/M33kAuras.lua",
+          "status": "modified",
+          "additions": 52,
+          "deletions": 15,
+          "patch": "@@ -314,6 +314,12 @@ Private.loaded = {};\n local loaded = Private.loaded;\n -- Displays whose runtime lifecycle is active and therefore still requires an unload.\n local runtimeActiveDisplays = {}\n+-- Aura environments for which the custom onLoad lifecycle has started.\n+local runtimeActiveAuraEnvironments = {}\n+-- Delay onLoad until all trigger systems have finished loading a display.\n+local loadingDisplays = {}\n+-- Delay onLoad until a rebuilt display has evaluated its new load conditions.\n+local rebuildingDisplays = {}\n -- Prevent re-entrant code from loading displays while Resume tears active lifecycles down.\n local unloadingAllDisplays = false\n \n@@ -1828,7 +1834,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)\n         end\n       end\n \n-      if(loaded[id] and not shouldBeLoaded) then\n+      if((loaded[id] or runtimeActiveDisplays[id]) and not shouldBeLoaded) then\n         toUnload[id] = true;\n         changed = changed + 1;\n         for parent in Private.TraverseParents(data) do\n@@ -1999,7 +2005,32 @@ function Private.RegisterLoadEvents()\n   end);\n end\n \n-local function RunCustomUnload(id)\n+local function HasCustomEnvironmentLifecycle(id)\n+  local functions = Private.customActionsFunctions[id]\n+  return functions and (functions[\"load\"] or functions[\"unload\"])\n+end\n+\n+function Private.ActivateAuraEnvironmentLifecycle(id)\n+  if unloadingAllDisplays or loadingDisplays[id] or rebuildingDisplays[id]\n+     or not runtimeActiveDisplays[id] or runtimeActiveAuraEnvironments[id]\n+     or not HasCustomEnvironmentLifecycle(id)\n+  then\n+    return\n+  end\n+\n+  runtimeActiveAuraEnvironments[id] = true\n+  local func = Private.customActionsFunctions[id][\"load\"]\n+  if func then\n+    xpcall(func, Private.GetErrorHandlerId(id, \"onLoad\"))\n+  end\n+end\n+\n+function Private.DeactivateAuraEnvironmentLifecycle(id)\n+  if not runtimeActiveAuraEnvironments[id] then\n+    return\n+  end\n+\n+  runtimeActiveAuraEnvironments[id] = nil\n   local func = Private.customActionsFunctions[id]"
+        }
+      ]
+    },
+    {
+      "sha": "e4913d6a237c02e1f56de0e3386e7f5a3244d63f",
+      "date": "2026-08-30T13:25:52Z",
+      "message": "Fix aura tooltip scanning when spellID cvar is enabled",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/e4913d6a237c02e1f56de0e3386e7f5a3244d63f",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/M33kAuras.lua",
+          "status": "modified",
+          "additions": 9,
+          "deletions": 3,
+          "patch": "@@ -4363,9 +4363,15 @@ function M33kAuras.GetAuraInstanceTooltipInfo(unit, auraInstanceId, filter)\n     if not tooltipData then\n       return nil, \"\", \"none\", 0\n     end\n-    local secondLine = not issecretvalue(tooltipData.lines) and tooltipData.lines[2] -- This is the line we want\n-    if secondLine and secondLine.leftText then\n-      tooltipText = secondLine.leftText\n+    if not issecretvalue(tooltipData.lines) then\n+      -- when spellID in tooltip CVar is enabled the second line is the spellID\n+      local secondLine = tooltipData.lines[2]\n+      local thirdLine = tooltipData.lines[3]\n+      if secondLine and secondLine.leftText and not secondLine.leftText:find(\"^Spell ID:\") then\n+        tooltipText = secondLine.leftText\n+      elseif thirdLine and thirdLine.leftText then\n+        tooltipText = thirdLine.leftText\n+      end\n     end\n     return tooltipData.dataInstanceID, Private.ParseTooltipText(tooltipText)\n   end"
+        }
+      ]
+    },
+    {
+      "sha": "29105d012190fb5e28d9da9d2525975c0ff9deaa",
+      "date": "2026-08-29T23:50:03Z",
+      "message": "Ensure onUnload scripts are executed on rename, deletion and region type change",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/29105d012190fb5e28d9da9d2525975c0ff9deaa",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/M33kAuras.lua",
+          "status": "modified",
+          "additions": 53,
+          "deletions": 33,
+          "patch": "@@ -309,11 +309,13 @@ local loadEvents = {}\n -- All regions keyed on id, has properties: region, regionType, also see clones\n Private.regions = {};\n \n--- keyed on id, contains bool indicating whether the aura is loaded\n+-- Current load evaluation keyed by id. Options may update this while runtime is paused.\n Private.loaded = {};\n local loaded = Private.loaded;\n--- Snapshot of the load state when pausing, before options changes can update loaded.\n-local loadedBeforePause = {};\n+-- Displays whose runtime lifecycle is active and therefore still requires an unload.\n+local runtimeActiveDisplays = {}\n+-- Prevent re-entrant code from loading displays while Resume tears active lifecycles down.\n+local unloadingAllDisplays = false\n \n -- contains regions for clones\n Private.clones = {};\n@@ -1505,13 +1507,6 @@ function M33kAuras.IsPaused()\n end\n \n function Private.Pause()\n-  if not paused then\n-    wipe(loadedBeforePause)\n-    for id, isLoaded in pairs(loaded) do\n-      loadedBeforePause[id] = isLoaded\n-    end\n-  end\n-\n   for id, states in pairs(triggerState) do\n     local changed\n     for triggernum in ipairs(states) do\n@@ -1671,7 +1666,7 @@ end\n local toLoad = {}\n local toUnload = {};\n local function scanForLoadsImpl(toCheck, event, arg1, ...)\n-  if (Private.IsOptionsProcessingPaused()) then\n+  if Private.IsOptionsProcessingPaused() or unloadingAllDisplays then\n     return;\n   end\n \n@@ -2004,9 +1999,18 @@ function Private.RegisterLoadEvents()\n   end);\n end\n \n+local function RunCustomUnload(id)\n+  local func = Private.customActionsFunctions[id] and Private.customActionsFunctions[id][\"unload\"]\n+  if func then\n+    Private.ActivateAuraEnvironment(id)\n+    xpcall(func, Private.GetErrorHandlerId(id, \"onUnload\"))\n+    Private.ActivateAuraEnvironment(nil)\n+  end\n+end\n+\n local function UnloadAll()\n   -- Even though auras are collapsed, their finish animation can be running\n-  for id in pairs(loaded) do\n+  for id in pairs(runtimeActiveDisplays) do\n     if Private.regions[id] and Priv"
+        }
+      ]
+    },
     {
       "sha": "027d26c3406d3de2cbd2b1f67d468fe033a1bcd4",
       "date": "2026-08-25T14:31:13Z",
@@ -8356,24 +8438,6 @@
       "date": "2026-03-28T21:14:41Z",
       "message": "actually fix stagger error xd",
       "url": "https://github.com/m33shoq/M33kAuras/commit/3d76a86cea55eedb0e607c6dd91a934bd9b711c7",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "184246cf698022fde8870be55f9262a4456ad2eb",
-      "date": "2026-03-27T23:57:56Z",
-      "message": "hard embed LibGetFrame 72 from NSRT",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/184246cf698022fde8870be55f9262a4456ad2eb",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "bc919f18db77c204b49e097f87ecb05466a811f2",
-      "date": "2026-03-23T00:31:32Z",
-      "message": "hopefully that will fix the secret value error",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/bc919f18db77c204b49e097f87ecb05466a811f2",
       "repo": "m33kauras-midnight",
       "repoLabel": "M33kAuras (midnight)",
       "files": []
