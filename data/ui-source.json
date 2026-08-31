@@ -5,12 +5,46 @@
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
   "m33kauras-midnight": {
-    "sha": "b793b53009fb0ad0e6cc6bd567bc0901329b2f3a",
+    "sha": "e9802f617d0f2b85b35e36ecd2357a4bcca6d993",
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-08-30T20:53:18.133Z",
+  "lastChecked": "2026-08-31T05:05:57.721Z",
   "changes": [
+    {
+      "sha": "e9802f617d0f2b85b35e36ecd2357a4bcca6d993",
+      "date": "2026-08-30T21:20:17Z",
+      "message": "defer aura env lifecycle until resume",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/e9802f617d0f2b85b35e36ecd2357a4bcca6d993",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/M33kAuras.lua",
+          "status": "modified",
+          "additions": 5,
+          "deletions": 1,
+          "patch": "@@ -3432,7 +3432,11 @@ function pAdd(data, simpleChange)\n         Private.ScanForLoads({[id] = true});\n       end\n       rebuildingDisplays[id] = nil\n-      EnsureAuraEnvironmentLifecycle(id)\n+      -- Imports and options edits can rebuild children before their parents. Resume starts\n+      -- their environment lifecycle after the complete display hierarchy is available.\n+      if not paused then\n+        EnsureAuraEnvironmentLifecycle(id)\n+      end\n     end\n \n     Private.UpdateSoundIcon(data)"
+        }
+      ]
+    },
+    {
+      "sha": "2c2e95a07d802b7ac0416e6cfc5dc5f49159b71b",
+      "date": "2026-08-30T21:08:49Z",
+      "message": "add missing buff trigger secret guards",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/2c2e95a07d802b7ac0416e6cfc5dc5f49159b71b",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/BuffTrigger2.lua",
+          "status": "modified",
+          "additions": 3,
+          "deletions": 3,
+          "patch": "@@ -1829,7 +1829,7 @@ do\n   local _time, _unit, _filter\n \n   local function HandleAura(aura)\n-    if (not aura or not aura.name) then\n+    if (not aura or not aura.name or issecretvalue(aura.spellId)) then\n       return\n     end\n     local debuffClass = FixDebuffClass(aura.dispelName, aura.spellId)\n@@ -4159,7 +4159,7 @@ local AugmentMatchDataMulti\n do\n   local _matchData, _unit, _sourceGUID, _nameKey, _spellKey\n   local function HandleAura(aura)\n-    if (not aura or not aura.name) then\n+    if (not aura or not aura.name or issecretvalue(aura.spellId)) then\n       return\n     end\n     local debuffClass = FixDebuffClass(aura.dispelName, aura.spellId)\n@@ -4266,7 +4266,7 @@ local CheckAurasMulti\n do\n   local _base, _unit\n   local function HandleAura(aura)\n-    if (not aura or not aura.name) then\n+    if (not aura or not aura.name or issecretvalue(aura.spellId)) then\n       return\n     end\n     local debuffClass = FixDebuffClass(aura.dispelName, aura.spellId)"
+        }
+      ]
+    },
     {
       "sha": "b793b53009fb0ad0e6cc6bd567bc0901329b2f3a",
       "date": "2026-08-30T14:18:11Z",
@@ -8420,24 +8454,6 @@
       "date": "2026-03-30T15:44:07Z",
       "message": "improve logic to get duration object for a spell",
       "url": "https://github.com/m33shoq/M33kAuras/commit/155f121e6238380008546a0a6e38a6e0b4fdd65c",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "82a71982cbb5baaa90ce87bb0aba2d81c60bcbf7",
-      "date": "2026-03-30T11:33:31Z",
-      "message": "Bump version to 73 and update Danders frame patterns",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/82a71982cbb5baaa90ce87bb0aba2d81c60bcbf7",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "3d76a86cea55eedb0e607c6dd91a934bd9b711c7",
-      "date": "2026-03-28T21:14:41Z",
-      "message": "actually fix stagger error xd",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/3d76a86cea55eedb0e607c6dd91a934bd9b711c7",
       "repo": "m33kauras-midnight",
       "repoLabel": "M33kAuras (midnight)",
       "files": []
