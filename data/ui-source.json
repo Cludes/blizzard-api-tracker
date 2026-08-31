@@ -5,12 +5,29 @@
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
   "m33kauras-midnight": {
-    "sha": "e9802f617d0f2b85b35e36ecd2357a4bcca6d993",
+    "sha": "997493d03e96ceea49f8edc30801c91465468902",
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-08-31T13:22:10.350Z",
+  "lastChecked": "2026-08-31T22:43:04.891Z",
   "changes": [
+    {
+      "sha": "997493d03e96ceea49f8edc30801c91465468902",
+      "date": "2026-08-31T13:42:21Z",
+      "message": "Allow {rt1} syntax to properly work with secret strings",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/997493d03e96ceea49f8edc30801c91465468902",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/M33kAuras.lua",
+          "status": "modified",
+          "additions": 3,
+          "deletions": 1,
+          "patch": "@@ -6355,7 +6355,9 @@ local textSymbols = {\n function M33kAuras.ReplaceRaidMarkerSymbols(txt)\n   local start = 1\n \n-  if issecretvalue(txt) then return txt end\n+  if issecretvalue(txt) then\n+    return C_ChatInfo.ReplaceIconAndGroupExpressions(txt, false, true)\n+  end\n   while true do\n     local firstChar = txt:find(\"{\", start, true)\n     if not firstChar then"
+        }
+      ]
+    },
     {
       "sha": "e9802f617d0f2b85b35e36ecd2357a4bcca6d993",
       "date": "2026-08-30T21:20:17Z",
@@ -8445,15 +8462,6 @@
       "date": "2026-04-03T02:28:09Z",
       "message": "call ClearText before SetText on text regions to not propagate secret aspect when reusing regions",
       "url": "https://github.com/m33shoq/M33kAuras/commit/6f2c88612964dd9fe2c7a1260b2a2cd3d0f26b28",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "155f121e6238380008546a0a6e38a6e0b4fdd65c",
-      "date": "2026-03-30T15:44:07Z",
-      "message": "improve logic to get duration object for a spell",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/155f121e6238380008546a0a6e38a6e0b4fdd65c",
       "repo": "m33kauras-midnight",
       "repoLabel": "M33kAuras (midnight)",
       "files": []
