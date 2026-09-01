@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "027d26c3406d3de2cbd2b1f67d468fe033a1bcd4",
+    "sha": "8ea15b61e45c0ed4eba01439c90757f86eb78d34",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,67 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-09-01T11:29:20.612Z",
+  "lastChecked": "2026-09-01T16:26:26.803Z",
   "changes": [
+    {
+      "sha": "8ea15b61e45c0ed4eba01439c90757f86eb78d34",
+      "date": "2026-09-01T14:15:56Z",
+      "message": "12.1.0 (69587)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/8ea15b61e45c0ed4eba01439c90757f86eb78d34",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LFGInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 9,
+          "deletions": 0,
+          "patch": "@@ -215,6 +215,15 @@ local LFGInfo =\n \t\t\t\t{ Name = \"result\", Type = \"bool\", Nilable = false },\n \t\t\t},\n \t\t},\n+\t\t{\n+\t\t\tName = \"IsInMatchmadeRaidWithoutRoleRequirements\",\n+\t\t\tType = \"Function\",\n+\n+\t\t\tReturns =\n+\t\t\t{\n+\t\t\t\t{ Name = \"result\", Type = \"bool\", Nilable = false },\n+\t\t\t},\n+\t\t},\n \t\t{\n \t\t\tName = \"IsLFDEnabled\",\n \t\t\tType = \"Function\","
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_CompactRaidFrames/Blizzard_CompactRaidFrameContainer.lua",
+          "status": "modified",
+          "additions": 8,
+          "deletions": 2,
+          "patch": "@@ -24,6 +24,7 @@ function CompactRaidFrameContainerMixin:OnLoad()\n \tself:RegisterEvent(\"PLAYER_ENTERING_WORLD\");\n \tself:RegisterEvent(\"GROUP_ROSTER_UPDATE\");\n \tself:RegisterEvent(\"UNIT_PET\");\n+\tself:RegisterEvent(\"LFG_UPDATE\");\n \n \tEventRegistry:RegisterCallback(\"EditMode.Exit\", function()\n \t\tself:ApplyMultipleToFrames(\n@@ -67,7 +68,7 @@ function CompactRaidFrameContainerMixin:OnEvent(event, ...)\n \t\t\t\tself:TryUpdate();\n \t\t\tend\n \t\tend\n-\telseif event == \"PLAYER_ENTERING_WORLD\" then\n+\telseif event == \"PLAYER_ENTERING_WORLD\" or event == \"LFG_UPDATE\" then\n \t\tself:TryUpdate();\n \tend\n end\n@@ -126,6 +127,11 @@ function CompactRaidFrameContainerMixin:SetDisplayMainTankAndAssist(displayFlagg\n \tend\n end\n \n+function CompactRaidFrameContainerMixin:ShouldDisplayMainTankAndAssist()\n+\t--Matchmade raids with no role requirements can end up with arbitrarily many auto-flagged main tanks.\n+\treturn self.displayFlaggedMembers and not C_LFGInfo.IsInMatchmadeRaidWithoutRoleRequirements();\n+end\n+\n function CompactRaidFrameContainerMixin:SetBorderShown(showBorder)\n \tself.showBorder = showBorder;\n \tself:UpdateBorder();\n@@ -190,7 +196,7 @@ function CompactRaidFrameContainerMixin:LayoutFrames()\n \n \tFlowContainer_PauseUpdates(self);\t--We don't want to update it every time we add an item.\n \n-\tif self.displayFlaggedMembers then\n+\tif self:ShouldDisplayMainTankAndAssist() then\n \t\tself:AddFlaggedUnits();\n \t\tFlowContainer_AddLineBreak(self);\n \tend"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_CompactRaidFrames/Classic/Blizzard_CompactRaidFrameManager.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 2,
+          "patch": "@@ -591,8 +591,7 @@ function CRFFlowFilterFunc(token)\n \t\t\treturn false;\n \t\tend\n \n-\t\tlocal showingMTandMA = CompactRaidFrameManager_GetSetting(\"DisplayMainTankAndAssist\");\n-\t\tif ( raidRole and (showingMTandMA and showingMTandMA ~= \"0\") ) then\t--If this character is already displayed as a Main Tank/Main Assist, we don't want to show them a second time\n+\t\tif ( raidRole and CompactRaidFrameManager.container:ShouldDisplayMainTankAndAssist() ) then\t--If this character is already displayed as a Main Tank/Main Assist, we don't want to show them a second time\n \t\t\treturn false;\n \t\tend\n \tend"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_CompactRaidFrames/Mainline/Blizzard_CompactRaidFrameManager.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 2,
+          "patch": "@@ -917,8 +917,7 @@ function CRFFlowFilterFunc(token)\n \t\t\treturn false;\n \t\tend\n \n-\t\tlocal showingMTandMA = CompactRaidFrameManager_GetSetting(\"DisplayMainTankAndAssist\");\n-\t\tif ( raidRole and (showingMTandMA and showingMTandMA ~= \"0\") ) then\t--If this character is already displayed as a Main Tank/Main Assist, we don't want to show them a second time\n+\t\tif ( raidRole and CompactRaidFrameManager.container:ShouldDisplayMainTankAndAssist() ) then\t--If this character is already displayed as a Main Tank/Main Assist, we don't want to show them a second time\n \t\t\treturn false;\n \t\tend\n \tend"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_NamePlates/Blizzard_NamePlateUnitFrame.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -574,7 +574,7 @@ end\n function NamePlateUnitFrameMixin:UpdateHitTestArea(setupOptions)\n \tif self:IsShowOnlyName() then\n \t\tself:GetNamePlateFrame():ClearAllHitTestPoints();\n-\telseif setupOptions.unitNameInsideHealthBar then\n+\telseif setupOptions.unitNameAnchorStyle == NamePlateConstants.NAME_ANCHOR_STYLES.InsideHealthBar then\n \t\tlocal extraXOffset = 10;\n \t\tlocal extraYOffset = setupOptions.healthBarHeight / 2;\n "
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_PlayerChoice/Blizzard_PlayerChoiceOptionBase.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -596,7 +596,7 @@ function PlayerChoiceBaseOptionButtonsContainerMixin:SetPaddedHeight(paddedHeigh\n end\n \n function PlayerChoiceBaseOptionButtonsContainerMixin:Setup(optionInfo, playerChoiceLayout, parentOption)\n-\tlocal buttonStride = math.max(math.floor(#optionInfo.buttons / self.numColumns), 1);\n+\tlocal buttonStride = math.max(math.ceil(#optionInfo.buttons / self.numColumns), 1);\n \n \tif buttonStride ~= self.lastStride then\n \t\tself.layout = AnchorUtil.CreateGridLayout(GridLayoutMixin.Direction.TopLeftToBottomRightVertical, buttonStride, 20, 5);"
+        },
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.0.69497\n+12.1.0.69587"
+        }
+      ]
+    },
     {
       "sha": "997493d03e96ceea49f8edc30801c91465468902",
       "date": "2026-08-31T13:42:21Z",
@@ -8453,15 +8512,6 @@
       "date": "2026-04-03T02:40:22Z",
       "message": "protect from secrets in DebugPrint",
       "url": "https://github.com/m33shoq/M33kAuras/commit/ab1c26c631253832835529e53cf1d465ff4bce1d",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "6f2c88612964dd9fe2c7a1260b2a2cd3d0f26b28",
-      "date": "2026-04-03T02:28:09Z",
-      "message": "call ClearText before SetText on text regions to not propagate secret aspect when reusing regions",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/6f2c88612964dd9fe2c7a1260b2a2cd3d0f26b28",
       "repo": "m33kauras-midnight",
       "repoLabel": "M33kAuras (midnight)",
       "files": []
