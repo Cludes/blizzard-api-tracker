@@ -5,12 +5,29 @@
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
   "m33kauras-midnight": {
-    "sha": "997493d03e96ceea49f8edc30801c91465468902",
+    "sha": "130c7a04ac58821be2e18854c1e7a159ffd051dc",
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-09-03T11:01:15.359Z",
+  "lastChecked": "2026-09-03T16:14:55.633Z",
   "changes": [
+    {
+      "sha": "130c7a04ac58821be2e18854c1e7a159ffd051dc",
+      "date": "2026-09-03T10:34:51Z",
+      "message": "Update LibGetFrame to v77",
+      "url": "https://github.com/m33shoq/M33kAuras/commit/130c7a04ac58821be2e18854c1e7a159ffd051dc",
+      "repo": "m33kauras-midnight",
+      "repoLabel": "M33kAuras (midnight)",
+      "files": [
+        {
+          "filename": "M33kAuras/Libs/LibGetFrame-1.0/LibGetFrame-1.0.lua",
+          "status": "modified",
+          "additions": 27,
+          "deletions": 9,
+          "patch": "@@ -1,5 +1,5 @@\n local MAJOR_VERSION = \"LibGetFrame-1.0\"\n-local MINOR_VERSION = 74\n+local MINOR_VERSION = 77\n if not LibStub then\n   error(MAJOR_VERSION .. \" requires LibStub.\")\n end\n@@ -41,11 +41,14 @@ local defaultFramePriorities = {\n   \"^AshToAshUnit%d+Unit%d+\", -- AshToAsh\n   \"^Cell\", -- Cell\n   \"^XPerl_Raid_Grp\", -- xperl\n-  \"^DandersRaidGroup%dHeader$\", -- Danders (New format?\n-  \"^DandersRaidGroup%dHeaderUnitButton%d+$\", -- Danders (New format?)\n+  \"^DandersRaidGroup%dHeader$\", -- Danders\n+  \"^DandersRaidGroup%dHeaderUnitButton%d+$\", -- Danders\n   \"^DandersFlatRaidHeader$\", -- Danders (alternative style name)\n   \"^DandersFlatRaidHeaderUnitButton%d+$\", -- Danders (alternative style name)\n-  \"^DandersRaidFrame\", -- Danders (depricated?)\n+  \"^DandersRaidFrame\", -- Danders\n+  \"^ERFExtraFrame%d+$\", -- EllesmereUI (extra/spotlight frames, preferred over the regular raid frames)\n+  \"^ERFGroupHeader%dUnitButton%d+$\", -- EllesmereUI (separated groups)\n+  \"^ERFFlatHeaderUnitButton%d+$\", -- EllesmereUI (merged groups)\n   -- party frames\n   \"^AleaUI_GroupHeader\", -- Alea\n   \"^SUFHeaderparty\", --suf\n@@ -56,8 +59,11 @@ local defaultFramePriorities = {\n   \"^XPerl_party%d\", -- xperl\n   \"^DandersPartyHeader$\", -- Danders\n   \"^DandersPartyHeaderUnitButton%d$\", -- Danders\n-  \"^DandersFrames_Party\", -- Danders (depricated?)\n-  \"^DandersFrames_Player$\", -- Danders (used for party frames) (depricated?)\n+  \"^DandersFrames_Party\", -- Danders\n+  \"^DandersFrames_Player$\", -- Danders (used for party frames)\n+  \"^ERFPartyHeaderUnitButton%d+$\", -- EllesmereUI\n+  \"^ERFPartySelfButton$\", -- EllesmereUI (static self frame)\n+  \"^SpotlightsSlotHeader%d+UnitButton%d+$\", -- Spotlights\n   \"^CompactRaid\", -- blizz\n   \"^CompactParty\", -- blizz\n   \"^PartyFrame\",\n@@ -67,6 +73,7 @@ local defaultFramePriorities = {\n   \"^LUFHeaderbossUnitButton%d$\", -- luf\n   \"^Boss%dTargetFrame$\", -- blizz\n   \"^UUF_Boss%d$\", -- unhalted\n+  \"^EllesmereUIUnitFrames_Boss%d$\", -- EllesmereUI\n   -- player frame\n   \"^InvenU"
+        }
+      ]
+    },
     {
       "sha": "8ea15b61e45c0ed4eba01439c90757f86eb78d34",
       "date": "2026-09-01T14:15:56Z",
@@ -8503,15 +8520,6 @@
       "date": "2026-04-03T22:15:44Z",
       "message": "fix stack displays for some spells where spell count should be shown but new api dont want to do it properly",
       "url": "https://github.com/m33shoq/M33kAuras/commit/cb5169626efe89d77eaf2d4ccdd59da4971f1678",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "ab1c26c631253832835529e53cf1d465ff4bce1d",
-      "date": "2026-04-03T02:40:22Z",
-      "message": "protect from secrets in DebugPrint",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/ab1c26c631253832835529e53cf1d465ff4bce1d",
       "repo": "m33kauras-midnight",
       "repoLabel": "M33kAuras (midnight)",
       "files": []
