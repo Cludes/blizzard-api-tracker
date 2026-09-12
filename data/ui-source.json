@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "8ea15b61e45c0ed4eba01439c90757f86eb78d34",
+    "sha": "4e3cbb8c5609e4bfc332c0aebbfa4d79731fab59",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,60 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-09-12T15:23:37.609Z",
+  "lastChecked": "2026-09-12T20:25:43.129Z",
   "changes": [
+    {
+      "sha": "4e3cbb8c5609e4bfc332c0aebbfa4d79731fab59",
+      "date": "2026-09-12T19:01:30Z",
+      "message": "12.1.0 (69814)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/4e3cbb8c5609e4bfc332c0aebbfa4d79731fab59",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CatalogShopDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -772,6 +772,7 @@ local CatalogShop =\n \t\t\t\t{ Name = \"decorQuantity\", Type = \"DecorQuantity\", Nilable = true },\n \t\t\t\t{ Name = \"isVCProduct\", Type = \"bool\", Nilable = false },\n \t\t\t\t{ Name = \"containsHousingItem\", Type = \"bool\", Nilable = false },\n+\t\t\t\t{ Name = \"deferredGameTimeDays\", Type = \"number\", Nilable = false },\n \t\t\t},\n \t\t},\n \t\t{"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_CatalogShop/Blizzard_CatalogShop_Model.lua",
+          "status": "modified",
+          "additions": 8,
+          "deletions": 4,
+          "patch": "@@ -219,10 +219,14 @@ function CatalogShopModelSceneContainerFrameMixin:OnProductSelected(data, forceS\n \t\tdisplayData.modelSceneContext = CatalogShopConstants.ModelSceneContext.PreviewScene;\n \t\tif productType == CatalogShopConstants.ProductType.Bundle then\n \t\t\tforceHideFormButtons = true;\n-\t\t\tlocal forceHidePlayer = false;\n-\t\t\tlocal bestActorTag = CatalogShopUtil.SetupModelSceneForBundle(modelScene, defaultModelSceneID, displayData, modelLoadedCB, forceHidePlayer);\n-\t\t\tmodelScene:Show();\n-\t\t\tcurrentActor = modelScene:GetActorByTag(bestActorTag);\n+\t\t\tif defaultModelSceneID > 0 then\n+\t\t\t\tlocal forceHidePlayer = false;\n+\t\t\t\tlocal bestActorTag = CatalogShopUtil.SetupModelSceneForBundle(modelScene, defaultModelSceneID, displayData, modelLoadedCB, forceHidePlayer);\n+\t\t\t\tmodelScene:Show();\n+\t\t\t\tcurrentActor = modelScene:GetActorByTag(bestActorTag);\n+\t\t\telse\n+\t\t\t\tmodelScene:Hide();\n+\t\t\tend\n \t\telse\n \t\t\tif productType == CatalogShopConstants.ProductType.Mount then\n \t\t\t\tforceSceneChange = true;--forceSceneChange or self.previousMainModelSceneID ~= defaultModelSceneID;"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_CatalogShop/Blizzard_CatalogShop_ProductCards.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 6,
+          "patch": "@@ -112,11 +112,8 @@ local function SubTimeAndGameTimeCardLayout(card)\n \tlocal container = card.ForegroundContainer;\n \tlocal displayInfo = C_CatalogShop.GetCatalogShopProductDisplayInfo(card.productInfo.catalogShopProductID);\n \n-\t-- Skip time-specific display for unknown (cross-game) licenses\n-\tif displayInfo.hasUnknownLicense then\n-\t\tcontainer.RectIcon:Hide();\n-\t\treturn;\n-\tend\n+\t-- Subs and game time don't typically interact with the license system. Deferred time might, but the license can be ignored here.\n+\t-- We shouldn't need to early exit like in other unknown license scenarios.\n \n \tlocal atlasWidth = 140;\n \tlocal atlasHeight = 140;\n@@ -330,7 +327,6 @@ local function AccessCardLayout(card)\n \n \t-- Skip access-specific display for unknown (cross-game) licenses\n \tif displayInfo.hasUnknownLicense then\n-\t\tcontainer.RectIcon:Hide();\n \t\treturn;\n \tend\n "
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_CatalogShop/Blizzard_CatalogShop_Products.lua",
+          "status": "modified",
+          "additions": 13,
+          "deletions": 13,
+          "patch": "@@ -277,6 +277,19 @@ function CatalogShopProductContainerFrameMixin:OnProductSelected(productInfo)\n \t\ticonFrame.Icon:SetAtlas(atlas);\n \t\ticonFrame.IconBorder:Hide();\n \t\ticonFrame.Icon:SetSize(224, 224);\n+\telseif productType == CatalogShopConstants.ProductType.Subscription or productType == CatalogShopConstants.ProductType.GameTime then\n+\t\t-- Both sub time and game time have the same display type, but their Atlases are distinct\n+\t\tCatalogShopFrame.ServicesContainerFrame:Show();\n+\t\tlocal iconFrame = CatalogShopFrame.ServicesContainerFrame.AnimContainer.ServicesIconFrame;\n+\t\ticonFrame.ProductCounter:Hide();\n+\t\ticonFrame.ProductCounterText:Hide();\n+\t\ticonFrame.IconBorder:Hide();\n+\t\ticonFrame.Icon:SetSize(320, 320);\n+\n+\t\tlocal timeTexture = CatalogShopUtil.GetTimeTexture(self.selectedProductInfo, productType);\n+\t\tif timeTexture then\n+\t\t\ticonFrame.Icon:SetAtlas(timeTexture);\n+\t\tend\n \telseif displayInfo.hasUnknownLicense then\n \t-- An Unknown License implies we have a product from Catalog that isn't known by our server (it was returned as a missing license)\n \t-- So in this case we are currently assuming this means the product is for another game (which could be another flavor of WoW)\n@@ -303,19 +316,6 @@ function CatalogShopProductContainerFrameMixin:OnProductSelected(productInfo)\n \t\t\ticonFrame.ProductCounterText:Hide();\n \t\tend\n \t\ticonFrame.Icon:SetSize(224, 224);\n-\telseif productType == CatalogShopConstants.ProductType.Subscription or productType == CatalogShopConstants.ProductType.GameTime then\n-\t\t-- Both sub time and game time have the same display type, but their Atlases are distinct\n-\t\tCatalogShopFrame.ServicesContainerFrame:Show();\n-\t\tlocal iconFrame = CatalogShopFrame.ServicesContainerFrame.AnimContainer.ServicesIconFrame;\n-\t\ticonFrame.ProductCounter:Hide();\n-\t\ticonFrame.ProductCounterText:Hide();\n-\t\ticonFrame.IconBorder:Hide();\n-\t\ticonFrame.Icon:SetSize(320, 320);\n-\n-\t\tlocal timeTexture = CatalogShopUtil.GetTimeTexture(self.selectedProductInfo, productType);\n-\t\tif t"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_CatalogShopSharedUtil/Blizzard_CatalogShop_SharedUtil.lua",
+          "status": "modified",
+          "additions": 14,
+          "deletions": 2,
+          "patch": "@@ -1259,10 +1259,22 @@ function CatalogShopUtil.GetTimeTexture(productInfo, productType)\n \t\treturn nil;\n \tend\n \n-\tlocal textureName = prefix..\"-time-\"..productInfo.licenseTermDuration;\n+\tlocal termDuration;\n+\tlocal usingDeferredTimeDays = false;\n+\tif productInfo.licenseTermDuration > 0 then\n+\t\ttermDuration = productInfo.licenseTermDuration;\n+\telseif productInfo.deferredGameTimeDays > 0 then\n+\t\ttermDuration = productInfo.deferredGameTimeDays;\n+\t\tusingDeferredTimeDays = true;\n+\telse\n+\t\treturn nil;\n+\tend\n+\n+\tlocal textureName = prefix..\"-time-\"..termDuration;\n \tif productInfo.licenseTermType == CatalogShopConstants.LicenseTermTypes.Months then\n \t\treturn textureName..\"mo\";\n-\telseif productInfo.licenseTermType == CatalogShopConstants.LicenseTermTypes.Days then\n+\telseif productInfo.licenseTermType == CatalogShopConstants.LicenseTermTypes.Days or usingDeferredTimeDays then\n+\t\t-- Currently, we assume that any deferred time displays are in days\n \t\treturn textureName..\"day\";\n \telse\n \t\treturn nil;"
+        },
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.0.69587\n+12.1.0.69814"
+        }
+      ]
+    },
     {
       "sha": "130c7a04ac58821be2e18854c1e7a159ffd051dc",
       "date": "2026-09-03T10:34:51Z",
@@ -8511,15 +8563,6 @@
       "date": "2026-04-06T21:06:51Z",
       "message": "12.0.5 SetFont fixes",
       "url": "https://github.com/m33shoq/M33kAuras/commit/751e98208f415c6bf47aef720d0eec8b7e75bcaa",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "cb5169626efe89d77eaf2d4ccdd59da4971f1678",
-      "date": "2026-04-03T22:15:44Z",
-      "message": "fix stack displays for some spells where spell count should be shown but new api dont want to do it properly",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/cb5169626efe89d77eaf2d4ccdd59da4971f1678",
       "repo": "m33kauras-midnight",
       "repoLabel": "M33kAuras (midnight)",
       "files": []
