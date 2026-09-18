@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "4e3cbb8c5609e4bfc332c0aebbfa4d79731fab59",
+    "sha": "78282522143e25c3540583734fd192c3d69be910",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,25 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-09-18T16:13:56.801Z",
+  "lastChecked": "2026-09-18T20:45:11.040Z",
   "changes": [
+    {
+      "sha": "78282522143e25c3540583734fd192c3d69be910",
+      "date": "2026-09-18T20:01:27Z",
+      "message": "12.1.0 (69875)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/78282522143e25c3540583734fd192c3d69be910",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.0.69814\n+12.1.0.69875"
+        }
+      ]
+    },
     {
       "sha": "4e3cbb8c5609e4bfc332c0aebbfa4d79731fab59",
       "date": "2026-09-12T19:01:30Z",
@@ -8554,15 +8571,6 @@
       "date": "2026-04-06T21:25:47Z",
       "message": "Adjust migration process and add M33KAURAS_WIPE_ALL_SETTINGS global function for clear install",
       "url": "https://github.com/m33shoq/M33kAuras/commit/0d8406ba834c3a9fedf8e14c92179c84f9047e7c",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "751e98208f415c6bf47aef720d0eec8b7e75bcaa",
-      "date": "2026-04-06T21:06:51Z",
-      "message": "12.0.5 SetFont fixes",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/751e98208f415c6bf47aef720d0eec8b7e75bcaa",
       "repo": "m33kauras-midnight",
       "repoLabel": "M33kAuras (midnight)",
       "files": []
