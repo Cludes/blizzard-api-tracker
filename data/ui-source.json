@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "78282522143e25c3540583734fd192c3d69be910",
+    "sha": "09b9db7948abc9b9648dedaab51eb0cf3ee67b31",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,46 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-09-22T11:21:39.272Z",
+  "lastChecked": "2026-09-22T16:43:47.721Z",
   "changes": [
+    {
+      "sha": "09b9db7948abc9b9648dedaab51eb0cf3ee67b31",
+      "date": "2026-09-22T14:31:12Z",
+      "message": "12.1.0 (69933)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/09b9db7948abc9b9648dedaab51eb0cf3ee67b31",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ForbiddenAspectConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 4,
+          "deletions": 2,
+          "patch": "@@ -5,9 +5,9 @@ local ForbiddenAspectConstants =\n \t\t{\n \t\t\tName = \"ForbiddenAspect\",\n \t\t\tType = \"Enumeration\",\n-\t\t\tNumValues = 11,\n+\t\t\tNumValues = 13,\n \t\t\tMinValue = 1,\n-\t\t\tMaxValue = 1024,\n+\t\t\tMaxValue = 4096,\n \t\t\tFields =\n \t\t\t{\n \t\t\t\t{ Name = \"SetToDefaults\", Type = \"ForbiddenAspect\", EnumValue = 1, Documentation = { \"Restricts resetting this object to a default state. Implied automatically when any other forbidden aspect is set.\" } },\n@@ -21,6 +21,8 @@ local ForbiddenAspectConstants =\n \t\t\t\t{ Name = \"ChangeAnimationTarget\", Type = \"ForbiddenAspect\", EnumValue = 256, Documentation = { \"Restricts APIs that can change the target object of an animation.\" } },\n \t\t\t\t{ Name = \"RemoveSecretAspects\", Type = \"ForbiddenAspect\", EnumValue = 512, Documentation = { \"Restricts APIs that clear secret aspects from objects.\" } },\n \t\t\t\t{ Name = \"ChangeParent\", Type = \"ForbiddenAspect\", EnumValue = 1024, Documentation = { \"Restricts APIs that change the parent of an object.\" } },\n+\t\t\t\t{ Name = \"SetTexture\", Type = \"ForbiddenAspect\", EnumValue = 2048, Documentation = { \"Restricts APIs that set the texture on a texture object.\" } },\n+\t\t\t\t{ Name = \"QueryRotation\", Type = \"ForbiddenAspect\", EnumValue = 4096, Documentation = { \"Restricts APIs that query texture rotation.\" } },\n \t\t\t},\n \t\t},\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/RaidMarkersDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -51,6 +51,7 @@ local RaidMarkers =\n \t\t{\n \t\t\tName = \"IsRaidMarkerActive\",\n \t\t\tType = \"Function\",\n+\t\t\tSecretInChatMessagingLockdown = true,\n \t\t\tSecretArguments = \"AllowedWhenUntainted\",\n \n \t\t\tArguments ="
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/SimpleTextureBaseAPIDocumentation.lua",
+          "status": "modified",
+          "additions": 4,
+          "deletions": 0,
+          "patch": "@@ -18,6 +18,7 @@ local SimpleTextureBaseAPI =\n \t\t{\n \t\t\tName = \"ClearSVG\",\n \t\t\tType = \"Function\",\n+\t\t\tChecksForbiddenAspects = { { Argument = \"self\", Aspect = Enum.ForbiddenAspect.SetTexture } },\n \n \t\t\tArguments =\n \t\t\t{\n@@ -168,6 +169,7 @@ local SimpleTextureBaseAPI =\n \t\t\tName = \"GetRotation\",\n \t\t\tType = \"Function\",\n \t\t\tSecretReturnsForAspect = { Enum.SecretAspect.Rotation },\n+\t\t\tChecksForbiddenAspects = { { Argument = \"self\", Aspect = Enum.ForbiddenAspect.QueryRotation } },\n \n \t\t\tArguments =\n \t\t\t{\n@@ -401,6 +403,7 @@ local SimpleTextureBaseAPI =\n \t\t\tName = \"SetColorTexture\",\n \t\t\tType = \"Function\",\n \t\t\tSecretArguments = \"AllowedWhenTainted\",\n+\t\t\tChecksForbiddenAspects = { { Argument = \"self\", Aspect = Enum.ForbiddenAspect.SetTexture } },\n \n \t\t\tArguments =\n \t\t\t{\n@@ -536,6 +539,7 @@ local SimpleTextureBaseAPI =\n \t\t\tName = \"SetSVG\",\n \t\t\tType = \"Function\",\n \t\t\tSecretArguments = \"AllowedWhenTainted\",\n+\t\t\tChecksForbiddenAspects = { { Argument = \"self\", Aspect = Enum.ForbiddenAspect.SetTexture } },\n \n \t\t\tArguments =\n \t\t\t{"
+        },
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.0.69875\n+12.1.0.69933"
+        }
+      ]
+    },
     {
       "sha": "78282522143e25c3540583734fd192c3d69be910",
       "date": "2026-09-18T20:01:27Z",
@@ -8562,15 +8600,6 @@
       "date": "2026-04-07T19:06:26Z",
       "message": "update LibGetFrame to 74",
       "url": "https://github.com/m33shoq/M33kAuras/commit/94869aa13835b6e80502d34a15e189d7c1996d9a",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "0d8406ba834c3a9fedf8e14c92179c84f9047e7c",
-      "date": "2026-04-06T21:25:47Z",
-      "message": "Adjust migration process and add M33KAURAS_WIPE_ALL_SETTINGS global function for clear install",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/0d8406ba834c3a9fedf8e14c92179c84f9047e7c",
       "repo": "m33kauras-midnight",
       "repoLabel": "M33kAuras (midnight)",
       "files": []
