@@ -1,7 +1,16 @@
 {
-  "lastChecked": "2026-09-22T21:09:19.816Z",
-  "latestBuild": "12.1.0.69933",
+  "lastChecked": "2026-09-23T04:24:42.352Z",
+  "latestBuild": "12.1.5.69952",
   "builds": [
+    {
+      "product": "wowxptr",
+      "version": "12.1.5.69952",
+      "created_at": "2026-09-22 21:29:13",
+      "build_config": "1f457752a5d55fd82c527d3afb567d3c",
+      "product_config": "c5983bded94d708c1958dde1fa6dbf22",
+      "cdn_config": "11ee0312e45157d06e9172b3ebcf3ed9",
+      "is_bgdl": false
+    },
     {
       "product": "wow",
       "version": "12.1.0.69933",
@@ -171,15 +180,6 @@
       "build_config": "f45a98bc4ffc5d50690ebe9544664bab",
       "product_config": "c5983bded94d708c1958dde1fa6dbf22",
       "cdn_config": "5c54a0d47454dfd8204a49d8a59afea1",
-      "is_bgdl": false
-    },
-    {
-      "product": "wow",
-      "version": "12.0.7.68453",
-      "created_at": "2026-07-06 23:57:02",
-      "build_config": "34a1a445ae41066c7f7a6564892d8bdd",
-      "product_config": "53020d32e1a25648c8e1eafd5771935f",
-      "cdn_config": "1deda1a1fd806f80590fc17ccbf4f852",
       "is_bgdl": false
     }
   ],
