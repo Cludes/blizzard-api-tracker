@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "09b9db7948abc9b9648dedaab51eb0cf3ee67b31",
+    "sha": "18c6d677b605b312f3d813d498404631fb941977",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,2135 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-10-13T13:58:57.486Z",
+  "lastChecked": "2026-10-13T22:32:08.243Z",
   "changes": [
+    {
+      "sha": "18c6d677b605b312f3d813d498404631fb941977",
+      "date": "2026-10-13T21:16:13Z",
+      "message": "12.1.5 (70391)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/18c6d677b605b312f3d813d498404631fb941977",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.5.70340\n+12.1.5.70391"
+        }
+      ]
+    },
+    {
+      "sha": "7b27d6845ca49ecb713d49f49c22d9f0fb43f3e4",
+      "date": "2026-10-13T14:16:10Z",
+      "message": "12.1.5 (70340)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/7b27d6845ca49ecb713d49f49c22d9f0fb43f3e4",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentation/Blizzard_APIDocumentation.lua",
+          "status": "modified",
+          "additions": 10,
+          "deletions": 1,
+          "patch": "@@ -4,6 +4,7 @@ APIDocumentationMixin = {};\n function APIDocumentationMixin:OnLoad()\n \tself.tables = {};\n \tself.functions = {};\n+\tself.globalFunctions = {};\n \tself.systems = {};\n \tself.fields = {};\n \tself.events = {};\n@@ -288,6 +289,10 @@ function APIDocumentationMixin:FindSystemByName(systemName)\n \treturn nil;\n end\n \n+function APIDocumentationMixin:FindGlobalFunctionByName(functionName)\n+\treturn self.globalFunctions[functionName];\n+end\n+\n function APIDocumentationMixin:AddDocumentationTable(documentationInfo)\n \tif documentationInfo.Name then\n \t\tself:AddSystem(documentationInfo);\n@@ -340,6 +345,10 @@ function APIDocumentationMixin:AddFunction(documentationInfo)\n \n \ttable.insert(self.functions, documentationInfo);\n \n+\tif documentationInfo.System.Type == \"System\" and not documentationInfo.System.Namespace then\n+\t\tself.globalFunctions[documentationInfo.Name] = documentationInfo;\n+\tend\n+\n \tif documentationInfo.Arguments then\n \t\tfor i, field in ipairs(documentationInfo.Arguments) do\n \t\t\tfield.Function = documentationInfo;\n@@ -396,4 +405,4 @@ function APIDocumentationMixin:AddSystem(documentationInfo)\n end\n \n APIDocumentation = CreateFromMixins(APIDocumentationMixin);\n-APIDocumentation:OnLoad();\n\\ No newline at end of file\n+APIDocumentation:OnLoad();"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AbbreviateConfigAPIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -40,6 +40,7 @@ local AbbreviateConfigAPI =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AbbreviatedNumberFormatterAPIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -87,6 +87,7 @@ local AbbreviatedNumberFormatterAPI =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AccessibilityOptionsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -16,6 +16,7 @@ local AccessibilityOptions =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AccountConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -282,6 +282,7 @@ local AccountConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AccountInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -61,6 +61,7 @@ local AccountInfo =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AccountStoreDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -270,6 +270,7 @@ local AccountStore =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AchievementInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -200,6 +200,7 @@ local AchievementInfo =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AchievementTelemetryDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -42,6 +42,7 @@ local AchievementTelemetry =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ActionBarFrameDocumentation.lua",
+          "status": "modified",
+          "additions": 18,
+          "deletions": 0,
+          "patch": "@@ -822,6 +822,23 @@ local ActionBarFrame =\n \t\t\t\t{ Name = \"isItemAction\", Type = \"bool\", Nilable = false },\n \t\t\t},\n \t\t},\n+\t\t{\n+\t\t\tName = \"IsMacroActionWithShowTooltip\",\n+\t\t\tType = \"Function\",\n+\t\t\tRequiresValidActionSlot = true,\n+\t\t\tSecretArguments = \"AllowedWhenUntainted\",\n+\t\t\tDocumentation = { \"Returns whether the given action button contains a macro with an explicit #showtooltip directive.\" },\n+\n+\t\t\tArguments =\n+\t\t\t{\n+\t\t\t\t{ Name = \"actionID\", Type = \"luaIndex\", Nilable = false },\n+\t\t\t},\n+\n+\t\t\tReturns =\n+\t\t\t{\n+\t\t\t\t{ Name = \"isMacroActionWithShowTooltip\", Type = \"bool\", Nilable = false },\n+\t\t\t},\n+\t\t},\n \t\t{\n \t\t\tName = \"IsOnBarOrSpecialBar\",\n \t\t\tType = \"Function\",\n@@ -1081,6 +1098,7 @@ local ActionBarFrame =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ActionBarSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -13,6 +13,7 @@ local ActionBarShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t\t{"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ActionDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -3,6 +3,7 @@ local Action =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t\t{"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AddOnProfilerConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -38,6 +38,7 @@ local AddOnProfilerConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AddOnProfilerDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -199,6 +199,7 @@ local AddOnProfiler =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AddOnsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -470,6 +470,7 @@ local AddOns =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AdventureJournalDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -121,6 +121,7 @@ local AdventureJournal =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AdventureMapDocumentation.lua",
+          "status": "modified",
+          "additions": 28,
+          "deletions": 0,
+          "patch": "@@ -16,6 +16,33 @@ local AdventureMap =\n \t\t\t\t{ Name = \"adventureMapTextureKit\", Type = \"textureKit\", Nilable = false },\n \t\t\t},\n \t\t},\n+\t\t{\n+\t\t\tName = \"GetNumMapInsets\",\n+\t\t\tType = \"Function\",\n+\n+\t\t\tReturns =\n+\t\t\t{\n+\t\t\t\t{ Name = \"numMapInsets\", Type = \"number\", Nilable = false },\n+\t\t\t},\n+\t\t},\n+\t\t{\n+\t\t\tName = \"GetNumQuestOffers\",\n+\t\t\tType = \"Function\",\n+\n+\t\t\tReturns =\n+\t\t\t{\n+\t\t\t\t{ Name = \"numQuestOffers\", Type = \"number\", Nilable = false },\n+\t\t\t},\n+\t\t},\n+\t\t{\n+\t\t\tName = \"GetNumZoneChoices\",\n+\t\t\tType = \"Function\",\n+\n+\t\t\tReturns =\n+\t\t\t{\n+\t\t\t\t{ Name = \"numZoneChoices\", Type = \"number\", Nilable = false },\n+\t\t\t},\n+\t\t},\n \t\t{\n \t\t\tName = \"GetQuestPortraitInfo\",\n \t\t\tType = \"Function\",\n@@ -91,6 +118,7 @@ local AdventureMap =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AlliedRacesFrameDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -92,6 +92,7 @@ local AlliedRacesFrame =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AnimaDiversionUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -144,6 +144,7 @@ local AnimaDiversionUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AppearanceSourceDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -28,6 +28,7 @@ local AppearanceSource =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ArdenwealdGardeningDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -44,6 +44,7 @@ local ArdenwealdGardening =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AreaPoiInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -179,6 +179,7 @@ local AreaPoiInfo =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ArrowCalloutConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -32,6 +32,7 @@ local ArrowCalloutConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ArtifactUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -1010,6 +1010,7 @@ local ArtifactUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AssistedCombatDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -65,6 +65,7 @@ local AssistedCombat =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AsyncAssistActionsConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -20,6 +20,7 @@ local AsyncAssistActionsConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AuctionHouseConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -11,6 +11,7 @@ local AuctionHouseConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AuctionHouseDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -1710,6 +1710,7 @@ local AuctionHouse =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AuctionHouseEnumsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -149,6 +149,7 @@ local AuctionHouseEnums =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AuraContainerSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -42,6 +42,7 @@ local AuraContainerShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AuraContainerUtilDocumentation.lua",
+          "status": "modified",
+          "additions": 26,
+          "deletions": 0,
+          "patch": "@@ -82,6 +82,21 @@ local AuraContainerUtil =\n \t\t\t\t{ Name = \"result\", Type = \"CustomAuraButtonApplicationCountOptions\", Nilable = false },\n \t\t\t},\n \t\t},\n+\t\t{\n+\t\t\tName = \"ProcessCustomAuraButtonCasterNameOptions\",\n+\t\t\tType = \"Function\",\n+\t\t\tSecretArguments = \"AllowedWhenUntainted\",\n+\n+\t\t\tArguments =\n+\t\t\t{\n+\t\t\t\t{ Name = \"options\", Type = \"CustomAuraButtonCasterNameOptions\", Nilable = true },\n+\t\t\t},\n+\n+\t\t\tReturns =\n+\t\t\t{\n+\t\t\t\t{ Name = \"result\", Type = \"CustomAuraButtonCasterNameOptions\", Nilable = false },\n+\t\t\t},\n+\t\t},\n \t\t{\n \t\t\tName = \"ProcessCustomAuraButtonDispelTypeTextOptions\",\n \t\t\tType = \"Function\",\n@@ -228,6 +243,7 @@ local AuraContainerUtil =\n \t\t\tFields =\n \t\t\t{\n \t\t\t\t{ Name = \"maxApplications\", Type = \"number\", Nilable = false, Documentation = { \"The maximum number of aura applications represented by the bar.\" } },\n+\t\t\t\t{ Name = \"minApplications\", Type = \"number\", Nilable = false, Default = 0, Documentation = { \"The minimum number of aura applications represented by the bar.\" } },\n \t\t\t\t{ Name = \"interpolation\", Type = \"StatusBarInterpolation\", Nilable = true, Documentation = { \"Optional interpolation method used when updating the bar value.\" } },\n \t\t\t},\n \t\t},\n@@ -239,6 +255,15 @@ local AuraContainerUtil =\n \t\t\t\t{ Name = \"formatter\", Type = \"NumericFormatter\", Nilable = true, Documentation = { \"Optional formatter used to display aura application counts.\" } },\n \t\t\t},\n \t\t},\n+\t\t{\n+\t\t\tName = \"CustomAuraButtonCasterNameOptions\",\n+\t\t\tType = \"Structure\",\n+\t\t\tFields =\n+\t\t\t{\n+\t\t\t\t{ Name = \"showRealmName\", Type = \"bool\", Nilable = false, Default = false, Documentation = { \"If true, append realm names to the displayed string.\" } },\n+\t\t\t\t{ Name = \"useClassColors\", Type = \"bool\", Nilable = false, Default = false, Documentation = { \"If true, apply class coloring to the text.\" } },\n+\t\t\t},\n+\t\t},\n \t\t{\n \t\t\tName = \"CustomAuraButtonDispelTypeTextOptions\",\n \t\t\tType = \"Structure\",\n@@ -308,6 +333,7 @@ local AuraContainerUtil =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AutoCompleteDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -87,6 +87,7 @@ local AutoComplete =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AutoCompleteSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -39,6 +39,7 @@ local AutoCompleteShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AzeriteConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -17,6 +17,7 @@ local AzeriteConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AzeriteEmpoweredItemDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -344,6 +344,7 @@ local AzeriteEmpoweredItem =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AzeriteEssenceDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -348,6 +348,7 @@ local AzeriteEssence =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/AzeriteItemDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -190,6 +190,7 @@ local AzeriteItem =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BNetOutageDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -25,6 +25,7 @@ local BNetOutage =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BagConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 2,
+          "patch": "@@ -5,7 +5,7 @@ local BagConstants =\n \t\t{\n \t\t\tName = \"BagFlag\",\n \t\t\tType = \"Enumeration\",\n-\t\t\tNumValues = 28,\n+\t\t\tNumValues = 27,\n \t\t\tMinValue = 1,\n \t\t\tMaxValue = 134217728,\n \t\t\tFields =\n@@ -32,7 +32,6 @@ local BagConstants =\n \t\t\t\t{ Name = \"PreferNeutralPriorityBags\", Type = \"BagFlag\", EnumValue = 524288 },\n \t\t\t\t{ Name = \"AsymmetricSwap\", Type = \"BagFlag\", EnumValue = 1048576 },\n \t\t\t\t{ Name = \"PreferReagentBags\", Type = \"BagFlag\", EnumValue = 2097152 },\n-\t\t\t\t{ Name = \"IgnoreSoulbound\", Type = \"BagFlag\", EnumValue = 4194304 },\n \t\t\t\t{ Name = \"IgnoreReagentBags\", Type = \"BagFlag\", EnumValue = 8388608 },\n \t\t\t\t{ Name = \"LookInAccountBankOnly\", Type = \"BagFlag\", EnumValue = 16777216 },\n \t\t\t\t{ Name = \"HasRefund\", Type = \"BagFlag\", EnumValue = 33554432 },\n@@ -61,6 +60,7 @@ local BagConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BagIndexConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -45,6 +45,7 @@ local BagIndexConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BankDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -423,6 +423,7 @@ local Bank =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BarberShopDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -324,6 +324,7 @@ local BarberShop =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BarberShopInternalDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -26,6 +26,7 @@ local BarberShopInternal =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BaseDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -10,6 +10,7 @@ local Base =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BattleNetDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -463,6 +463,7 @@ local BattleNet =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BattleNetSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -36,6 +36,7 @@ local BattleNetShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BattlePetConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -69,6 +69,7 @@ local BattlePetConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BattlePetDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -255,6 +255,7 @@ local BattlePet =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BattlepayConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -327,6 +327,7 @@ local BattlepayConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BehavioralMessagingDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -39,6 +39,7 @@ local BehavioralMessaging =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BlackMarketInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -73,6 +73,7 @@ local BlackMarketInfo =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/Blizzard_APIDocumentationGenerated.toc",
+          "status": "modified",
+          "additions": 11,
+          "deletions": 2,
+          "patch": "@@ -1,7 +1,6 @@\n ## Title: Blizzard API Documentation Generated\n ## Author: Blizzard Entertainment\n ## LoadOnDemand: 1\n-## AllowLoad: Both\n ## Dependencies: Blizzard_APIDocumentation\n \n # Start documentation files here\n@@ -172,6 +171,7 @@ InstanceDocumentation.lua\n InstanceEncounterDocumentation.lua\n InstanceLeaverInfoDocumentation.lua\n InterfaceFileManifestDocumentation.lua\n+IntlDocumentation.lua\n InvasionInfoDocumentation.lua\n IslandsInfoDocumentation.lua\n IslandsQueueUIDocumentation.lua\n@@ -204,7 +204,10 @@ LuaCurveObjectBaseAPIDocumentation.lua\n LuaDurationClockAPIDocumentation.lua\n LuaDurationManualClockAPIDocumentation.lua\n LuaDurationObjectAPIDocumentation.lua\n-LuaTableUtilDocumentation.lua\n+LuaLocaleContextAPIDocumentation.lua\n+LuaMathExtensionsDocumentation.lua\n+LuaStringExtensionsDocumentation.lua\n+LuaTableExtensionsDocumentation.lua\n MacOptionsDocumentation.lua\n MailInfoDocumentation.lua\n MajorFactionsDocumentation.lua\n@@ -350,6 +353,7 @@ TargetScriptDocumentation.lua\n TaxiMapDocumentation.lua\n TextureUtilsDocumentation.lua\n ThreatDocumentation.lua\n+TimedSignalMapAPIDocumentation.lua\n TimerunningUIDocumentation.lua\n TitleDocumentation.lua\n TooltipComparisonDocumentation.lua\n@@ -388,6 +392,7 @@ VignetteInfoDocumentation.lua\n VoiceChatDocumentation.lua\n WarCampaignDocumentation.lua\n WarbandSceneInfoDocumentation.lua\n+WeatherScriptDocumentation.lua\n WeeklyRewardsDocumentation.lua\n WorldLootObjectDocumentation.lua\n WorldSafeLocsUIInternalDocumentation.lua\n@@ -488,6 +493,7 @@ HousingLayoutUITypesDocumentation.lua\n HousingUISharedDocumentation.lua\n ImageSharingConstantsDocumentation.lua\n InputConstantsDocumentation.lua\n+IntlSharedTypesDocumentation.lua\n ItemConstantsDocumentation.lua\n ItemConstants_MainlineDocumentation.lua\n ItemConstants_SharedDocumentation.lua\n@@ -503,6 +509,7 @@ LootConstantsDocumentation.lua\n LossOfControlConstantsDocumentation.lua\n LuaCurveObjectConstantsDocumentation.lua\n LuaDurationObjectSharedDocumentation.lua\n+LuaValuePredicatesDocumen"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BountySharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -15,6 +15,7 @@ local BountyShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BrowserDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -74,6 +74,7 @@ local Browser =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BuildDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -135,6 +135,7 @@ local Build =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ButtonStateDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -3,6 +3,7 @@ local ButtonState =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CVarDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -177,6 +177,7 @@ local CVar =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t\t{"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CalendarConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -341,6 +341,7 @@ local CalendarConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CalendarDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -1178,6 +1178,7 @@ local Calendar =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CameraConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -17,6 +17,7 @@ local CameraConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CameraDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -50,6 +50,7 @@ local Camera =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CatalogShopConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -12,6 +12,7 @@ local CatalogShopConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CatalogShopDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -847,6 +847,7 @@ local CatalogShop =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ChallengeModeInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -531,6 +531,7 @@ local ChallengeModeInfo =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CharacterCreationConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -44,6 +44,7 @@ local CharacterCreationConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CharacterCustomizationSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -140,6 +140,7 @@ local CharacterCustomizationShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CharacterSelectionConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -130,6 +130,7 @@ local CharacterSelectionConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CharacterServicesConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -35,6 +35,7 @@ local CharacterServicesConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ChatBubblesDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -31,6 +31,7 @@ local ChatBubbles =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ChatConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -227,6 +227,7 @@ local ChatConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t\t{"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ChatInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -2846,6 +2846,7 @@ local ChatInfo =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ChatSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -14,6 +14,7 @@ local ChatShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ChromieTimeUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -70,6 +70,7 @@ local ChromieTimeUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CinematicConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -17,6 +17,7 @@ local CinematicConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CinematicDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -125,6 +125,7 @@ local Cinematic =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CinematicListDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -39,6 +39,7 @@ local CinematicList =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ClassColorDocumentation.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 0,
+          "patch": "@@ -16,6 +16,7 @@ local ClassColor =\n \t\t\tArguments =\n \t\t\t{\n \t\t\t\t{ Name = \"className\", Type = \"string\", Nilable = false },\n+\t\t\t\t{ Name = \"tintColor\", Type = \"colorRGB\", Mixin = \"ColorMixin\", Nilable = true },\n \t\t\t},\n \n \t\t\tReturns =\n@@ -32,6 +33,7 @@ local ClassColor =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ClassTalentsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -516,6 +516,7 @@ local ClassTalents =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ClassTrialDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -28,6 +28,7 @@ local ClassTrial =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ClickBindingsConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -41,6 +41,7 @@ local ClickBindingsConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ClickBindingsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -124,6 +124,7 @@ local ClickBindings =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ClientDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -99,6 +99,7 @@ local Client =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ClientSceneDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -59,6 +59,7 @@ local ClientScene =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ClientSettingsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -22,6 +22,7 @@ local ClientSettings =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ClubDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -1982,6 +1982,7 @@ local Club =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t\t{"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ClubFinderDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -984,6 +984,7 @@ local ClubFinder =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ClubSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -17,6 +17,7 @@ local ClubShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ColorDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -3,6 +3,7 @@ local Color =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ColorOverrideConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -21,6 +21,7 @@ local ColorOverrideConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ColorOverridesDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -112,6 +112,7 @@ local ColorOverrides =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ColorUtilDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -146,6 +146,7 @@ local ColorUtil =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CombatAudioAlertConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 0,
+          "patch": "@@ -13,6 +13,7 @@ local CombatAudioAlertConstants =\n \t\t\t\t{ Name = \"CAASayCombatEndDefault\", Type = \"bool\", Value = true },\n \t\t\t\t{ Name = \"CAAPlayerHealthPercentDefault\", Type = \"number\", Value = 0 },\n \t\t\t\t{ Name = \"CAAPlayerHealthFormatDefault\", Type = \"number\", Value = 1 },\n+\t\t\t\t{ Name = \"CAAPulsePlayerHealthPercentDefault\", Type = \"number\", Value = 0 },\n \t\t\t\t{ Name = \"CAATargetNameDefault\", Type = \"bool\", Value = true },\n \t\t\t\t{ Name = \"CAATargetHealthPercentDefault\", Type = \"number\", Value = 2 },\n \t\t\t\t{ Name = \"CAATargetHealthFormatDefault\", Type = \"number\", Value = 3 },\n@@ -50,6 +51,7 @@ local CombatAudioAlertConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CombatAudioAlertDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -256,6 +256,7 @@ local CombatAudioAlert =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CombatAudioAlertSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 24,
+          "deletions": 2,
+          "patch": "@@ -18,9 +18,9 @@ local CombatAudioAlertShared =\n \t\t{\n \t\t\tName = \"CombatAudioAlertCategory\",\n \t\t\tType = \"Enumeration\",\n-\t\t\tNumValues = 9,\n+\t\t\tNumValues = 10,\n \t\t\tMinValue = 0,\n-\t\t\tMaxValue = 8,\n+\t\t\tMaxValue = 9,\n \t\t\tFields =\n \t\t\t{\n \t\t\t\t{ Name = \"General\", Type = \"CombatAudioAlertCategory\", EnumValue = 0 },\n@@ -32,6 +32,7 @@ local CombatAudioAlertShared =\n \t\t\t\t{ Name = \"PlayerResource2\", Type = \"CombatAudioAlertCategory\", EnumValue = 6 },\n \t\t\t\t{ Name = \"PartyHealth\", Type = \"CombatAudioAlertCategory\", EnumValue = 7 },\n \t\t\t\t{ Name = \"PlayerDebuffs\", Type = \"CombatAudioAlertCategory\", EnumValue = 8 },\n+\t\t\t\t{ Name = \"PlayerHealthPulse\", Type = \"CombatAudioAlertCategory\", EnumValue = 9 },\n \t\t\t},\n \t\t},\n \t\t{\n@@ -142,6 +143,26 @@ local CombatAudioAlertShared =\n \t\t\t\t{ Name = \"NoResourceNoPercentDiv10\", Type = \"CombatAudioAlertPlayerResourceFormatValues\", EnumValue = 5 },\n \t\t\t},\n \t\t},\n+\t\t{\n+\t\t\tName = \"CombatAudioAlertPulsePercentValues\",\n+\t\t\tType = \"Enumeration\",\n+\t\t\tNumValues = 10,\n+\t\t\tMinValue = 0,\n+\t\t\tMaxValue = 9,\n+\t\t\tFields =\n+\t\t\t{\n+\t\t\t\t{ Name = \"Off\", Type = \"CombatAudioAlertPulsePercentValues\", EnumValue = 0 },\n+\t\t\t\t{ Name = \"Under90Percent\", Type = \"CombatAudioAlertPulsePercentValues\", EnumValue = 1 },\n+\t\t\t\t{ Name = \"Under80Percent\", Type = \"CombatAudioAlertPulsePercentValues\", EnumValue = 2 },\n+\t\t\t\t{ Name = \"Under70Percent\", Type = \"CombatAudioAlertPulsePercentValues\", EnumValue = 3 },\n+\t\t\t\t{ Name = \"Under60Percent\", Type = \"CombatAudioAlertPulsePercentValues\", EnumValue = 4 },\n+\t\t\t\t{ Name = \"Under50Percent\", Type = \"CombatAudioAlertPulsePercentValues\", EnumValue = 5 },\n+\t\t\t\t{ Name = \"Under40Percent\", Type = \"CombatAudioAlertPulsePercentValues\", EnumValue = 6 },\n+\t\t\t\t{ Name = \"Under30Percent\", Type = \"CombatAudioAlertPulsePercentValues\", EnumValue = 7 },\n+\t\t\t\t{ Name = \"Under20Percent\", Type = \"CombatAudioAlertPulsePercentValues\", EnumValue = 8 },\n+\t\t\t\t{ Name = \"Under10Percent\", Type = \"CombatAudioAlertPulsePercentValues\", EnumValue = 9 },\n+\t\t\t},\n+\t\t},\n \t\t{\n \t\t\tName ="
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CombatLogConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -82,6 +82,7 @@ local CombatLogConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CombatLogDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -149,6 +149,7 @@ local CombatLog =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CombatLogInternalDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -31,6 +31,7 @@ local CombatLogInternal =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CombatLogSecureDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -149,6 +149,7 @@ local CombatLogSecure =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CombatLogSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -22,6 +22,7 @@ local CombatLogShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CombatTextDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -56,6 +56,7 @@ local CombatText =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CombatTextSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -10,6 +10,7 @@ local CombatTextShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CommentatorFrameDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -1929,6 +1929,7 @@ local CommentatorFrame =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CommentatorSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -18,6 +18,7 @@ local CommentatorShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t\t{"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CompactUnitFramesDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -22,6 +22,7 @@ local CompactUnitFrames =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ConfigurationWarningConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -21,6 +21,7 @@ local ConfigurationWarningConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ConfigurationWarningsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -72,6 +72,7 @@ local ConfigurationWarnings =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ConnectionDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -109,6 +109,7 @@ local Connection =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ConsoleDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -266,6 +266,7 @@ local Console =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ConsoleScriptCollectionDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -116,6 +116,7 @@ local ConsoleScriptCollection =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ContainerDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -824,6 +824,7 @@ local Container =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ContentTrackingDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -349,6 +349,7 @@ local ContentTracking =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ContentTrackingTypesDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -120,6 +120,7 @@ local ContentTrackingTypes =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ContributionCollectorDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -357,6 +357,7 @@ local ContributionCollector =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CooldownFrameConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -15,6 +15,7 @@ local CooldownFrameConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CooldownViewerConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 4,
+          "deletions": 2,
+          "patch": "@@ -16,13 +16,14 @@ local CooldownViewerConstants =\n \t\t{\n \t\t\tName = \"CooldownSetSpellFlags\",\n \t\t\tType = \"Enumeration\",\n-\t\t\tNumValues = 2,\n+\t\t\tNumValues = 3,\n \t\t\tMinValue = 1,\n-\t\t\tMaxValue = 2,\n+\t\t\tMaxValue = 4,\n \t\t\tFields =\n \t\t\t{\n \t\t\t\t{ Name = \"HideAura\", Type = \"CooldownSetSpellFlags\", EnumValue = 1 },\n \t\t\t\t{ Name = \"HideByDefault\", Type = \"CooldownSetSpellFlags\", EnumValue = 2 },\n+\t\t\t\t{ Name = \"SelectHighestLevelLinkedSpell\", Type = \"CooldownSetSpellFlags\", EnumValue = 4 },\n \t\t\t},\n \t\t},\n \t\t{\n@@ -223,6 +224,7 @@ local CooldownViewerConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CooldownViewerDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -158,6 +158,7 @@ local CooldownViewer =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CovenantCallingsConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -24,6 +24,7 @@ local CovenantCallingsConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CovenantCallingsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -39,6 +39,7 @@ local CovenantCallings =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CovenantPreviewDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -101,6 +101,7 @@ local CovenantPreview =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CovenantSanctumConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -3,6 +3,7 @@ local CovenantSanctumConstants =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CovenantSanctumDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -217,6 +217,7 @@ local CovenantSanctum =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CovenantsConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -16,6 +16,7 @@ local CovenantsConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CovenantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -81,6 +81,7 @@ local Covenants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CraftingOrderUIConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -38,6 +38,7 @@ local CraftingOrderUIConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CraftingOrderUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -605,6 +605,7 @@ local CraftingOrderUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CraftingOrderUISharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -239,6 +239,7 @@ local CraftingOrderUIShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CreatureInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -172,6 +172,7 @@ local CreatureInfo =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CurrencyConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -223,6 +223,7 @@ local CurrencyConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CurrencyConstants_MainlineDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -31,6 +31,7 @@ local CurrencyConstants_Mainline =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CurrencyInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -737,6 +737,7 @@ local CurrencyInfo =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CursorConstDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -178,6 +178,7 @@ local CursorConst =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CursorDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -62,6 +62,7 @@ local Cursor =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CursorUtilDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -25,6 +25,7 @@ local CursorUtil =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/CurveUtilDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -88,6 +88,7 @@ local CurveUtil =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DamageConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -133,6 +133,7 @@ local DamageConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DamageMeterConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -113,6 +113,7 @@ local DamageMeterConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DamageMeterDocumentation.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 1,
+          "patch": "@@ -196,7 +196,7 @@ local DamageMeter =\n \t\t\tDocumentation = { \"Aggregated data for a single source (unit) in a damage meter combat session.\" },\n \t\t\tFields =\n \t\t\t{\n-\t\t\t\t{ Name = \"sourceGUID\", Type = \"WOWGUID\", Nilable = true },\n+\t\t\t\t{ Name = \"sourceGUID\", Type = \"WOWGUID\", Nilable = true, ConditionalSecret = true },\n \t\t\t\t{ Name = \"sourceCreatureID\", Type = \"number\", Nilable = true },\n \t\t\t\t{ Name = \"name\", Type = \"cstring\", Nilable = false, ConditionalSecret = true },\n \t\t\t\t{ Name = \"classFilename\", Type = \"cstring\", Nilable = false, NeverSecret = true },\n@@ -243,6 +243,7 @@ local DamageMeter =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DateAndTimeDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -153,6 +153,7 @@ local DateAndTime =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DeathAlertDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -26,6 +26,7 @@ local DeathAlert =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DeathInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -216,6 +216,7 @@ local DeathInfo =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DeathRecapDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -84,6 +84,7 @@ local DeathRecap =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DebugToggleDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -56,6 +56,7 @@ local DebugToggle =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DelvesConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 10,
+          "deletions": 4,
+          "patch": "@@ -19,15 +19,16 @@ local DelvesConstants =\n \t\t{\n \t\t\tName = \"CurioRarity\",\n \t\t\tType = \"Enumeration\",\n-\t\t\tNumValues = 4,\n+\t\t\tNumValues = 5,\n \t\t\tMinValue = 1,\n-\t\t\tMaxValue = 4,\n+\t\t\tMaxValue = 5,\n \t\t\tFields =\n \t\t\t{\n \t\t\t\t{ Name = \"Common\", Type = \"CurioRarity\", EnumValue = 1 },\n \t\t\t\t{ Name = \"Uncommon\", Type = \"CurioRarity\", EnumValue = 2 },\n \t\t\t\t{ Name = \"Rare\", Type = \"CurioRarity\", EnumValue = 3 },\n \t\t\t\t{ Name = \"Epic\", Type = \"CurioRarity\", EnumValue = 4 },\n+\t\t\t\t{ Name = \"EpicTier2\", Type = \"CurioRarity\", EnumValue = 5 },\n \t\t\t},\n \t\t},\n \t\t{\n@@ -55,16 +56,18 @@ local DelvesConstants =\n \t\t{\n \t\t\tName = \"TieredEntranceType\",\n \t\t\tType = \"Enumeration\",\n-\t\t\tNumValues = 5,\n+\t\t\tNumValues = 7,\n \t\t\tMinValue = 0,\n-\t\t\tMaxValue = 4,\n+\t\t\tMaxValue = 6,\n \t\t\tFields =\n \t\t\t{\n \t\t\t\t{ Name = \"Invalid\", Type = \"TieredEntranceType\", EnumValue = 0 },\n \t\t\t\t{ Name = \"Delve\", Type = \"TieredEntranceType\", EnumValue = 1 },\n \t\t\t\t{ Name = \"Sites\", Type = \"TieredEntranceType\", EnumValue = 2 },\n \t\t\t\t{ Name = \"WorldTier\", Type = \"TieredEntranceType\", EnumValue = 3 },\n \t\t\t\t{ Name = \"Lairs\", Type = \"TieredEntranceType\", EnumValue = 4 },\n+\t\t\t\t{ Name = \"Placeholder_5\", Type = \"TieredEntranceType\", EnumValue = 5 },\n+\t\t\t\t{ Name = \"Placeholder_6\", Type = \"TieredEntranceType\", EnumValue = 6 },\n \t\t\t},\n \t\t},\n \t\t{\n@@ -101,6 +104,8 @@ local DelvesConstants =\n \t\t\t\t{ Name = \"DELVES_NORMAL_KEY_CURRENCY_ID\", Type = \"number\", Value = 3028 },\n \t\t\t\t{ Name = \"DELVES_COMPANION_INFO_SELECTION_CHARACTER_DATA_ELEMENT_ID\", Type = \"number\", Value = 13 },\n \t\t\t\t{ Name = \"DELVES_COMPANION_TOOLTIP_WIDGET_SET_ID\", Type = \"number\", Value = 1331 },\n+\t\t\t\t{ Name = \"DELVES_COMPANION_BRANN_CREATURE_ID\", Type = \"number\", Value = 210759 },\n+\t\t\t\t{ Name = \"DELVES_COMPANION_VALEERA_CREATURE_ID\", Type = \"number\", Value = 248567 },\n \t\t\t},\n \t\t},\n \t\t{\n@@ -115,6 +120,7 @@ local DelvesConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DelvesUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -608,6 +608,7 @@ local DelvesUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DiscordConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -60,6 +60,7 @@ local DiscordConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DiscordDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -269,6 +269,7 @@ local Discord =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DuelInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -54,6 +54,7 @@ local DuelInfo =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DungeonEncounterConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -49,6 +49,7 @@ local DungeonEncounterConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DurationTextBindingObjectAPIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -385,6 +385,7 @@ local DurationTextBindingObjectAPI =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DurationTextBindingSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -47,6 +47,7 @@ local DurationTextBindingShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DurationUtilDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -46,6 +46,7 @@ local DurationUtil =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DyeColorInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -152,6 +152,7 @@ local DyeColorInfo =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/DyeColorInfoSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -27,6 +27,7 @@ local DyeColorInfoShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EditModeManagerConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -946,6 +946,7 @@ local EditModeManagerConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EditModeManagerConstants_MainlineDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -11,6 +11,7 @@ local EditModeManagerConstants_Mainline =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EditModeManagerDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -201,6 +201,7 @@ local EditModeManager =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EncodingUtilConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -12,6 +12,7 @@ local EncodingUtilConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EncodingUtilDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -233,6 +233,7 @@ local EncodingUtil =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EncounterEventsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -137,6 +137,7 @@ local EncounterEvents =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EncounterEventsSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -52,6 +52,7 @@ local EncounterEventsShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EncounterInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -107,6 +107,7 @@ local EncounterInfo =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EncounterJournalConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -123,6 +123,7 @@ local EncounterJournalConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EncounterJournalDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -398,6 +398,7 @@ local EncounterJournal =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EncounterTimelineConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -130,6 +130,7 @@ local EncounterTimelineConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EncounterTimelineDocumentation.lua",
+          "status": "modified",
+          "additions": 17,
+          "deletions": 16,
+          "patch": "@@ -14,7 +14,7 @@ local EncounterTimeline =\n \n \t\t\tReturns =\n \t\t\t{\n-\t\t\t\t{ Name = \"loopTimerDuration\", Type = \"DurationSeconds\", Nilable = false },\n+\t\t\t\t{ Name = \"loopTimerDuration\", Type = \"Seconds\", Nilable = false },\n \t\t\t},\n \t\t},\n \t\t{\n@@ -74,7 +74,7 @@ local EncounterTimeline =\n \n \t\t\tReturns =\n \t\t\t{\n-\t\t\t\t{ Name = \"currentTime\", Type = \"DurationSeconds\", Nilable = false },\n+\t\t\t\t{ Name = \"currentTime\", Type = \"Seconds\", Nilable = false },\n \t\t\t},\n \t\t},\n \t\t{\n@@ -119,7 +119,7 @@ local EncounterTimeline =\n \n \t\t\tReturns =\n \t\t\t{\n-\t\t\t\t{ Name = \"highlightTime\", Type = \"DurationSeconds\", Nilable = false },\n+\t\t\t\t{ Name = \"highlightTime\", Type = \"Seconds\", Nilable = false },\n \t\t\t},\n \t\t},\n \t\t{\n@@ -181,7 +181,7 @@ local EncounterTimeline =\n \n \t\t\tReturns =\n \t\t\t{\n-\t\t\t\t{ Name = \"timeElapsed\", Type = \"DurationSeconds\", Nilable = false },\n+\t\t\t\t{ Name = \"timeElapsed\", Type = \"Seconds\", Nilable = false },\n \t\t\t},\n \t\t},\n \t\t{\n@@ -198,7 +198,7 @@ local EncounterTimeline =\n \n \t\t\tReturns =\n \t\t\t{\n-\t\t\t\t{ Name = \"timeRemaining\", Type = \"DurationSeconds\", Nilable = false },\n+\t\t\t\t{ Name = \"timeRemaining\", Type = \"Seconds\", Nilable = false },\n \t\t\t},\n \t\t},\n \t\t{\n@@ -244,7 +244,7 @@ local EncounterTimeline =\n \t\t\tArguments =\n \t\t\t{\n \t\t\t\t{ Name = \"maxEventCount\", Type = \"number\", Nilable = true, Documentation = { \"Maximum number of sorted events to return.\" } },\n-\t\t\t\t{ Name = \"maxEventDuration\", Type = \"DurationSeconds\", Nilable = true, Documentation = { \"Maximum duration of sorted events to return.\" } },\n+\t\t\t\t{ Name = \"maxEventDuration\", Type = \"Seconds\", Nilable = true, Documentation = { \"Maximum duration of sorted events to return.\" } },\n \t\t\t\t{ Name = \"excludeTerminalStates\", Type = \"bool\", Nilable = false, Default = true, Documentation = { \"If false, include events that are terminal states such as Canceled or Finished.\" } },\n \t\t\t\t{ Name = \"excludeHiddenEvents\", Type = \"bool\", Nilable = false, Default = true, Documentation = { \"If false, include events that should be hidden by user configuration, such"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EncounterWarningsDocumentation.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 1,
+          "patch": "@@ -160,14 +160,15 @@ local EncounterWarnings =\n \t\t\t\t{ Name = \"tooltipSpellID\", Type = \"number\", Nilable = false, SecretValue = true },\n \t\t\t\t{ Name = \"isDeadly\", Type = \"bool\", Nilable = false, SecretValue = true },\n \t\t\t\t{ Name = \"color\", Type = \"colorRGBA\", Mixin = \"ColorMixin\", Nilable = false, SecretValue = true },\n-\t\t\t\t{ Name = \"duration\", Type = \"DurationSeconds\", Nilable = false },\n+\t\t\t\t{ Name = \"duration\", Type = \"Seconds\", Nilable = false },\n \t\t\t\t{ Name = \"severity\", Type = \"EncounterEventSeverity\", Nilable = false },\n \t\t\t\t{ Name = \"shouldPlaySound\", Type = \"bool\", Nilable = false },\n \t\t\t\t{ Name = \"shouldShowChatMessage\", Type = \"bool\", Nilable = false },\n \t\t\t\t{ Name = \"shouldShowWarning\", Type = \"bool\", Nilable = false },\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EndOfMatchUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -75,6 +75,7 @@ local EndOfMatchUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EquipmentManagerDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -336,6 +336,7 @@ local EquipmentManager =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EventSchedulerConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -14,6 +14,7 @@ local EventSchedulerConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EventSchedulerUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -181,6 +181,7 @@ local EventSchedulerUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EventUtilsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -46,6 +46,7 @@ local EventUtils =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ExpansionConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -15,6 +15,7 @@ local ExpansionConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ExpansionDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -319,6 +319,7 @@ local Expansion =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ExpansionInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -54,6 +54,7 @@ local ExpansionInfo =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ExpansionLandingPageConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -15,6 +15,7 @@ local ExpansionLandingPageConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ExpansionLevelConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -26,6 +26,7 @@ local ExpansionLevelConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ExpansionTrialDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -26,6 +26,7 @@ local ExpansionTrial =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ExternalEventURLDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -45,6 +45,7 @@ local ExternalEventURL =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FogOfWarDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -63,6 +63,7 @@ local FogOfWar =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FontDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -89,6 +89,7 @@ local Font =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ForbiddenAspectConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 5,
+          "deletions": 2,
+          "patch": "@@ -5,9 +5,9 @@ local ForbiddenAspectConstants =\n \t\t{\n \t\t\tName = \"ForbiddenAspect\",\n \t\t\tType = \"Enumeration\",\n-\t\t\tNumValues = 13,\n+\t\t\tNumValues = 15,\n \t\t\tMinValue = 1,\n-\t\t\tMaxValue = 4096,\n+\t\t\tMaxValue = 16384,\n \t\t\tFields =\n \t\t\t{\n \t\t\t\t{ Name = \"SetToDefaults\", Type = \"ForbiddenAspect\", EnumValue = 1, Documentation = { \"Restricts resetting this object to a default state. Implied automatically when any other forbidden aspect is set.\" } },\n@@ -23,9 +23,12 @@ local ForbiddenAspectConstants =\n \t\t\t\t{ Name = \"ChangeParent\", Type = \"ForbiddenAspect\", EnumValue = 1024, Documentation = { \"Restricts APIs that change the parent of an object.\" } },\n \t\t\t\t{ Name = \"SetTexture\", Type = \"ForbiddenAspect\", EnumValue = 2048, Documentation = { \"Restricts APIs that set the texture on a texture object.\" } },\n \t\t\t\t{ Name = \"QueryRotation\", Type = \"ForbiddenAspect\", EnumValue = 4096, Documentation = { \"Restricts APIs that query texture rotation.\" } },\n+\t\t\t\t{ Name = \"QueryAnimationProgress\", Type = \"ForbiddenAspect\", EnumValue = 8192, Documentation = { \"Restricts APIs that query the progress or state of animations.\" } },\n+\t\t\t\t{ Name = \"AddAnimations\", Type = \"ForbiddenAspect\", EnumValue = 16384, Documentation = { \"Restricts APIs that add animations to animation groups.\" } },\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPIArchaeologyDigsiteDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -15,6 +15,7 @@ local FrameAPIArchaeologyDigsite =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPIBlobDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -155,6 +155,7 @@ local FrameAPIBlob =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPICharacterModelBaseDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -279,6 +279,7 @@ local FrameAPICharacterModelBase =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPICinematicModelDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -200,6 +200,7 @@ local FrameAPICinematicModel =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPICooldownDocumentation.lua",
+          "status": "modified",
+          "additions": 18,
+          "deletions": 11,
+          "patch": "@@ -9,6 +9,7 @@ local FrameAPICooldown =\n \t\t{\n \t\t\tName = \"Clear\",\n \t\t\tType = \"Function\",\n+\t\t\tIsProtectedFunction = true,\n \n \t\t\tArguments =\n \t\t\t{\n@@ -70,7 +71,7 @@ local FrameAPICooldown =\n \n \t\t\tReturns =\n \t\t\t{\n-\t\t\t\t{ Name = \"seconds\", Type = \"DurationSecondsPrimitive\", Nilable = false },\n+\t\t\t\t{ Name = \"seconds\", Type = \"Seconds\", Nilable = false },\n \t\t\t},\n \t\t},\n \t\t{\n@@ -110,7 +111,7 @@ local FrameAPICooldown =\n \n \t\t\tReturns =\n \t\t\t{\n-\t\t\t\t{ Name = \"seconds\", Type = \"DurationSecondsPrimitive\", Nilable = false },\n+\t\t\t\t{ Name = \"seconds\", Type = \"Seconds\", Nilable = false },\n \t\t\t},\n \t\t},\n \t\t{\n@@ -191,7 +192,7 @@ local FrameAPICooldown =\n \n \t\t\tReturns =\n \t\t\t{\n-\t\t\t\t{ Name = \"milliseconds\", Type = \"DurationMillisecondsPrimitive\", Nilable = false },\n+\t\t\t\t{ Name = \"milliseconds\", Type = \"Milliseconds\", Nilable = false },\n \t\t\t},\n \t\t},\n \t\t{\n@@ -279,31 +280,34 @@ local FrameAPICooldown =\n \t\t{\n \t\t\tName = \"SetCooldown\",\n \t\t\tType = \"Function\",\n+\t\t\tIsProtectedFunction = true,\n \t\t\tSecretArgumentsAddAspect = { Enum.SecretAspect.Cooldown },\n \t\t\tSecretArguments = \"AllowedWhenUntainted\",\n \n \t\t\tArguments =\n \t\t\t{\n-\t\t\t\t{ Name = \"start\", Type = \"DurationSeconds\", Nilable = false },\n-\t\t\t\t{ Name = \"duration\", Type = \"DurationSeconds\", Nilable = false },\n+\t\t\t\t{ Name = \"start\", Type = \"Seconds\", Nilable = false },\n+\t\t\t\t{ Name = \"duration\", Type = \"Seconds\", Nilable = false },\n \t\t\t\t{ Name = \"modRate\", Type = \"number\", Nilable = false, Default = 1 },\n \t\t\t},\n \t\t},\n \t\t{\n \t\t\tName = \"SetCooldownDuration\",\n \t\t\tType = \"Function\",\n+\t\t\tIsProtectedFunction = true,\n \t\t\tSecretArgumentsAddAspect = { Enum.SecretAspect.Cooldown },\n \t\t\tSecretArguments = \"AllowedWhenUntainted\",\n \n \t\t\tArguments =\n \t\t\t{\n-\t\t\t\t{ Name = \"duration\", Type = \"DurationSeconds\", Nilable = false },\n+\t\t\t\t{ Name = \"duration\", Type = \"Seconds\", Nilable = false },\n \t\t\t\t{ Name = \"modRate\", Type = \"number\", Nilable = false, Default = 1 },\n \t\t\t},\n \t\t},\n \t\t{\n \t\t\tName = \"SetCooldownFromDurationObject\",\n \t\t\tType = \"Function\",\n+\t\t\tIsProtectedFunction "
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPIDressUpModelDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -263,6 +263,7 @@ local FrameAPIDressUpModel =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPIFogOfWarFrameDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -155,6 +155,7 @@ local FrameAPIFogOfWarFrame =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPIModelSceneFrameActorBaseDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -633,6 +633,7 @@ local FrameAPIModelSceneFrameActorBase =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPIModelSceneFrameActorDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -402,6 +402,7 @@ local FrameAPIModelSceneFrameActor =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPIModelSceneFrameDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -601,6 +601,7 @@ local FrameAPIModelSceneFrame =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPIModelSceneFrameSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -15,6 +15,7 @@ local FrameAPIModelSceneFrameShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPINamePlateDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -87,6 +87,7 @@ local FrameAPINamePlate =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t\t{"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPIQuestPOIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -60,6 +60,7 @@ local FrameAPIQuestPOI =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPIScenarioPOIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -44,6 +44,7 @@ local FrameAPIScenarioPOI =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPISimpleCheckoutDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -92,6 +92,7 @@ local FrameAPISimpleCheckout =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPITabardModelBaseDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -88,6 +88,7 @@ local FrameAPITabardModelBase =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPITabardModelDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -93,6 +93,7 @@ local FrameAPITabardModel =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPITooltipDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -141,6 +141,7 @@ local FrameAPITooltip =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameAPIUnitPositionFrameDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -155,6 +155,7 @@ local FrameAPIUnitPositionFrame =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FrameScriptDocumentation.lua",
+          "status": "modified",
+          "additions": 50,
+          "deletions": 0,
+          "patch": "@@ -78,6 +78,21 @@ local FrameScript =\n \t\t\t\t{ Name = \"canAccessValue\", Type = \"bool\", Nilable = false },\n \t\t\t},\n \t\t},\n+\t\t{\n+\t\t\tName = \"CreateFrameWithOptions\",\n+\t\t\tType = \"Function\",\n+\t\t\tSecretArguments = \"AllowedWhenUntainted\",\n+\n+\t\t\tArguments =\n+\t\t\t{\n+\t\t\t\t{ Name = \"options\", Type = \"CreateFrameOptions\", Nilable = false },\n+\t\t\t},\n+\n+\t\t\tReturns =\n+\t\t\t{\n+\t\t\t\t{ Name = \"frame\", Type = \"SimpleFrame\", Nilable = false },\n+\t\t\t},\n+\t\t},\n \t\t{\n \t\t\tName = \"CreateFromMixins\",\n \t\t\tType = \"Function\",\n@@ -215,6 +230,15 @@ local FrameScript =\n \t\t\t\t{ Name = \"forbiddenTable\", Type = \"FrameScriptObject\", Nilable = false },\n \t\t\t},\n \t\t},\n+\t\t{\n+\t\t\tName = \"GetScriptBucketThrottleLimits\",\n+\t\t\tType = \"Function\",\n+\n+\t\t\tReturns =\n+\t\t\t{\n+\t\t\t\t{ Name = \"limits\", Type = \"ScriptBucketThrottleLimits\", Nilable = false },\n+\t\t\t},\n+\t\t},\n \t\t{\n \t\t\tName = \"GetSourceLocation\",\n \t\t\tType = \"Function\",\n@@ -536,6 +560,31 @@ local FrameScript =\n \t\t\t\t{ Name = \"SecretWrapContents\", Type = \"TableSecurityOption\", EnumValue = 2 },\n \t\t\t},\n \t\t},\n+\t\t{\n+\t\t\tName = \"CreateFrameOptions\",\n+\t\t\tType = \"Structure\",\n+\t\t\tFields =\n+\t\t\t{\n+\t\t\t\t{ Name = \"frameType\", Type = \"cstring\", Nilable = false },\n+\t\t\t\t{ Name = \"name\", Type = \"cstring\", Nilable = true },\n+\t\t\t\t{ Name = \"parent\", Type = \"SimpleFrame\", Nilable = true },\n+\t\t\t\t{ Name = \"inherits\", Type = \"table\", InnerType = \"cstring\", Nilable = true },\n+\t\t\t\t{ Name = \"id\", Type = \"number\", Nilable = true },\n+\t\t\t\t{ Name = \"forbidden\", Type = \"bool\", Nilable = false, Default = false },\n+\t\t\t\t{ Name = \"hidden\", Type = \"bool\", Nilable = false, Default = false },\n+\t\t\t},\n+\t\t},\n+\t\t{\n+\t\t\tName = \"ScriptBucketThrottleLimits\",\n+\t\t\tType = \"Structure\",\n+\t\t\tFields =\n+\t\t\t{\n+\t\t\t\t{ Name = \"luaScriptBucketThrottleMaxMsPerSecondNormal\", Type = \"number\", Nilable = false },\n+\t\t\t\t{ Name = \"luaScriptBucketThrottleMaxMsPerSecondRestricted\", Type = \"number\", Nilable = false },\n+\t\t\t\t{ Name = \"luaScriptBucketThrottleMaxMsBurstNormal\", Type = \"number\", Nilable = false },\n+\t\t\t\t{ Name = \"luaScriptBucketThrottleMax"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/FriendListDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -667,6 +667,7 @@ local FriendList =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t\t{"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GARRISON_FOLLOWER_TYPEConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -18,6 +18,7 @@ local GARRISON_FOLLOWER_TYPEConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GARRISON_TYPEConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -17,6 +17,7 @@ local GARRISON_TYPEConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GMTicketInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -84,6 +84,7 @@ local GMTicketInfo =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GameCursorDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -172,6 +172,7 @@ local GameCursor =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GameErrorDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -37,6 +37,7 @@ local GameError =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GamePadConstDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -19,6 +19,7 @@ local GamePadConst =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GamePadDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -430,6 +430,7 @@ local GamePad =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GameRulesConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -44,6 +44,7 @@ local GameRulesConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GameRulesDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -330,6 +330,7 @@ local GameRules =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GameUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -35,6 +35,7 @@ local GameUI =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GarrisonConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -371,6 +371,7 @@ local GarrisonConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GarrisonInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -1455,6 +1455,7 @@ local GarrisonInfo =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GarrisonSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -99,6 +99,7 @@ local GarrisonShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GlueDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -40,6 +40,7 @@ local Glue =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GlyphConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -3,6 +3,7 @@ local GlyphConstants =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GlyphInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -42,6 +42,7 @@ local GlyphInfo =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GossipConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 4,
+          "deletions": 2,
+          "patch": "@@ -5,9 +5,9 @@ local GossipConstants =\n \t\t{\n \t\t\tName = \"GossipNpcOption\",\n \t\t\tType = \"Enumeration\",\n-\t\t\tNumValues = 67,\n+\t\t\tNumValues = 68,\n \t\t\tMinValue = 0,\n-\t\t\tMaxValue = 66,\n+\t\t\tMaxValue = 67,\n \t\t\tFields =\n \t\t\t{\n \t\t\t\t{ Name = \"None\", Type = \"GossipNpcOption\", EnumValue = 0 },\n@@ -77,6 +77,7 @@ local GossipConstants =\n \t\t\t\t{ Name = \"ItemUpgrade\", Type = \"GossipNpcOption\", EnumValue = 64 },\n \t\t\t\t{ Name = \"HouseFinder\", Type = \"GossipNpcOption\", EnumValue = 65 },\n \t\t\t\t{ Name = \"TieredEntrance\", Type = \"GossipNpcOption\", EnumValue = 66 },\n+\t\t\t\t{ Name = \"RewardsShop\", Type = \"GossipNpcOption\", EnumValue = 67 },\n \t\t\t},\n \t\t},\n \t\t{\n@@ -104,6 +105,7 @@ local GossipConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GossipInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -419,6 +419,7 @@ local GossipInfo =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GroupFinderConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -3,6 +3,7 @@ local GroupFinderConstants =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GuildBankDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -93,6 +93,7 @@ local GuildBank =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GuildConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -66,6 +66,7 @@ local GuildConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GuildInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -678,6 +678,7 @@ local GuildInfo =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/GuildInfoSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -15,6 +15,7 @@ local GuildInfoShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HeirloomInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -105,6 +105,7 @@ local HeirloomInfo =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HouseEditorUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -165,6 +165,7 @@ local HouseEditorUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HouseExteriorConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -80,6 +80,7 @@ local HouseExteriorConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HouseExteriorUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -335,6 +335,7 @@ local HouseExteriorUI =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingBasicModeUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -284,6 +284,7 @@ local HousingBasicModeUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingBlueprintConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -129,6 +129,7 @@ local HousingBlueprintConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingBlueprintUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -387,6 +387,7 @@ local HousingBlueprintUI =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingCatalogConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -116,6 +116,7 @@ local HousingCatalogConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingCatalogSearcherAPIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -546,6 +546,7 @@ local HousingCatalogSearcherAPI =\n \t\t\tType = \"CallbackType\",\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingCatalogUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -641,6 +641,7 @@ local HousingCatalogUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingCleanupModeUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -68,6 +68,7 @@ local HousingCleanupModeUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingCustomizeModeUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -478,6 +478,7 @@ local HousingCustomizeModeUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingDecorSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -54,6 +54,7 @@ local HousingDecorShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingDecorUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -522,6 +522,7 @@ local HousingDecorUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingExpertModeUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -303,6 +303,7 @@ local HousingExpertModeUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingFixturePointFrameAPIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -76,6 +76,7 @@ local HousingFixturePointFrameAPI =\n \t\t\tType = \"CallbackType\",\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingInspectModeUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -68,6 +68,7 @@ local HousingInspectModeUI =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingLayoutPinFrameAPIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -228,6 +228,7 @@ local HousingLayoutPinFrameAPI =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingLayoutUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -601,6 +601,7 @@ local HousingLayoutUI =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingLayoutUITypesDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -67,6 +67,7 @@ local HousingLayoutUITypes =\n \t\t\tType = \"CallbackType\",\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingNeighborhoodUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -415,6 +415,7 @@ local HousingNeighborhoodUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -957,6 +957,7 @@ local HousingUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/HousingUISharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -168,6 +168,7 @@ local HousingUIShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ImageSharingConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -87,6 +87,7 @@ local ImageSharingConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ImmersiveInteractionManagerDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -37,6 +37,7 @@ local ImmersiveInteractionManager =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/InGameNavigationDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -129,6 +129,7 @@ local InGameNavigation =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/IncomingSummonDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -60,6 +60,7 @@ local IncomingSummon =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/InputConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -17,6 +17,7 @@ local InputConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/InputDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -323,6 +323,7 @@ local Input =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t\t{"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/InstanceDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -283,6 +283,7 @@ local Instance =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/InstanceEncounterDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -112,6 +112,7 @@ local InstanceEncounter =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/InstanceLeaverInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -36,6 +36,7 @@ local InstanceLeaverInfo =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/InterfaceFileManifestDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -26,6 +26,7 @@ local InterfaceFileManifest =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/IntlDocumentation.lua",
+          "status": "added",
+          "additions": 503,
+          "deletions": 0,
+          "patch": "@@ -0,0 +1,503 @@\n+local Intl =\n+{\n+\tName = \"Intl\",\n+\tType = \"System\",\n+\tNamespace = \"C_Intl\",\n+\tEnvironment = \"All\",\n+\n+\tFunctions =\n+\t{\n+\t\t{\n+\t\t\tName = \"CompareStrings\",\n+\t\t\tType = \"Function\",\n+\t\t\tMayReturnNothing = true,\n+\t\t\tSecretArguments = \"AllowedWhenTainted\",\n+\t\t\tDocumentation = { \"Compares two UTF-8 strings using the options specified on a collator.\" },\n+\n+\t\t\tArguments =\n+\t\t\t{\n+\t\t\t\t{ Name = \"left\", Type = \"cstring\", Nilable = false, Documentation = { \"The first UTF-8 string passed to collation comparison.\" } },\n+\t\t\t\t{ Name = \"right\", Type = \"cstring\", Nilable = false, Documentation = { \"The second UTF-8 string passed to collation comparison.\" } },\n+\t\t\t\t{ Name = \"strength\", Type = \"CollationStrength\", Nilable = false, Documentation = { \"The comparison level used by the collator for ordering and equality.\" } },\n+\t\t\t},\n+\n+\t\t\tReturns =\n+\t\t\t{\n+\t\t\t\t{ Name = \"result\", Type = \"number\", Nilable = false, Documentation = { \"The comparison result: less than, equal to, or greater than zero.\" } },\n+\t\t\t},\n+\t\t},\n+\t\t{\n+\t\t\tName = \"CreateLocaleContext\",\n+\t\t\tType = \"Function\",\n+\t\t\tSecretArguments = \"AllowedWhenUntainted\",\n+\t\t\tDocumentation = { \"Creates a locale context object for locale-scoped internationalization operations.\" },\n+\n+\t\t\tArguments =\n+\t\t\t{\n+\t\t\t\t{ Name = \"locale\", Type = \"cstring\", Nilable = false, Documentation = { \"The locale ID used to initialize the locale context object.\" } },\n+\t\t\t},\n+\n+\t\t\tReturns =\n+\t\t\t{\n+\t\t\t\t{ Name = \"context\", Type = \"LuaLocaleContext\", Nilable = false, Documentation = { \"A locale context userdata object for calling locale-scoped APIs.\" } },\n+\t\t\t},\n+\t\t},\n+\t\t{\n+\t\t\tName = \"FindBreaks\",\n+\t\t\tType = \"Function\",\n+\t\t\tMayReturnNothing = true,\n+\t\t\tSecretArguments = \"AllowedWhenTainted\",\n+\t\t\tDocumentation = { \"Opens a break iterator for locating text boundaries in a specified locale.\" },\n+\n+\t\t\tArguments =\n+\t\t\t{\n+\t\t\t\t{ Name = \"text\", Type = \"cstring\", Nilable = false, Documentation = { \"The UTF-8 text whose boundary offsets are requested.\" } },\n+\t\t\t\t"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/IntlSharedTypesDocumentation.lua",
+          "status": "added",
+          "additions": 154,
+          "deletions": 0,
+          "patch": "@@ -0,0 +1,154 @@\n+local IntlSharedTypes =\n+{\n+\tTables =\n+\t{\n+\t\t{\n+\t\t\tName = \"BreakType\",\n+\t\t\tType = \"Enumeration\",\n+\t\t\tNumValues = 4,\n+\t\t\tMinValue = 0,\n+\t\t\tMaxValue = 3,\n+\t\t\tFields =\n+\t\t\t{\n+\t\t\t\t{ Name = \"Character\", Type = \"BreakType\", EnumValue = 0, Documentation = { \"Locate extended grapheme cluster boundaries, which are treated as user-perceived character units.\" } },\n+\t\t\t\t{ Name = \"Word\", Type = \"BreakType\", EnumValue = 1, Documentation = { \"Locate word boundaries for selection, search, and whole-word operations, including locale dictionary support where available.\" } },\n+\t\t\t\t{ Name = \"Sentence\", Type = \"BreakType\", EnumValue = 2, Documentation = { \"Locate sentence boundaries while handling cases such as periods in numbers or abbreviations and trailing punctuation.\" } },\n+\t\t\t\t{ Name = \"Line\", Type = \"BreakType\", EnumValue = 3, Documentation = { \"Locate positions where text can wrap, using Unicode line-breaking rules that handle punctuation and hyphenated words.\" } },\n+\t\t\t},\n+\t\t},\n+\t\t{\n+\t\t\tName = \"CollationStrength\",\n+\t\t\tType = \"Enumeration\",\n+\t\t\tNumValues = 5,\n+\t\t\tMinValue = 0,\n+\t\t\tMaxValue = 4,\n+\t\t\tFields =\n+\t\t\t{\n+\t\t\t\t{ Name = \"Primary\", Type = \"CollationStrength\", EnumValue = 0, Documentation = { \"Compare base-character differences and ignore accents, case, and later collation levels.\" } },\n+\t\t\t\t{ Name = \"Secondary\", Type = \"CollationStrength\", EnumValue = 1, Documentation = { \"Compare accent or diacritic differences after base characters match, while ignoring tertiary differences such as case.\" } },\n+\t\t\t\t{ Name = \"Tertiary\", Type = \"CollationStrength\", EnumValue = 2, Documentation = { \"Compare case, letter variants, and similar tertiary differences after primary and secondary differences match.\" } },\n+\t\t\t\t{ Name = \"Quaternary\", Type = \"CollationStrength\", EnumValue = 3, Documentation = { \"Distinguish punctuation, whitespace, symbols, or Japanese Hiragana/Katakana differences after the first three levels match.\" } },\n+\t\t\t\t{ Name = \"Identical\", Type = \"Collati"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/InvasionInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -84,6 +84,7 @@ local InvasionInfo =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/IslandsInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -30,6 +30,7 @@ local IslandsInfo =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/IslandsQueueUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -88,6 +88,7 @@ local IslandsQueueUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ItemConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 62,
+          "deletions": 2,
+          "patch": "@@ -18,9 +18,9 @@ local ItemConstants =\n \t\t{\n \t\t\tName = \"BonusStatIndex\",\n \t\t\tType = \"Enumeration\",\n-\t\t\tNumValues = 83,\n+\t\t\tNumValues = 142,\n \t\t\tMinValue = 0,\n-\t\t\tMaxValue = 82,\n+\t\t\tMaxValue = 141,\n \t\t\tFields =\n \t\t\t{\n \t\t\t\t{ Name = \"Mana\", Type = \"BonusStatIndex\", EnumValue = 0 },\n@@ -106,6 +106,65 @@ local ItemConstants =\n \t\t\t\t{ Name = \"ProfessionCraftingSpeed\", Type = \"BonusStatIndex\", EnumValue = 80 },\n \t\t\t\t{ Name = \"ProfessionMulticraft\", Type = \"BonusStatIndex\", EnumValue = 81 },\n \t\t\t\t{ Name = \"ProfessionIngenuity\", Type = \"BonusStatIndex\", EnumValue = 82 },\n+\t\t\t\t{ Name = \"Reserved_83\", Type = \"BonusStatIndex\", EnumValue = 83 },\n+\t\t\t\t{ Name = \"Reserved_84\", Type = \"BonusStatIndex\", EnumValue = 84 },\n+\t\t\t\t{ Name = \"Reserved_85\", Type = \"BonusStatIndex\", EnumValue = 85 },\n+\t\t\t\t{ Name = \"Reserved_86\", Type = \"BonusStatIndex\", EnumValue = 86 },\n+\t\t\t\t{ Name = \"Reserved_87\", Type = \"BonusStatIndex\", EnumValue = 87 },\n+\t\t\t\t{ Name = \"Reserved_88\", Type = \"BonusStatIndex\", EnumValue = 88 },\n+\t\t\t\t{ Name = \"Reserved_89\", Type = \"BonusStatIndex\", EnumValue = 89 },\n+\t\t\t\t{ Name = \"Reserved_90\", Type = \"BonusStatIndex\", EnumValue = 90 },\n+\t\t\t\t{ Name = \"Reserved_91\", Type = \"BonusStatIndex\", EnumValue = 91 },\n+\t\t\t\t{ Name = \"Reserved_92\", Type = \"BonusStatIndex\", EnumValue = 92 },\n+\t\t\t\t{ Name = \"Reserved_93\", Type = \"BonusStatIndex\", EnumValue = 93 },\n+\t\t\t\t{ Name = \"Reserved_94\", Type = \"BonusStatIndex\", EnumValue = 94 },\n+\t\t\t\t{ Name = \"Reserved_95\", Type = \"BonusStatIndex\", EnumValue = 95 },\n+\t\t\t\t{ Name = \"Reserved_96\", Type = \"BonusStatIndex\", EnumValue = 96 },\n+\t\t\t\t{ Name = \"Reserved_97\", Type = \"BonusStatIndex\", EnumValue = 97 },\n+\t\t\t\t{ Name = \"Reserved_98\", Type = \"BonusStatIndex\", EnumValue = 98 },\n+\t\t\t\t{ Name = \"Reserved_99\", Type = \"BonusStatIndex\", EnumValue = 99 },\n+\t\t\t\t{ Name = \"Reserved_100\", Type = \"BonusStatIndex\", EnumValue = 100 },\n+\t\t\t\t{ Name = \"Reserved_101\", Type = \"BonusStatIndex\", EnumValue = 101 },\n+\t\t\t\t{ Name = \"Reserved_102\", Type = \"BonusStatIndex\", Enum"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ItemConstants_MainlineDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -72,6 +72,7 @@ local ItemConstants_Mainline =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ItemConstants_SharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -3,6 +3,7 @@ local ItemConstants_Shared =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ItemDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -1927,6 +1927,7 @@ local Item =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ItemInteractionUIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -151,6 +151,7 @@ local ItemInteractionUI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ItemQualitiesDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -22,6 +22,7 @@ local ItemQualities =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ItemSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -3,6 +3,7 @@ local ItemShared =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ItemSocketInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -271,6 +271,7 @@ local ItemSocketInfo =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ItemTextDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -44,6 +44,7 @@ local ItemText =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/ItemUpgradeDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -303,6 +303,7 @@ local ItemUpgrade =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/KeyBindingsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -249,6 +249,7 @@ local KeyBindings =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LFGConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -149,6 +149,7 @@ local LFGConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LFGInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 10,
+          "deletions": 0,
+          "patch": "@@ -116,6 +116,15 @@ local LFGInfo =\n \t\t\t\t{ Name = \"doesCrossFactionQueueRequireFullPremade\", Type = \"bool\", Nilable = false },\n \t\t\t},\n \t\t},\n+\t\t{\n+\t\t\tName = \"GetActiveLFGDungeonName\",\n+\t\t\tType = \"Function\",\n+\n+\t\t\tReturns =\n+\t\t\t{\n+\t\t\t\t{ Name = \"name\", Type = \"string\", Nilable = false },\n+\t\t\t},\n+\t\t},\n \t\t{\n \t\t\tName = \"GetAllEntriesForCategory\",\n \t\t\tType = \"Function\",\n@@ -521,6 +530,7 @@ local LFGInfo =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LFGListInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -1046,6 +1046,7 @@ local LFGListInfo =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LegendaryCraftingDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -329,6 +329,7 @@ local LegendaryCrafting =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LegendaryCraftingTypesDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -87,6 +87,7 @@ local LegendaryCraftingTypes =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LevelConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -12,6 +12,7 @@ local LevelConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LevelLinkDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -46,6 +46,7 @@ local LevelLink =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LevelSquishDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -47,6 +47,7 @@ local LevelSquish =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LimitedInputDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -45,6 +45,7 @@ local LimitedInput =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LiveEventDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -38,6 +38,7 @@ local LiveEvent =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LoadingScreenDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -28,6 +28,7 @@ local LoadingScreen =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LobbyMatchmakerInfoDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -140,6 +140,7 @@ local LobbyMatchmakerInfo =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LocaleDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -81,6 +81,7 @@ local Locale =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LocalizationDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -187,6 +187,7 @@ local Localization =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LocalizationSharedDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -29,6 +29,7 @@ local LocalizationShared =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t\t{"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LogConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -19,6 +19,7 @@ local LogConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LogDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -57,6 +57,7 @@ local Log =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LogicConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -50,6 +50,7 @@ local LogicConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LootConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -53,6 +53,7 @@ local LootConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LootDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -431,6 +431,7 @@ local Loot =\n \tTables =\n \t{\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LootHistoryDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -195,6 +195,7 @@ local LootHistory =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LootJournalDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -75,6 +75,7 @@ local LootJournal =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LoreTextDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -46,6 +46,7 @@ local LoreText =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LossOfControlConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -11,6 +11,7 @@ local LossOfControlConstants =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LossOfControlDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -162,6 +162,7 @@ local LossOfControl =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/LuaColorCurveObjectAPIDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -174,6 +174,7 @@ local LuaColorCurveObjectAPI =\n \t\t\t},\n \t\t},\n \t},\n+\n \tPredicates =\n \t{\n \t},"
+        }
+      ]
+    },
     {
       "sha": "09b9db7948abc9b9648dedaab51eb0cf3ee67b31",
       "date": "2026-09-22T14:31:12Z",
@@ -8582,24 +10709,6 @@
       "date": "2026-04-22T00:02:54Z",
       "message": "12.0.5 UnitName fixes",
       "url": "https://github.com/m33shoq/M33kAuras/commit/8fbe6feee23a9f98dffccd97ceab43ffd2f45678",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "2a1a037dce540e59b67e0d47adee625b6480ed63",
-      "date": "2026-04-19T16:35:09Z",
-      "message": "Update readme",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/2a1a037dce540e59b67e0d47adee625b6480ed63",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "94869aa13835b6e80502d34a15e189d7c1996d9a",
-      "date": "2026-04-07T19:06:26Z",
-      "message": "update LibGetFrame to 74",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/94869aa13835b6e80502d34a15e189d7c1996d9a",
       "repo": "m33kauras-midnight",
       "repoLabel": "M33kAuras (midnight)",
       "files": []
