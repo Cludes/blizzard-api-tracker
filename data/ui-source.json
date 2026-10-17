@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "18c6d677b605b312f3d813d498404631fb941977",
+    "sha": "b9be9379719047977fca4dba1bb1d9988e8840b3",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,32 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-10-16T20:50:38.450Z",
+  "lastChecked": "2026-10-17T03:59:30.120Z",
   "changes": [
+    {
+      "sha": "b9be9379719047977fca4dba1bb1d9988e8840b3",
+      "date": "2026-10-16T23:16:10Z",
+      "message": "12.1.5 (70448)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/b9be9379719047977fca4dba1bb1d9988e8840b3",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "Interface/AddOns/Blizzard_UIPanels_Game/Mainline/GroupLootFrame.lua",
+          "status": "modified",
+          "additions": 23,
+          "deletions": 0,
+          "patch": "@@ -283,6 +283,13 @@ function GroupLootFrame_StopNeedAnimation(self)\n \tend\n end\n \n+local function CancelBonusRollRefresh(frame)\n+\tif frame.refreshTicker then\n+\t\tframe.refreshTicker:Cancel();\n+\t\tframe.refreshTicker = nil;\n+\tend\n+end\n+\n function BonusRollFrame_StartBonusRoll(spellID, text, duration, currencyID, currencyCost, difficultyID, displayItemID, itemContext, treasureContextLevel)\n \tlocal frame = BonusRollFrame;\n \n@@ -356,10 +363,26 @@ function BonusRollFrame_StartBonusRoll(spellID, text, duration, currencyID, curr\n \tend\n \n \tGroupLootContainer_AddFrame(GroupLootContainer, frame);\n+\n+\t-- Let's refresh the bonus roll prompt periodically to ensure it stays visible while it's still valid\n+\tCancelBonusRollRefresh(frame);\n+\tlocal refreshIntervalSeconds = 5;\n+\tlocal refreshIterations = floor(duration / refreshIntervalSeconds);\n+\tif refreshIterations > 0 then\n+\t\tframe.refreshTicker = C_Timer.NewTicker(refreshIntervalSeconds, function()\n+\t\t\tlocal isAwaitingPlayerChoice = frame.state == \"prompt\";\n+\t\t\tif isAwaitingPlayerChoice then\n+\t\t\t\tGroupLootContainer_Update(GroupLootContainer);\n+\t\t\t\tframe:Show();\n+\t\t\tend\n+\t\tend, refreshIterations);\n+\tend\n end\n \n function BonusRollFrame_CloseBonusRoll()\n \tlocal frame = BonusRollFrame;\n+\tCancelBonusRollRefresh(frame);\n+\n \tif ( frame.state == \"prompt\" ) then\n \t\tGroupLootContainer_RemoveFrame(GroupLootContainer, frame);\n \tend"
+        },
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.5.70391\n+12.1.5.70448"
+        }
+      ]
+    },
     {
       "sha": "18c6d677b605b312f3d813d498404631fb941977",
       "date": "2026-10-13T21:16:13Z",
@@ -10700,15 +10724,6 @@
       "date": "2026-04-22T00:10:47Z",
       "message": "blizzard borked tracking essence regen haHA",
       "url": "https://github.com/m33shoq/M33kAuras/commit/6565bbddc70633d04674a0680171fc2a9622a315",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "8fbe6feee23a9f98dffccd97ceab43ffd2f45678",
-      "date": "2026-04-22T00:02:54Z",
-      "message": "12.0.5 UnitName fixes",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/8fbe6feee23a9f98dffccd97ceab43ffd2f45678",
       "repo": "m33kauras-midnight",
       "repoLabel": "M33kAuras (midnight)",
       "files": []
