@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "b9be9379719047977fca4dba1bb1d9988e8840b3",
+    "sha": "e7aa82019dc298e0351c7159d60c2a9b916b9b67",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,32 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-10-22T16:59:31.651Z",
+  "lastChecked": "2026-10-22T21:24:49.798Z",
   "changes": [
+    {
+      "sha": "e7aa82019dc298e0351c7159d60c2a9b916b9b67",
+      "date": "2026-10-22T19:16:36Z",
+      "message": "12.1.5 (70529)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/e7aa82019dc298e0351c7159d60c2a9b916b9b67",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "Interface/AddOns/Blizzard_PlayerChoice/Blizzard_PlayerChoiceOptionBase.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -218,7 +218,6 @@ function PlayerChoice_WidgetsLayout(widgetContainer, sortedWidgets, consolidateW\n \t\tDefaultWidgetLayout(widgetContainer, topWidgets, skipContainerLayout);\n \tend\n \n-\tlocal skipHorizontalRowPoolClear = true;\n \tif hasBottomWidgets then\n \t\t-- We want the bottom widgets to be anchored to the bottom of the container but we still want them to be layed out top to bottom among themselves (by orderIndex)\n \t\t-- In order to achieve that, we reserve-sort the bottom widgets and then lay them out bottom to top and right to left\n@@ -231,6 +230,7 @@ function PlayerChoice_WidgetsLayout(widgetContainer, sortedWidgets, consolidateW\n \t\twidgetContainer.verticalRelativePoint = \"TOP\";\n \t\twidgetContainer.horizontalAnchorPoint = \"RIGHT\";\n \t\twidgetContainer.horizontalRelativePoint = \"LEFT\";\n+\t\tlocal skipHorizontalRowPoolClear = hasTopWidgets;\n \t\tDefaultWidgetLayout(widgetContainer, bottomWidgets, skipContainerLayout, skipHorizontalRowPoolClear);\n \tend\n "
+        },
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.5.70448\n+12.1.5.70529"
+        }
+      ]
+    },
     {
       "sha": "b9be9379719047977fca4dba1bb1d9988e8840b3",
       "date": "2026-10-16T23:16:10Z",
@@ -10715,15 +10739,6 @@
       "date": "2026-04-22T06:38:13Z",
       "message": "stats trigger is partially borked when auras are secret",
       "url": "https://github.com/m33shoq/M33kAuras/commit/52a48d2d650d0e0f285d564a30a6b736452ea2ad",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "6565bbddc70633d04674a0680171fc2a9622a315",
-      "date": "2026-04-22T00:10:47Z",
-      "message": "blizzard borked tracking essence regen haHA",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/6565bbddc70633d04674a0680171fc2a9622a315",
       "repo": "m33kauras-midnight",
       "repoLabel": "M33kAuras (midnight)",
       "files": []
