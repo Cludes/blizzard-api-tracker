@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "e7aa82019dc298e0351c7159d60c2a9b916b9b67",
+    "sha": "15881d522c44cd106d3d8660106ec9f9d2f44167",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,25 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-10-23T16:52:09.125Z",
+  "lastChecked": "2026-10-23T21:16:13.228Z",
   "changes": [
+    {
+      "sha": "15881d522c44cd106d3d8660106ec9f9d2f44167",
+      "date": "2026-10-23T19:31:08Z",
+      "message": "12.1.5 (70575)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/15881d522c44cd106d3d8660106ec9f9d2f44167",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.5.70529\n+12.1.5.70575"
+        }
+      ]
+    },
     {
       "sha": "e7aa82019dc298e0351c7159d60c2a9b916b9b67",
       "date": "2026-10-22T19:16:36Z",
@@ -10730,15 +10747,6 @@
       "date": "2026-04-22T20:32:54Z",
       "message": "oopsie",
       "url": "https://github.com/m33shoq/M33kAuras/commit/7d2778c375204fda50700b502c45e237bf87ee9a",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "52a48d2d650d0e0f285d564a30a6b736452ea2ad",
-      "date": "2026-04-22T06:38:13Z",
-      "message": "stats trigger is partially borked when auras are secret",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/52a48d2d650d0e0f285d564a30a6b736452ea2ad",
       "repo": "m33kauras-midnight",
       "repoLabel": "M33kAuras (midnight)",
       "files": []
