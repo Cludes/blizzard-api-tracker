@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "15881d522c44cd106d3d8660106ec9f9d2f44167",
+    "sha": "d07eb00237d8891f153215db98a5df880a26cfe5",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,39 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-10-30T22:09:18.095Z",
+  "lastChecked": "2026-10-31T05:07:31.355Z",
   "changes": [
+    {
+      "sha": "d07eb00237d8891f153215db98a5df880a26cfe5",
+      "date": "2026-10-31T01:01:00Z",
+      "message": "12.1.5 (70688)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/d07eb00237d8891f153215db98a5df880a26cfe5",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "Interface/AddOns/Blizzard_CatalogShop/Blizzard_CatalogShop_Products.lua",
+          "status": "modified",
+          "additions": 5,
+          "deletions": 4,
+          "patch": "@@ -4,6 +4,10 @@ local function IsElementDataItemInfo(elementData)\n \treturn (elementData and (elementData.elementType ~= CatalogShopConstants.ScrollViewElementType.Header)) or false;\n end\n \n+local function ProductTypeUsesCarousel(productType)\n+\treturn productType == CatalogShopConstants.ProductType.Room or productType == CatalogShopConstants.ProductType.HousingExteriorType;\n+end\n+\n -----------------------------------------------------------------------------------\n --- CatalogShopProductContainerFrameMixin\n -----------------------------------------------------------------------------------\n@@ -343,10 +347,7 @@ function CatalogShopProductContainerFrameMixin:OnProductSelected(productInfo)\n \t\tif productInfo.previewIconTexture then\n \t\t\ticonFrame.Icon:SetAtlas(productInfo.previewIconTexture);\n \t\tend\n-\telseif productType == CatalogShopConstants.ProductType.Room then\n-\t\tCatalogShopFrame.PMTImageContainerFrame:Show();\n-\t\tCatalogShopFrame.PMTImageContainerFrame:SetupCarouselImagesAndHide(displayInfo);\n-\telseif productType == CatalogShopConstants.ProductType.HousingExteriorType then\n+\telseif ProductTypeUsesCarousel(productType) then\n \t\t--SetupCarouselImages\n \t\tlocal showWatermarkLogo = displayInfo.hasUnknownLicense;\n \t\tCatalogShopFrame.PMTImageContainerFrame:Show();"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_CatalogShopSharedUtil/Blizzard_CatalogShop_SharedUtil.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1387,7 +1387,7 @@ function CatalogShopUtil.GetCardTemplate(useWideCard, productType)\n \t\treturn CatalogShopConstants.CardTemplate.SmallAccess;\n \telseif productType == CatalogShopConstants.ProductType.Room then\n \t\treturn CatalogShopConstants.CardTemplate.SmallRoom;\n-\telseif productType == CatalogShopConstants.ProductType.ExteriorRoom then\n+\telseif productType == CatalogShopConstants.ProductType.HousingExteriorType then\n \t\treturn CatalogShopConstants.CardTemplate.SmallExteriorType;\n \tend\n "
+        },
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.5.70575\n+12.1.5.70688"
+        }
+      ]
+    },
     {
       "sha": "15881d522c44cd106d3d8660106ec9f9d2f44167",
       "date": "2026-10-23T19:31:08Z",
@@ -10738,15 +10769,6 @@
       "date": "2026-04-23T07:05:55Z",
       "message": "Dont error if something tries to index AsyncEnvironment ouside of async execution",
       "url": "https://github.com/m33shoq/M33kAuras/commit/9e2101d62086a888c44b849dd0a28f773e0c0fb3",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "7d2778c375204fda50700b502c45e237bf87ee9a",
-      "date": "2026-04-22T20:32:54Z",
-      "message": "oopsie",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/7d2778c375204fda50700b502c45e237bf87ee9a",
       "repo": "m33kauras-midnight",
       "repoLabel": "M33kAuras (midnight)",
       "files": []
