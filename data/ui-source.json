@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "d07eb00237d8891f153215db98a5df880a26cfe5",
+    "sha": "297d7aaaa736f346b3e036f38ee088eaf7f8c07f",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,81 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-11-03T23:07:18.386Z",
+  "lastChecked": "2026-11-04T05:52:22.975Z",
   "changes": [
+    {
+      "sha": "297d7aaaa736f346b3e036f38ee088eaf7f8c07f",
+      "date": "2026-11-04T00:46:01Z",
+      "message": "12.1.5 (70783)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/297d7aaaa736f346b3e036f38ee088eaf7f8c07f",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/BattleNetDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -460,6 +460,7 @@ local BattleNet =\n \t\t\t\t{ Name = \"regionID\", Type = \"number\", Nilable = false },\n \t\t\t\t{ Name = \"isInCurrentRegion\", Type = \"bool\", Nilable = false },\n \t\t\t\t{ Name = \"timerunningSeasonID\", Type = \"number\", Nilable = true },\n+\t\t\t\t{ Name = \"subIcon\", Type = \"string\", Nilable = true },\n \t\t\t},\n \t\t},\n \t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/RolesetSystemDocumentation.lua",
+          "status": "modified",
+          "additions": 2,
+          "deletions": 1,
+          "patch": "@@ -10,8 +10,9 @@ local RolesetSystem =\n \t\t{\n \t\t\tName = \"ApplyRolesetFilters\",\n \t\t\tType = \"Function\",\n+\t\t\tHasRestrictions = true,\n \t\t\tSecretArguments = \"AllowedWhenUntainted\",\n-\t\t\tDocumentation = { \"Sets or clears both blocklist and allowlist filters atomically with a single visibility reevaluation. Pass an empty table to clear the corresponding filter.\" },\n+\t\t\tDocumentation = { \"Sets or clears both blocklist and allowlist filters atomically with a single visibility reevaluation. Pass an empty table to clear the corresponding filter. Blocked for tainted callers while in combat lockdown.\" },\n \n \t\t\tArguments =\n \t\t\t{"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/TextureUtilsDocumentation.lua",
+          "status": "modified",
+          "additions": 3,
+          "deletions": 0,
+          "patch": "@@ -112,6 +112,7 @@ local TextureUtils =\n \t\t\t\t{ Name = \"titleID\", Type = \"string\", Nilable = false },\n \t\t\t\t{ Name = \"version\", Type = \"TitleIconVersion\", Nilable = false },\n \t\t\t\t{ Name = \"callback\", Type = \"GetTitleIconTextureCallback\", Nilable = false },\n+\t\t\t\t{ Name = \"subIcon\", Type = \"string\", Nilable = true },\n \t\t\t},\n \t\t},\n \t\t{\n@@ -123,6 +124,7 @@ local TextureUtils =\n \t\t\t{\n \t\t\t\t{ Name = \"titleID\", Type = \"string\", Nilable = false },\n \t\t\t\t{ Name = \"version\", Type = \"TitleIconVersion\", Nilable = false },\n+\t\t\t\t{ Name = \"subIcon\", Type = \"string\", Nilable = true },\n \t\t\t},\n \n \t\t\tReturns =\n@@ -140,6 +142,7 @@ local TextureUtils =\n \t\t\t\t{ Name = \"texture\", Type = \"SimpleTexture\", Nilable = false },\n \t\t\t\t{ Name = \"titleID\", Type = \"string\", Nilable = false },\n \t\t\t\t{ Name = \"version\", Type = \"TitleIconVersion\", Nilable = false },\n+\t\t\t\t{ Name = \"subIcon\", Type = \"string\", Nilable = true },\n \t\t\t},\n \t\t},\n \t\t{"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -4049,7 +4049,7 @@ local Unit =\n \t\t\t\t{ Name = \"unitTarget\", Type = \"UnitTokenVariant\", Nilable = false },\n \t\t\t\t{ Name = \"event\", Type = \"cstring\", Nilable = false },\n \t\t\t\t{ Name = \"flagText\", Type = \"cstring\", Nilable = false },\n-\t\t\t\t{ Name = \"amount\", Type = \"number\", Nilable = false },\n+\t\t\t\t{ Name = \"amount\", Type = \"number\", Nilable = false, SecretValue = true },\n \t\t\t\t{ Name = \"schoolMask\", Type = \"number\", Nilable = false },\n \t\t\t},\n \t\t},"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_BNet/Mainline/BNet.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -227,7 +227,7 @@ function BNToastMixin:ShowToast()\n \t\t\t\tmiddleLine:SetFormattedText(characterName);\n \t\t\t\tmiddleLine:SetTextColor(FRIENDS_BNET_NAME_COLOR.r, FRIENDS_BNET_NAME_COLOR.g, FRIENDS_BNET_NAME_COLOR.b);\n \t\t\tend\n-\t\tend);\n+\t\tend, accountInfo.gameAccountInfo.subIcon);\n \t\tmiddleLine:Show();\n \n \t\tself.IconTexture:SetTexCoord(0, 0.25, 0.5, 1);"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_ChatFrameBase/Mainline/ChatFrameOverrides.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -515,7 +515,7 @@ function ChatFrameMixin:MessageEventHandler(event, ...)\n \t\t\t\t\t\t\tself:AddMessage(message, info.r, info.g, info.b, info.id);\n \t\t\t\t\t\t\tChatFrameUtil.FlashTabIfNotShown(self, info, type, chatGroup, chatTarget);\n \t\t\t\t\t\tend\n-\t\t\t\t\tend);\n+\t\t\t\t\tend, accountInfo.gameAccountInfo.subIcon);\n \t\t\t\t\treturn;\n \t\t\t\telse\n \t\t\t\t\tlocal linkDisplayText = (\"[%s]\"):format(arg2);"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_FriendsFrame/Mainline/FriendsFrame.lua",
+          "status": "modified",
+          "additions": 5,
+          "deletions": 5,
+          "patch": "@@ -1995,7 +1995,7 @@ function FriendsFrame_UpdateFriendButton(button, elementData)\n \t\t\t\t\tinfoText = GetOnlineInfoText(accountInfo.gameAccountInfo.clientProgram, accountInfo.rafLinkType, accountInfo.gameAccountInfo.areaName);\n \t\t\t\tend\n \n-\t\t\t\t\tC_Texture.SetTitleIconTexture(button.gameIcon, accountInfo.gameAccountInfo.clientProgram, Enum.TitleIconVersion.Medium);\n+\t\t\t\t\tC_Texture.SetTitleIconTexture(button.gameIcon, accountInfo.gameAccountInfo.clientProgram, Enum.TitleIconVersion.Medium, accountInfo.gameAccountInfo.subIcon);\n \n \t\t\t\tlocal fadeIcon = (accountInfo.gameAccountInfo.clientProgram == BNET_CLIENT_WOW) and (accountInfo.gameAccountInfo.wowProjectID ~= WOW_PROJECT_ID);\n \t\t\t\tif fadeIcon then\n@@ -2333,12 +2333,12 @@ function FriendsListButtonMixin:OnEnter()\n \t\t\t\tcharacterNameString = _G[\"FriendsTooltipGameAccount\"..gameAccountIndex..\"Name\"];\n \t\t\t\tgameAccountInfoString = _G[\"FriendsTooltipGameAccount\"..gameAccountIndex..\"Info\"];\n \t\t\t\ttext = \"\";\n-\t\t\t\tif C_Texture.IsTitleIconTextureReady(gameAccountInfo.clientProgram, Enum.TitleIconVersion.Small) then\n+\t\t\t\tif C_Texture.IsTitleIconTextureReady(gameAccountInfo.clientProgram, Enum.TitleIconVersion.Small, gameAccountInfo.subIcon) then\n \t\t\t\t\tC_Texture.GetTitleIconTexture(gameAccountInfo.clientProgram, Enum.TitleIconVersion.Small, function(success, texture)\n \t\t\t\t\t\tif success then\n \t\t\t\t\t\t\ttext = BNet_GetClientEmbeddedTexture(texture, 32, 32, 0)..\" \";\n \t\t\t\t\t\tend\n-\t\t\t\t\tend);\n+\t\t\t\t\tend, gameAccountInfo.subIcon);\n \t\t\t\tend\n \t\t\t\tif (gameAccountInfo.clientProgram == BNET_CLIENT_WOW) and (gameAccountInfo.wowProjectID == WOW_PROJECT_ID) then\n \t\t\t\t\tif (gameAccountInfo.realmName == playerRealmName) and (gameAccountInfo.factionName == playerFactionGroup) then\n@@ -2501,12 +2501,12 @@ function FriendsFrame_SetupTravelPassDropdown(friendIndex, attachedTo)\n \t\t\t\tend\n \t\t\telse\n \t\t\t\trestriction = INVITE_RESTRICTION_CLIENT;\n-\t\t\t\tif C_Texture.IsTitleIconTextureReady(gameAccountInfo.clientProgram, Enum.TitleIconVersion.Small) then\n+\t\t\t\tif C_Textur"
+        },
+        {
+          "filename": "Interface/AddOns/Blizzard_FriendsFrame/Mainline/FriendsListTemplates.lua",
+          "status": "modified",
+          "additions": 6,
+          "deletions": 6,
+          "patch": "@@ -15,7 +15,7 @@ local FriendsListTagInterestFilterOptions = {\n \t{ label = SOCIAL_UI_BATTLE_NET_FRIEND_TAG_LABEL_DELVE,       searchInfo = { tags = { Enum.BattleNetFriendTag.Delves } } },\n \t{ label = SOCIAL_UI_BATTLE_NET_FRIEND_TAG_LABEL_QUESTING,    searchInfo = { tags = { Enum.BattleNetFriendTag.Questing } } },\n \t{ label = SOCIAL_UI_BATTLE_NET_FRIEND_TAG_LABEL_ROLEPLAYING, searchInfo = { tags = { Enum.BattleNetFriendTag.Roleplaying } } },\n-};\n+\t\t};\n \n local FriendsListTagRoleFilterOptions = {\n \t{ label = SOCIAL_UI_BATTLE_NET_FRIEND_TAG_LABEL_DPS,         searchInfo = { tags = { Enum.BattleNetFriendTag.DamagerRole } } },\n@@ -539,7 +539,7 @@ function FriendsListSocialCardMixin:InitializeGameIcon()\n \tend\n \n \tlocal gameAccountInfo = self.elementData.accountInfo.gameAccountInfo;\n-\tC_Texture.SetTitleIconTexture(gameIconHolder.Icon, gameAccountInfo.clientProgram, Enum.TitleIconVersion.Medium);\n+\tC_Texture.SetTitleIconTexture(gameIconHolder.Icon, gameAccountInfo.clientProgram, Enum.TitleIconVersion.Medium, gameAccountInfo.subIcon);\n \n \tlocal friendIsPlayingDifferentWowProject = FriendsListUtil.IsPlayingDifferentWoWProject(gameAccountInfo);\n \tgameIconHolder.Icon:SetAlpha(friendIsPlayingDifferentWowProject and 0.6 or 1);\n@@ -975,13 +975,13 @@ end\n \n local function GetGameAccountIconPrefix(gameAccountInfo)\n \tlocal iconPrefix = \"\";\n-\tif C_Texture.IsTitleIconTextureReady(gameAccountInfo.clientProgram, Enum.TitleIconVersion.Small) then\n+\tif C_Texture.IsTitleIconTextureReady(gameAccountInfo.clientProgram, Enum.TitleIconVersion.Small, gameAccountInfo.subIcon) then\n \t\tC_Texture.GetTitleIconTexture(gameAccountInfo.clientProgram, Enum.TitleIconVersion.Small, function(success, texture)\n \t\t\tif success then\n \t\t\t\tlocal fileWidth, fileHeight, width, height, xOffset, yOffset = 32, 32, 0, 0, 0, 0;\n \t\t\t\ticonPrefix = BNet_GetClientEmbeddedTexture(texture, fileWidth, fileHeight, width, height, xOffset, yOffset) .. \" \";\n \t\t\tend\n-\t\tend);\n+\t\tend, gameAccountInfo.subIcon);\n \tend\n \treturn iconPre"
+        },
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.5.70688\n+12.1.5.70783"
+        }
+      ]
+    },
     {
       "sha": "d07eb00237d8891f153215db98a5df880a26cfe5",
       "date": "2026-10-31T01:01:00Z",
@@ -10760,15 +10833,6 @@
       "date": "2026-04-23T07:21:55Z",
       "message": "check for secret value before error happens",
       "url": "https://github.com/m33shoq/M33kAuras/commit/38e6dff5da7defda4548a627c837d384fe770684",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "9e2101d62086a888c44b849dd0a28f773e0c0fb3",
-      "date": "2026-04-23T07:05:55Z",
-      "message": "Dont error if something tries to index AsyncEnvironment ouside of async execution",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/9e2101d62086a888c44b849dd0a28f773e0c0fb3",
       "repo": "m33kauras-midnight",
       "repoLabel": "M33kAuras (midnight)",
       "files": []
