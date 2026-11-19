@@ -1,6 +1,6 @@
 {
   "wow-ui-source": {
-    "sha": "297d7aaaa736f346b3e036f38ee088eaf7f8c07f",
+    "sha": "ab5cb850a3f65e742959e379c4689353a2f4549f",
     "label": "WoW UI Source (live)",
     "url": "https://github.com/Gethe/wow-ui-source/tree/live"
   },
@@ -9,8 +9,32 @@
     "label": "M33kAuras (midnight)",
     "url": "https://github.com/m33shoq/M33kAuras/tree/midnight"
   },
-  "lastChecked": "2026-11-18T15:28:19.785Z",
+  "lastChecked": "2026-11-19T00:08:43.994Z",
   "changes": [
+    {
+      "sha": "ab5cb850a3f65e742959e379c4689353a2f4549f",
+      "date": "2026-11-18T23:46:07Z",
+      "message": "12.1.5 (70961)",
+      "url": "https://github.com/Gethe/wow-ui-source/commit/ab5cb850a3f65e742959e379c4689353a2f4549f",
+      "repo": "wow-ui-source",
+      "repoLabel": "WoW UI Source (live)",
+      "files": [
+        {
+          "filename": "Interface/AddOns/Blizzard_APIDocumentationGenerated/EncodingUtilConstantsDocumentation.lua",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 0,
+          "patch": "@@ -8,6 +8,7 @@ local EncodingUtilConstants =\n \t\t\tValues =\n \t\t\t{\n \t\t\t\t{ Name = \"EncodingDecompressSizeLimit\", Type = \"size\", Value = 104857600 },\n+\t\t\t\t{ Name = \"EncodingDeserializeSizeLimit\", Type = \"size\", Value = 104857600 },\n \t\t\t\t{ Name = \"EncodingStackSizeLimit\", Type = \"number\", Value = 100 },\n \t\t\t},\n \t\t},"
+        },
+        {
+          "filename": "version.txt",
+          "status": "modified",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -1 +1 @@\n-12.1.5.70783\n+12.1.5.70961"
+        }
+      ]
+    },
     {
       "sha": "297d7aaaa736f346b3e036f38ee088eaf7f8c07f",
       "date": "2026-11-04T00:46:01Z",
@@ -10824,15 +10848,6 @@
       "date": "2026-04-24T18:40:00Z",
       "message": "fix secret error in bw callback",
       "url": "https://github.com/m33shoq/M33kAuras/commit/818faca6d0daf08629d2f63dd8c94798d1d74987",
-      "repo": "m33kauras-midnight",
-      "repoLabel": "M33kAuras (midnight)",
-      "files": []
-    },
-    {
-      "sha": "38e6dff5da7defda4548a627c837d384fe770684",
-      "date": "2026-04-23T07:21:55Z",
-      "message": "check for secret value before error happens",
-      "url": "https://github.com/m33shoq/M33kAuras/commit/38e6dff5da7defda4548a627c837d384fe770684",
       "repo": "m33kauras-midnight",
       "repoLabel": "M33kAuras (midnight)",
       "files": []
